@@ -16,25 +16,14 @@ Sora Unity SDK サンプル集に対する有償のサポートについては�
 
 ## システム条件
 
-**TBD**
+- Unity 2019.1
 
-## サンプルの紹介
+## サンプル
 
-### 片方向配信 (受信)
-
-**TBD**
-
-### 片方向配信 (送信)
-
-**TBD**
-
-### マルチストリーム (送受信)
-
-**TBD**
-
-### マルチストリーム (受信)
-
-**TBD**
+- シングルストリーム送信
+- シングルストリーム受信
+- マルチストリーム送受信
+- マルチストリーム受信
 
 ## ライセンス
 
@@ -55,3 +44,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
