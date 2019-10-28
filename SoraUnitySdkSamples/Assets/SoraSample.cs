@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Runtime.InteropServices;
 
-public class SoraSamplePubsub : MonoBehaviour
+public class SoraSample : MonoBehaviour
 {
     Sora sora;
     uint trackId = 0;
@@ -96,7 +96,8 @@ public class SoraSamplePubsub : MonoBehaviour
         {
             SignalingUrl = SignalingUrl,
             ChannelId = ChannelId,
-            Mode = Recvonly ? Sora.Mode.Pubsub_Recvonly : Sora.Mode.Pubsub_Sendonly,
+            Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
+            Multistream = false,
         };
         var success = sora.Connect(config);
         if (!success)

@@ -111,7 +111,8 @@ public class SoraSampleMultistream : MonoBehaviour
         {
             SignalingUrl = SignalingUrl,
             ChannelId = ChannelId,
-            Mode = Recvonly ? Sora.Mode.Multistream_Recvonly : Sora.Mode.Multistream_Sendrecv,
+            Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
+            Multistream = true,
         };
         var success = sora.Connect(config);
         if (!success)
