@@ -60,7 +60,10 @@ crashlytics-build.properties
 
 *.dll
 
-/Assets/Sora
-/Assets/Sora.meta
+/Assets/Plugins.meta
+/Assets/Plugins/SoraUnitySdk
+/Assets/Plugins/SoraUnitySdk.meta
+/Assets/SoraUnitySdk
+/Assets/SoraUnitySdk.meta
 /webrtc_logs_*
 /.env.json
