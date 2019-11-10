@@ -14,9 +14,12 @@ public class SoraSampleMultistream : MonoBehaviour
     public string ChannelId;
     public bool Recvonly;
 
+    public Camera capturedCamera;
+
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(Render());
     }
 
     // Update is called once per frame
@@ -76,6 +79,18 @@ public class SoraSampleMultistream : MonoBehaviour
         tracks.Clear();
     }
 
+    IEnumerator Render()
+    {
+        while (true)
+        {
+            yield return new WaitForEndOfFrame();
+            if (sora != null)
+            {
+                sora.OnRender();
+            }
+        }
+    }
+
     [Serializable]
     class Settings
     {
@@ -114,6 +129,8 @@ public class SoraSampleMultistream : MonoBehaviour
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = true,
         };
+        config.SetUnityCamera(capturedCamera, 640, 480);
+
         var success = sora.Connect(config);
         if (!success)
         {
