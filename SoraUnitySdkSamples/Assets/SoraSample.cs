@@ -67,6 +67,10 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
         };
+        sora.OnNotify = (json) =>
+        {
+            Debug.LogFormat("OnNotify: {0}", json);
+        };
     }
     void DisposeSora()
     {

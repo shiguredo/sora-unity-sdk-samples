@@ -65,6 +65,10 @@ public class SoraSampleMultistream : MonoBehaviour
                 tracks.Remove(trackId);
             }
         };
+        sora.OnNotify = (json) =>
+        {
+            Debug.LogFormat("OnNotify: {0}", json);
+        };
     }
     void DisposeSora()
     {
