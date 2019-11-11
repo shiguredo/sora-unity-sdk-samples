@@ -3,7 +3,7 @@
 $ErrorActionPreference = 'Stop'
 
 
-$SORAUNITYSDK_VERSION = "0.1.0"
+$SORAUNITYSDK_VERSION = "0.2.0"
 
 # 一通り掃除
 if (Test-Path "SoraUnitySdkSamples\Assets\Plugins\SoraUnitySdk") {
