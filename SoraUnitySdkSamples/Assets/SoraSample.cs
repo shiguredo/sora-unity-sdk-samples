@@ -9,10 +9,12 @@ public class SoraSample : MonoBehaviour
     Sora sora;
     uint trackId = 0;
     public GameObject renderTarget;
-    public string SignalingUrl;
-    public string ChannelId;
+    public string SignalingUrl = "";
+    public string ChannelId = "";
+    public string SignalingKey = "";
     public bool Recvonly;
 
+    public bool captureUnityCamera;
     public Camera capturedCamera;
 
     // Start is called before the first frame update
@@ -81,6 +83,13 @@ public class SoraSample : MonoBehaviour
     {
         public string signaling_url = "";
         public string channel_id = "";
+        public string signaling_key = "";
+    }
+
+    [Serializable]
+    class Metadata
+    {
+        public string signaling_key;
     }
 
     public void OnClickStart()
@@ -92,6 +101,7 @@ public class SoraSample : MonoBehaviour
             var settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(".env.json"));
             SignalingUrl = settings.signaling_url;
             ChannelId = settings.channel_id;
+            SignalingKey = settings.signaling_key;
         }
 
         if (SignalingUrl.Length == 0)
@@ -104,6 +114,16 @@ public class SoraSample : MonoBehaviour
             Debug.LogError("チャンネル ID が設定されていません");
             return;
         }
+        // SignalingKey がある場合はメタデータを設定する
+        string metadata = "";
+        if (SignalingKey.Length != 0)
+        {
+            var md = new Metadata()
+            {
+                signaling_key = SignalingKey
+            };
+            metadata = JsonUtility.ToJson(md);
+        }
 
         InitSora();
 
@@ -111,10 +131,14 @@ public class SoraSample : MonoBehaviour
         {
             SignalingUrl = SignalingUrl,
             ChannelId = ChannelId,
+            Metadata = metadata,
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = false,
         };
-        config.SetUnityCamera(capturedCamera, 640, 480);
+        if (captureUnityCamera && capturedCamera != null)
+        {
+            config.SetUnityCamera(capturedCamera, 640, 480);
+        }
 
         var success = sora.Connect(config);
         if (!success)
