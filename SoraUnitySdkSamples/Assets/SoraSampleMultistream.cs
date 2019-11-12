@@ -12,9 +12,14 @@ public class SoraSampleMultistream : MonoBehaviour
     public GameObject baseContent;
     public string SignalingUrl;
     public string ChannelId;
+    public string SignalingKey;
     public bool Recvonly;
 
+    public bool captureUnityCamera;
     public Camera capturedCamera;
+
+    public bool UnityAudioInput = false;
+    public AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +68,15 @@ public class SoraSampleMultistream : MonoBehaviour
                 tracks.Remove(trackId);
             }
         };
+        sora.OnNotify = (json) =>
+        {
+            Debug.LogFormat("OnNotify: {0}", json);
+        };
+        AudioRenderer.Start();
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
     }
     void DisposeSora()
     {
@@ -71,6 +85,11 @@ public class SoraSampleMultistream : MonoBehaviour
             sora.Dispose();
             sora = null;
             Debug.Log("Sora is Disposed");
+            if (audioSource != null)
+            {
+                audioSource.Stop();
+            }
+            AudioRenderer.Stop();
         }
         foreach (var track in tracks)
         {
@@ -88,6 +107,18 @@ public class SoraSampleMultistream : MonoBehaviour
             {
                 sora.OnRender();
             }
+            if (sora != null)
+            {
+                var samples = AudioRenderer.GetSampleCountForCaptureFrame();
+                if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
+                {
+                    using (var buf = new Unity.Collections.NativeArray<float>(samples * 2, Unity.Collections.Allocator.Temp))
+                    {
+                        AudioRenderer.Render(buf);
+                        sora.ProcessAudio(buf.ToArray(), 0, samples);
+                    }
+                }
+            }
         }
     }
 
@@ -96,6 +127,13 @@ public class SoraSampleMultistream : MonoBehaviour
     {
         public string signaling_url = "";
         public string channel_id = "";
+        public string signaling_key = "";
+    }
+
+    [Serializable]
+    class Metadata
+    {
+        public string signaling_key;
     }
 
     public void OnClickStart()
@@ -107,6 +145,7 @@ public class SoraSampleMultistream : MonoBehaviour
             var settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(".env.json"));
             SignalingUrl = settings.signaling_url;
             ChannelId = settings.channel_id;
+            SignalingKey = settings.signaling_key;
         }
 
         if (SignalingUrl.Length == 0)
@@ -119,6 +158,16 @@ public class SoraSampleMultistream : MonoBehaviour
             Debug.LogError("チャンネル ID が設定されていません");
             return;
         }
+        // SignalingKey がある場合はメタデータを設定する
+        string metadata = "";
+        if (SignalingKey.Length != 0)
+        {
+            var md = new Metadata()
+            {
+                signaling_key = SignalingKey
+            };
+            metadata = JsonUtility.ToJson(md);
+        }
 
         InitSora();
 
@@ -126,10 +175,15 @@ public class SoraSampleMultistream : MonoBehaviour
         {
             SignalingUrl = SignalingUrl,
             ChannelId = ChannelId,
+            Metadata = metadata,
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = true,
+            UnityAudioInput = UnityAudioInput,
         };
-        config.SetUnityCamera(capturedCamera, 640, 480);
+        if (captureUnityCamera && capturedCamera != null)
+        {
+            config.SetUnityCamera(capturedCamera, 640, 480);
+        }
 
         var success = sora.Connect(config);
         if (!success)
