@@ -18,6 +18,9 @@ public class SoraSampleMultistream : MonoBehaviour
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
+    public bool UnityAudioInput = false;
+    public AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +72,11 @@ public class SoraSampleMultistream : MonoBehaviour
         {
             Debug.LogFormat("OnNotify: {0}", json);
         };
+        AudioRenderer.Start();
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
     }
     void DisposeSora()
     {
@@ -77,6 +85,11 @@ public class SoraSampleMultistream : MonoBehaviour
             sora.Dispose();
             sora = null;
             Debug.Log("Sora is Disposed");
+            if (audioSource != null)
+            {
+                audioSource.Stop();
+            }
+            AudioRenderer.Stop();
         }
         foreach (var track in tracks)
         {
@@ -93,6 +106,18 @@ public class SoraSampleMultistream : MonoBehaviour
             if (sora != null)
             {
                 sora.OnRender();
+            }
+            if (sora != null)
+            {
+                var samples = AudioRenderer.GetSampleCountForCaptureFrame();
+                if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
+                {
+                    using (var buf = new Unity.Collections.NativeArray<float>(samples * 2, Unity.Collections.Allocator.Temp))
+                    {
+                        AudioRenderer.Render(buf);
+                        sora.ProcessAudio(buf.ToArray(), 0, samples);
+                    }
+                }
             }
         }
     }
@@ -153,6 +178,7 @@ public class SoraSampleMultistream : MonoBehaviour
             Metadata = metadata,
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = true,
+            UnityAudioInput = UnityAudioInput,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
