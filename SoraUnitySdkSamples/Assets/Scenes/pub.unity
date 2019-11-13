@@ -536,6 +536,9 @@ MonoBehaviour:
   capturedCamera: {fileID: 1285571995}
   UnityAudioInput: 0
   audioSource: {fileID: 1854054948}
+  VideoCapturerDevice: 
+  AudioRecordingDevice: 
+  AudioPlayoutDevice: 
 --- !u!4 &808734159
 Transform:
   m_ObjectHideFlags: 0

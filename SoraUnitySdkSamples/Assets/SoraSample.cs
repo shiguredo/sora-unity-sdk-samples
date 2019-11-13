@@ -20,9 +20,26 @@ public class SoraSample : MonoBehaviour
     public bool UnityAudioInput = false;
     public AudioSource audioSource;
 
+    public string VideoCapturerDevice = "";
+    public string AudioRecordingDevice = "";
+    public string AudioPlayoutDevice = "";
+
+    void DumpDeviceInfo(string name, Sora.DeviceInfo[] infos)
+    {
+        Debug.LogFormat("------------ {0} --------------", name);
+        foreach (var info in infos)
+        {
+            Debug.LogFormat("DeviceName={0} UniqueName={1}", info.DeviceName, info.UniqueName);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
+        DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
+        DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
+
         var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
         image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
         StartCoroutine(Render());
@@ -164,6 +181,9 @@ public class SoraSample : MonoBehaviour
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = false,
             UnityAudioInput = UnityAudioInput,
+            VideoCapturerDevice = VideoCapturerDevice,
+            AudioRecordingDevice = AudioRecordingDevice,
+            AudioPlayoutDevice = AudioPlayoutDevice,
         };
         if (captureUnityCamera && capturedCamera != null)
         {

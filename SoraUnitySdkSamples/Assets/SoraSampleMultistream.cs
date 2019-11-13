@@ -21,9 +21,26 @@ public class SoraSampleMultistream : MonoBehaviour
     public bool UnityAudioInput = false;
     public AudioSource audioSource;
 
+    public string VideoCapturerDevice = "";
+    public string AudioRecordingDevice = "";
+    public string AudioPlayoutDevice = "";
+
+    void DumpDeviceInfo(string name, Sora.DeviceInfo[] infos)
+    {
+        Debug.LogFormat("------------ {0} --------------", name);
+        foreach (var info in infos)
+        {
+            Debug.LogFormat("DeviceName={0} UniqueName={1}", info.DeviceName, info.UniqueName);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
+        DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
+        DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
+
         StartCoroutine(Render());
     }
 
@@ -179,6 +196,9 @@ public class SoraSampleMultistream : MonoBehaviour
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = true,
             UnityAudioInput = UnityAudioInput,
+            VideoCapturerDevice = VideoCapturerDevice,
+            AudioRecordingDevice = AudioRecordingDevice,
+            AudioPlayoutDevice = AudioPlayoutDevice,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
