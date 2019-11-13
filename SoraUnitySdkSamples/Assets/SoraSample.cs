@@ -253,7 +253,8 @@ public class SoraSample : MonoBehaviour
         };
         if (captureUnityCamera && capturedCamera != null)
         {
-            config.SetUnityCamera(capturedCamera, 640, 480);
+            config.CapturerType = Sora.CapturerType.UnityCamera;
+            config.UnityCamera = capturedCamera;
         }
 
         var success = sora.Connect(config);
