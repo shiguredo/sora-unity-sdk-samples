@@ -6,23 +6,45 @@ using System.Runtime.InteropServices;
 
 public class SoraSample : MonoBehaviour
 {
+    public enum SampleType
+    {
+        MultiPubsub,
+        MultiSub,
+        Pub,
+        Sub,
+    }
+
     Sora sora;
+    public SampleType sampleType;
+    // 実行中に変えられたくないので実行時に固定する
+    SampleType fixedSampleType;
+
+    // 非マルチストリームで利用する
     uint trackId = 0;
     public GameObject renderTarget;
-    public string SignalingUrl = "";
-    public string ChannelId = "";
-    public string SignalingKey = "";
-    public bool Recvonly;
+
+    // マルチストリームで利用する
+    Dictionary<uint, GameObject> tracks = new Dictionary<uint, GameObject>();
+    public GameObject scrollViewContent;
+    public GameObject baseContent;
+
+    // 以下共通
+    public string signalingUrl = "";
+    public string channelId = "";
+    public string signalingKey = "";
 
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
-    public bool UnityAudioInput = false;
+    public bool unityAudioInput = false;
     public AudioSource audioSource;
 
-    public string VideoCapturerDevice = "";
-    public string AudioRecordingDevice = "";
-    public string AudioPlayoutDevice = "";
+    public string videoCapturerDevice = "";
+    public string audioRecordingDevice = "";
+    public string audioPlayoutDevice = "";
+
+    public bool Recvonly { get { return fixedSampleType == SampleType.Sub || fixedSampleType == SampleType.MultiSub; } }
+    public bool Multistream { get { return fixedSampleType == SampleType.MultiPubsub || fixedSampleType == SampleType.MultiSub; } }
 
     void DumpDeviceInfo(string name, Sora.DeviceInfo[] infos)
     {
@@ -36,12 +58,17 @@ public class SoraSample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        fixedSampleType = sampleType;
+
         DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
         DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
 
-        var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
-        image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
+        if (!Multistream)
+        {
+            var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
+            image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
+        }
         StartCoroutine(Render());
     }
 
@@ -54,7 +81,7 @@ public class SoraSample : MonoBehaviour
             {
                 sora.OnRender();
             }
-            if (sora != null)
+            if (sora != null && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -79,10 +106,21 @@ public class SoraSample : MonoBehaviour
 
         sora.DispatchEvents();
 
-        if (trackId != 0)
+        if (!Multistream)
         {
-            var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
-            sora.RenderTrackToTexture(trackId, image.texture);
+            if (trackId != 0)
+            {
+                var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
+                sora.RenderTrackToTexture(trackId, image.texture);
+            }
+        }
+        else
+        {
+            foreach (var track in tracks)
+            {
+                var image = track.Value.GetComponent<UnityEngine.UI.RawImage>();
+                sora.RenderTrackToTexture(track.Key, image.texture);
+            }
         }
     }
     void InitSora()
@@ -90,22 +128,50 @@ public class SoraSample : MonoBehaviour
         DisposeSora();
 
         sora = new Sora();
-        sora.OnAddTrack = (trackId) =>
+        if (!Multistream)
         {
-            Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
-            this.trackId = trackId;
-        };
-        sora.OnRemoveTrack = (trackId) =>
+            sora.OnAddTrack = (trackId) =>
+            {
+                Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
+                this.trackId = trackId;
+            };
+            sora.OnRemoveTrack = (trackId) =>
+            {
+                Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
+                this.trackId = 0;
+            };
+        }
+        else
         {
-            Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
-        };
+            sora.OnAddTrack = (trackId) =>
+            {
+                Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
+                var obj = GameObject.Instantiate(baseContent, Vector3.zero, Quaternion.identity);
+                obj.name = string.Format("track {0}", trackId);
+                obj.transform.SetParent(scrollViewContent.transform);
+                obj.SetActive(true);
+                var image = obj.GetComponent<UnityEngine.UI.RawImage>();
+                image.texture = new Texture2D(320, 240, TextureFormat.RGBA32, false);
+                tracks.Add(trackId, obj);
+            };
+            sora.OnRemoveTrack = (trackId) =>
+            {
+                Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
+                if (tracks.ContainsKey(trackId))
+                {
+                    GameObject.Destroy(tracks[trackId]);
+                    tracks.Remove(trackId);
+                }
+            };
+        }
         sora.OnNotify = (json) =>
         {
             Debug.LogFormat("OnNotify: {0}", json);
         };
-        AudioRenderer.Start();
-        if (audioSource != null)
+
+        if (!Recvonly)
         {
+            AudioRenderer.Start();
             audioSource.Play();
         }
     }
@@ -116,11 +182,11 @@ public class SoraSample : MonoBehaviour
             sora.Dispose();
             sora = null;
             Debug.Log("Sora is Disposed");
-            if (audioSource != null)
+            if (!Recvonly)
             {
                 audioSource.Stop();
+                AudioRenderer.Stop();
             }
-            AudioRenderer.Stop();
         }
     }
 
@@ -142,31 +208,31 @@ public class SoraSample : MonoBehaviour
     {
         // 開発用の機能。
         // .env.json ファイルがあったら、それを読んでシグナリングURLとチャンネルIDを設定する。
-        if (SignalingUrl.Length == 0 && ChannelId.Length == 0 && System.IO.File.Exists(".env.json"))
+        if (signalingUrl.Length == 0 && channelId.Length == 0 && System.IO.File.Exists(".env.json"))
         {
             var settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(".env.json"));
-            SignalingUrl = settings.signaling_url;
-            ChannelId = settings.channel_id;
-            SignalingKey = settings.signaling_key;
+            signalingUrl = settings.signaling_url;
+            channelId = settings.channel_id;
+            signalingKey = settings.signaling_key;
         }
 
-        if (SignalingUrl.Length == 0)
+        if (signalingUrl.Length == 0)
         {
             Debug.LogError("シグナリング URL が設定されていません");
             return;
         }
-        if (ChannelId.Length == 0)
+        if (channelId.Length == 0)
         {
             Debug.LogError("チャンネル ID が設定されていません");
             return;
         }
-        // SignalingKey がある場合はメタデータを設定する
+        // signalingKey がある場合はメタデータを設定する
         string metadata = "";
-        if (SignalingKey.Length != 0)
+        if (signalingKey.Length != 0)
         {
             var md = new Metadata()
             {
-                signaling_key = SignalingKey
+                signaling_key = signalingKey
             };
             metadata = JsonUtility.ToJson(md);
         }
@@ -175,15 +241,15 @@ public class SoraSample : MonoBehaviour
 
         var config = new Sora.Config()
         {
-            SignalingUrl = SignalingUrl,
-            ChannelId = ChannelId,
+            SignalingUrl = signalingUrl,
+            ChannelId = channelId,
             Metadata = metadata,
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
-            Multistream = false,
-            UnityAudioInput = UnityAudioInput,
-            VideoCapturerDevice = VideoCapturerDevice,
-            AudioRecordingDevice = AudioRecordingDevice,
-            AudioPlayoutDevice = AudioPlayoutDevice,
+            Multistream = Multistream,
+            UnityAudioInput = unityAudioInput,
+            VideoCapturerDevice = videoCapturerDevice,
+            AudioRecordingDevice = audioRecordingDevice,
+            AudioPlayoutDevice = audioPlayoutDevice,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
@@ -195,10 +261,10 @@ public class SoraSample : MonoBehaviour
         {
             sora.Dispose();
             sora = null;
-            Debug.LogErrorFormat("Sora.Connect failed: SignalingUrl={0}, ChannelId={1}", SignalingUrl, ChannelId);
+            Debug.LogErrorFormat("Sora.Connect failed: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
             return;
         }
-        Debug.LogFormat("Sora is Created: SignalingUrl={0}, ChannelId={1}", SignalingUrl, ChannelId);
+        Debug.LogFormat("Sora is Created: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
     }
     public void OnClickEnd()
     {

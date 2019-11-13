@@ -384,7 +384,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000015768448}
+  m_AnchoredPosition: {x: 0, y: 0.00046256074}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &527347498
@@ -1380,7 +1380,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1621032052}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999505
+  m_Size: 0.9991848
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1733,19 +1733,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 1940111618}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe841128d6df944d918a250d877b44f, type: 3}
+  m_Script: {fileID: 11500000, guid: 55ab6b1a03c1f314bbb0a245b1741ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sampleType: 0
+  renderTarget: {fileID: 0}
   scrollViewContent: {fileID: 527347496}
   baseContent: {fileID: 1834025664}
-  SignalingUrl: 
-  ChannelId: 
-  SignalingKey: 
-  Recvonly: 0
+  signalingUrl: 
+  channelId: 
+  signalingKey: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 759273323}
-  UnityAudioInput: 0
+  unityAudioInput: 0
   audioSource: {fileID: 1000410327}
+  videoCapturerDevice: 
+  audioRecordingDevice: 
+  audioPlayoutDevice: 
 --- !u!4 &1940111620
 Transform:
   m_ObjectHideFlags: 0

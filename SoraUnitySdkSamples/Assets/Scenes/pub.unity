@@ -527,18 +527,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55ab6b1a03c1f314bbb0a245b1741ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sampleType: 2
   renderTarget: {fileID: 247526810}
-  SignalingUrl: 
-  ChannelId: 
-  SignalingKey: 
-  Recvonly: 0
+  scrollViewContent: {fileID: 0}
+  baseContent: {fileID: 0}
+  signalingUrl: 
+  channelId: 
+  signalingKey: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 1285571995}
-  UnityAudioInput: 0
+  unityAudioInput: 0
   audioSource: {fileID: 1854054948}
-  VideoCapturerDevice: 
-  AudioRecordingDevice: 
-  AudioPlayoutDevice: 
+  videoCapturerDevice: 
+  audioRecordingDevice: 
+  audioPlayoutDevice: 
 --- !u!4 &808734159
 Transform:
   m_ObjectHideFlags: 0
