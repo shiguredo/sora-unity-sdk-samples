@@ -269,7 +269,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 436157951}
-  - component: {fileID: 436157950}
+  - component: {fileID: 436157952}
   m_Layer: 0
   m_Name: Script
   m_TagString: Untagged
@@ -277,24 +277,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &436157950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 436157949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe841128d6df944d918a250d877b44f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scrollViewContent: {fileID: 474790125}
-  baseContent: {fileID: 1255258845}
-  SignalingUrl: 
-  ChannelId: 
-  Recvonly: 1
-  capturedCamera: {fileID: 0}
 --- !u!4 &436157951
 Transform:
   m_ObjectHideFlags: 0
@@ -309,6 +291,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &436157952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436157949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55ab6b1a03c1f314bbb0a245b1741ad7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sampleType: 1
+  renderTarget: {fileID: 0}
+  scrollViewContent: {fileID: 474790125}
+  baseContent: {fileID: 1255258845}
+  signalingUrl: 
+  channelId: 
+  signalingKey: 
+  captureUnityCamera: 0
+  capturedCamera: {fileID: 0}
+  unityAudioInput: 0
+  audioSource: {fileID: 0}
+  videoCapturerDevice: 
+  audioRecordingDevice: 
+  audioPlayoutDevice: 
 --- !u!1 &474790125
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000033991844}
+  m_AnchoredPosition: {x: 0, y: 0.00003130735}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &474790127
@@ -759,7 +767,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 436157950}
+      - m_Target: {fileID: 436157952}
         m_MethodName: OnClickStart
         m_Mode: 1
         m_Arguments:
@@ -980,7 +988,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 436157950}
+      - m_Target: {fileID: 436157952}
         m_MethodName: OnClickEnd
         m_Mode: 1
         m_Arguments:
@@ -1195,7 +1203,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 44969667}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99982005
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
