@@ -537,7 +537,9 @@ MonoBehaviour:
   captureUnityCamera: 0
   capturedCamera: {fileID: 1285571995}
   unityAudioInput: 0
-  audioSource: {fileID: 1854054948}
+  audioSourceInput: {fileID: 1854054948}
+  unityAudioOutput: 0
+  audioSourceOutput: {fileID: 0}
   videoCapturerDevice: 
   audioRecordingDevice: 
   audioPlayoutDevice: 
@@ -553,7 +555,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1006977537
 GameObject:
@@ -706,7 +708,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1290110478
 GameObject:
@@ -1097,7 +1099,7 @@ GameObject:
   - component: {fileID: 1854054949}
   - component: {fileID: 1854054948}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: AudioSourceInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1211,7 +1213,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2127409971
 GameObject:
@@ -1302,5 +1304,5 @@ Transform:
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
