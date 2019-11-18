@@ -38,10 +38,10 @@ Sora Unity SDK サンプル集に対する有償のサポートについては�
 
 ## 接続先の設定
 
-`SoraUnitySdkSamples/.env.json` を編集してください。
+各サンプルのシーンの "Script" オブジェクトのインスペクタで接続先を指定できます。
 
-- `signaling_url`: シグナリング URL
-- `channel_id`: チャネル ID
+- `Signaling Url`: シグナリング URL
+- `Channel Id`: チャネル ID
 
 ## ライセンス
 
