@@ -37,7 +37,9 @@ public class SoraSample : MonoBehaviour
     public Camera capturedCamera;
 
     public bool unityAudioInput = false;
-    public AudioSource audioSource;
+    public AudioSource audioSourceInput;
+    public bool unityAudioOutput = false;
+    public AudioSource audioSourceOutput;
 
     public string videoCapturerDevice = "";
     public string audioRecordingDevice = "";
@@ -45,6 +47,10 @@ public class SoraSample : MonoBehaviour
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Sub || fixedSampleType == SampleType.MultiSub; } }
     public bool Multistream { get { return fixedSampleType == SampleType.MultiPubsub || fixedSampleType == SampleType.MultiSub; } }
+
+    Queue<short[]> audioBuffer = new Queue<short[]>();
+    int audioBufferSamples = 0;
+    int audioBufferPosition = 0;
 
     void DumpDeviceInfo(string name, Sora.DeviceInfo[] infos)
     {
@@ -168,11 +174,54 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnNotify: {0}", json);
         };
+        // これは別スレッドからやってくるので注意すること
+        sora.OnHandleAudio = (buf, samples, channels) =>
+        {
+            lock (audioBuffer)
+            {
+                audioBuffer.Enqueue(buf);
+                audioBufferSamples += samples;
+            }
+        };
+
+        if (unityAudioOutput)
+        {
+            var audioClip = AudioClip.Create("AudioClip", 480000, 1, 48000, true, (data) =>
+            {
+                lock (audioBuffer)
+                {
+                    if (audioBufferSamples < data.Length)
+                    {
+                        for (int i = 0; i < data.Length; i++)
+                        {
+                            data[i] = 0.0f;
+                        }
+                        return;
+                    }
+
+                    var p = audioBuffer.Peek();
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        data[i] = p[audioBufferPosition] / 32768.0f;
+                        ++audioBufferPosition;
+                        if (audioBufferPosition >= p.Length)
+                        {
+                            audioBuffer.Dequeue();
+                            p = audioBuffer.Peek();
+                            audioBufferPosition = 0;
+                        }
+                    }
+                    audioBufferSamples -= data.Length;
+                }
+            });
+            audioSourceOutput.clip = audioClip;
+            audioSourceOutput.Play();
+        }
 
         if (!Recvonly)
         {
             AudioRenderer.Start();
-            audioSource.Play();
+            audioSourceInput.Play();
         }
     }
     void DisposeSora()
@@ -184,8 +233,13 @@ public class SoraSample : MonoBehaviour
             Debug.Log("Sora is Disposed");
             if (!Recvonly)
             {
-                audioSource.Stop();
+                audioSourceInput.Stop();
                 AudioRenderer.Stop();
+            }
+
+            if (unityAudioOutput)
+            {
+                audioSourceOutput.Stop();
             }
         }
     }
@@ -247,6 +301,7 @@ public class SoraSample : MonoBehaviour
             Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
             Multistream = Multistream,
             UnityAudioInput = unityAudioInput,
+            UnityAudioOutput = unityAudioOutput,
             VideoCapturerDevice = videoCapturerDevice,
             AudioRecordingDevice = audioRecordingDevice,
             AudioPlayoutDevice = audioPlayoutDevice,
