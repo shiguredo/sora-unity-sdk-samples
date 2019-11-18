@@ -40,6 +40,8 @@ public class SoraSample : MonoBehaviour
     public AudioSource audioSourceInput;
     public bool unityAudioOutput = false;
     public AudioSource audioSourceOutput;
+    bool fixedUnityAudioInput = false;
+    bool fixedUnityAudioOutput = false;
 
     public string videoCapturerDevice = "";
     public string audioRecordingDevice = "";
@@ -65,6 +67,8 @@ public class SoraSample : MonoBehaviour
     void Start()
     {
         fixedSampleType = sampleType;
+        fixedUnityAudioInput = unityAudioInput;
+        fixedUnityAudioOutput = unityAudioOutput;
 
         DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
@@ -87,7 +91,7 @@ public class SoraSample : MonoBehaviour
             {
                 sora.OnRender();
             }
-            if (sora != null && !Recvonly)
+            if (sora != null && fixedUnityAudioInput)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -184,7 +188,7 @@ public class SoraSample : MonoBehaviour
             }
         };
 
-        if (unityAudioOutput)
+        if (fixedUnityAudioOutput)
         {
             var audioClip = AudioClip.Create("AudioClip", 480000, 1, 48000, true, (data) =>
             {
@@ -218,7 +222,7 @@ public class SoraSample : MonoBehaviour
             audioSourceOutput.Play();
         }
 
-        if (!Recvonly)
+        if (fixedUnityAudioInput)
         {
             AudioRenderer.Start();
             audioSourceInput.Play();
@@ -231,13 +235,13 @@ public class SoraSample : MonoBehaviour
             sora.Dispose();
             sora = null;
             Debug.Log("Sora is Disposed");
-            if (!Recvonly)
+            if (fixedUnityAudioInput)
             {
                 audioSourceInput.Stop();
                 AudioRenderer.Stop();
             }
 
-            if (unityAudioOutput)
+            if (fixedUnityAudioOutput)
             {
                 audioSourceOutput.Stop();
             }
@@ -290,6 +294,10 @@ public class SoraSample : MonoBehaviour
             };
             metadata = JsonUtility.ToJson(md);
         }
+
+        sampleType = fixedSampleType;
+        unityAudioInput = fixedUnityAudioInput;
+        unityAudioOutput = fixedUnityAudioOutput;
 
         InitSora();
 
