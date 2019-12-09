@@ -20,7 +20,7 @@ Sora Unity SDK サンプル集に対する有償のサポートについては�
 
 ## sora-unity-sdk のインストール
 
-`install.bat` を実行して下さい。
+Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実行して下さい。
 これで各種サンプルを実行するために必要になる sora-unity-sdk をインストールできます。
 
 ## サンプルと実行方法
@@ -42,6 +42,13 @@ Sora Unity SDK サンプル集に対する有償のサポートについては�
 
 - `Signaling Url`: シグナリング URL
 - `Channel Id`: チャネル ID
+- `Signaling Key`: シグナリングキー
+
+## 動作例
+
+- [Sora Unity SDK サンプル集を動かしてみた - torikiziのブログ](https://torikizi.hatenablog.jp/entry/2019/12/03/101411)
+
+[Sora Labo](https://sora-labo.shiguredo.jp/) を使って Sora Unity SDK サンプル集を動かしています。
 
 ## ライセンス
 
