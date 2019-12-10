@@ -17,6 +17,7 @@ Sora Unity SDK サンプル集に対する有償のサポートについては�
 ## システム条件
 
 - Unity 2019.1
+- Unity 2019.2
 
 ## sora-unity-sdk のインストール
 
