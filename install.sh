@@ -4,7 +4,7 @@ set -ex
 
 # SoraUnitySdk をダウンロードして SoraUnitySdkSamples にインストールする
 
-SORAUNITYSDK_VERSION="1.0.1"
+SORAUNITYSDK_VERSION="1.0.2"
 
 # 一通り掃除
 rm -rf SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk
