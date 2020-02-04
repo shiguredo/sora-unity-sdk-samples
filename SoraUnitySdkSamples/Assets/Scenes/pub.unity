@@ -527,7 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55ab6b1a03c1f314bbb0a245b1741ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sampleType: 2
+  sampleType: 3
   renderTarget: {fileID: 247526810}
   scrollViewContent: {fileID: 0}
   baseContent: {fileID: 0}

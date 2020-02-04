@@ -10,6 +10,7 @@ public class SoraSample : MonoBehaviour
     {
         MultiPubsub,
         MultiSub,
+        MultiPub,
         Pub,
         Sub,
     }
@@ -47,6 +48,17 @@ public class SoraSample : MonoBehaviour
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Sub || fixedSampleType == SampleType.MultiSub; } }
     public bool Multistream { get { return fixedSampleType == SampleType.MultiPubsub || fixedSampleType == SampleType.MultiSub; } }
+    public Sora.Role Role
+    {
+        get
+        {
+            return
+                fixedSampleType == SampleType.Pub ? Sora.Role.Upstream :
+                fixedSampleType == SampleType.Sub ? Sora.Role.Downstream :
+                fixedSampleType == SampleType.MultiPub ? Sora.Role.Sendonly :
+                fixedSampleType == SampleType.MultiSub ? Sora.Role.Recvonly : Sora.Role.Sendrecv;
+        }
+    }
 
     Queue<short[]> audioBuffer = new Queue<short[]>();
     int audioBufferSamples = 0;
@@ -298,7 +310,7 @@ public class SoraSample : MonoBehaviour
             SignalingUrl = signalingUrl,
             ChannelId = channelId,
             Metadata = metadata,
-            Role = Recvonly ? Sora.Role.Downstream : Sora.Role.Upstream,
+            Role = Role,
             Multistream = Multistream,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
