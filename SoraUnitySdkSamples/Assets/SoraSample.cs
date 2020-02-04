@@ -47,7 +47,8 @@ public class SoraSample : MonoBehaviour
     public string audioPlayoutDevice = "";
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Sub || fixedSampleType == SampleType.MultiSub; } }
-    public bool Multistream { get { return fixedSampleType == SampleType.MultiPubsub || fixedSampleType == SampleType.MultiSub; } }
+    public bool MultiSub { get { return fixedSampleType == SampleType.MultiSub || fixedSampleType == SampleType.MultiPubsub; } }
+    public bool Multistream { get { return fixedSampleType == SampleType.MultiPub || fixedSampleType == SampleType.MultiSub || fixedSampleType == SampleType.MultiPubsub; } }
     public Sora.Role Role
     {
         get
@@ -82,7 +83,7 @@ public class SoraSample : MonoBehaviour
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
         DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
 
-        if (!Multistream)
+        if (!MultiSub)
         {
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
@@ -124,7 +125,7 @@ public class SoraSample : MonoBehaviour
 
         sora.DispatchEvents();
 
-        if (!Multistream)
+        if (!MultiSub)
         {
             if (trackId != 0)
             {
@@ -146,7 +147,7 @@ public class SoraSample : MonoBehaviour
         DisposeSora();
 
         sora = new Sora();
-        if (!Multistream)
+        if (!MultiSub)
         {
             sora.OnAddTrack = (trackId) =>
             {
