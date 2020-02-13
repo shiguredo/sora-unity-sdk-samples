@@ -37,6 +37,8 @@ public class SoraSample : MonoBehaviour
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
+    public Sora.VideoCodec videoCodec = Sora.VideoCodec.VP9;
+
     public bool unityAudioInput = false;
     public AudioSource audioSourceInput;
     public bool unityAudioOutput = false;
@@ -313,6 +315,7 @@ public class SoraSample : MonoBehaviour
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
+            VideoCodec = videoCodec,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
             VideoCapturerDevice = videoCapturerDevice,
