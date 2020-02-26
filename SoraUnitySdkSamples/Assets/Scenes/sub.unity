@@ -856,9 +856,9 @@ MonoBehaviour:
   renderTarget: {fileID: 469828639}
   scrollViewContent: {fileID: 0}
   baseContent: {fileID: 0}
-  signalingUrl: 
-  channelId: 
-  signalingKey: 
+  signalingUrl: wss://sora-labo.shiguredo.jp/signaling
+  channelId: melpon@sora-unity
+  signalingKey: SSZ6egMDAalWUuS9AGmdPCftVfffmXUQlArYhrNSMCuS_Wc6
   captureUnityCamera: 0
   capturedCamera: {fileID: 0}
   unityAudioInput: 0
