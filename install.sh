@@ -4,7 +4,7 @@ set -ex
 
 # SoraUnitySdk をダウンロードして SoraUnitySdkSamples にインストールする
 
-SORAUNITYSDK_VERSION="1.0.4"
+SORAUNITYSDK_VERSION="2020.1"
 
 # 一通り掃除
 rm -rf SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk
@@ -14,7 +14,7 @@ rm -rf SoraUnitySdk
 
 mkdir -p SoraUnitySdkSamples/Assets/Plugins
 
-_URL="https://github.com/shiguredo/sora-unity-sdk/releases/download/v${SORAUNITYSDK_VERSION}/SoraUnitySdk.zip"
+_URL="https://github.com/shiguredo/sora-unity-sdk/releases/download/${SORAUNITYSDK_VERSION}/SoraUnitySdk.zip"
 
 # ダウンロードと展開
 curl -LO $_URL
