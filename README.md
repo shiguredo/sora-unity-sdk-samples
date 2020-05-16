@@ -18,6 +18,7 @@ Sora Unity SDK サンプル集に対する有償のサポートについては�
 
 - Unity 2019.1
 - Unity 2019.2
+- Unity 2019.3
 
 ## sora-unity-sdk のインストール
 
@@ -32,6 +33,7 @@ Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実�
 - `pub`: シングルストリーム送信
 - `sub`: シングルストリーム受信
 - `multi_pubsub`: マルチストリーム送受信
+- `multi_pub`: マルチストリーム送信
 - `multi_sub`: マルチストリーム受信
 
 プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すと Sora サーバーに接続します。

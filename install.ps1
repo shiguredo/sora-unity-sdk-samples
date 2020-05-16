@@ -3,7 +3,7 @@
 $ErrorActionPreference = 'Stop'
 
 
-$SORAUNITYSDK_VERSION = "1.0.4"
+$SORAUNITYSDK_VERSION = "2020.2"
 
 # 一通り掃除
 if (Test-Path "SoraUnitySdkSamples\Assets\Plugins\SoraUnitySdk") {
@@ -23,7 +23,7 @@ if (!(Test-Path "SoraUnitySdkSamples\Assets\Plugins")) {
     New-Item -Path "SoraUnitySdkSamples\Assets\Plugins" -ItemType Directory
 }
 
-$_URL = "https://github.com/shiguredo/sora-unity-sdk/releases/download/v${SORAUNITYSDK_VERSION}/SoraUnitySdk.zip"
+$_URL = "https://github.com/shiguredo/sora-unity-sdk/releases/download/${SORAUNITYSDK_VERSION}/SoraUnitySdk.zip"
 $_FILE = "SoraUnitySdk.zip"
 
 # ダウンロードと展開
