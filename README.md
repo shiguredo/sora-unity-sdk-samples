@@ -62,8 +62,8 @@ Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実�
 Apache License 2.0
 
 ```
-Copyright 2019-2020, melpon (Origin Author)
-Copyright 2019-2020, Shiguredo Inc.
+Copyright 2019-2020, Wandbox LLC (Original Author)
+Copyright 2019-2020, Shiguredo Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
