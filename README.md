@@ -7,12 +7,16 @@
 We check PRs or Issues only when written in JAPANESE.
 In other languages, we won't be able to deal with them. Thank you for your understanding.
 
-## サポートについて
+## Discord
 
-Sora Uinty SDK サンプル集に関する質問・要望・バグなどの報告は Issues の利用をお願いします。
-ただし、 Sora のライセンス契約の有無に関わらず、 Issue への応答時間と問題の解決を保証しませんのでご了承ください。
+https://discord.gg/pFPQ5pS
 
-Sora Unity SDK サンプル集に対する有償のサポートについては現在提供しておりません。
+Sora Unity SDK サンプルに関する質問・要望などの報告は Disocrd へお願いします。
+
+バグに関してもまずは Discord へお願いします。
+ただし、 Sora のライセンス契約の有無に関わらず、 応答時間と問題の解決を保証しませんのでご了承ください。
+
+Sora Unity SDK サンプルに対する有償のサポートについては提供しておりません。
 
 ## システム条件
 
@@ -58,7 +62,8 @@ Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実�
 Apache License 2.0
 
 ```
-Copyright 2019, Shiguredo Inc, melpon and kdxu
+Copyright 2019-2020, melpon (Origin Author)
+Copyright 2019-2020, Shiguredo Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
