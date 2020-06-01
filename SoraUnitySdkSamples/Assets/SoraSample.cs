@@ -252,6 +252,14 @@ public class SoraSample : MonoBehaviour
             sora.Dispose();
             sora = null;
             Debug.Log("Sora is Disposed");
+            if (MultiSub)
+            {
+                foreach (var track in tracks)
+                {
+                    GameObject.Destroy(track.Value);
+                }
+                tracks.Clear();
+            }
             if (!Recvonly)
             {
                 audioSourceInput.Stop();
