@@ -10,7 +10,7 @@ elif [ "$1" = "android" ]; then
   mkdir -p SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk/android/arm64-v8a/
   rm -f SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk/android/arm64-v8a/libSoraUnitySdk.so
   cp ../sora-unity-sdk/build/android/libSoraUnitySdk.so SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk/android/arm64-v8a/
-  cp ../sora-unity-sdk/_install/android/webrtc/lib/classes.jar SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk/android/
+  cp ../sora-unity-sdk/_install/android/webrtc/jar/webrtc.jar SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk/android/
 else
   echo "$0 <macos|android>"
   exit 1
