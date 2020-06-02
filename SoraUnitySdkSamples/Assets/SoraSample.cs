@@ -8,11 +8,11 @@ public class SoraSample : MonoBehaviour
 {
     public enum SampleType
     {
-        MultiPubsub,
-        MultiSub,
-        MultiPub,
-        Pub,
-        Sub,
+        MultiSendrecv,
+        MultiRecvonly,
+        MultiSendonly,
+        Sendonly,
+        Recvonly,
     }
 
     Sora sora;
@@ -48,18 +48,18 @@ public class SoraSample : MonoBehaviour
     public string audioRecordingDevice = "";
     public string audioPlayoutDevice = "";
 
-    public bool Recvonly { get { return fixedSampleType == SampleType.Sub || fixedSampleType == SampleType.MultiSub; } }
-    public bool MultiSub { get { return fixedSampleType == SampleType.MultiSub || fixedSampleType == SampleType.MultiPubsub; } }
-    public bool Multistream { get { return fixedSampleType == SampleType.MultiPub || fixedSampleType == SampleType.MultiSub || fixedSampleType == SampleType.MultiPubsub; } }
+    public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
+    public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
+    public bool Multistream { get { return fixedSampleType == SampleType.MultiSendonly || fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
     public Sora.Role Role
     {
         get
         {
             return
-                fixedSampleType == SampleType.Pub ? Sora.Role.Upstream :
-                fixedSampleType == SampleType.Sub ? Sora.Role.Downstream :
-                fixedSampleType == SampleType.MultiPub ? Sora.Role.Sendonly :
-                fixedSampleType == SampleType.MultiSub ? Sora.Role.Recvonly : Sora.Role.Sendrecv;
+                fixedSampleType == SampleType.Sendonly ? Sora.Role.Sendonly :
+                fixedSampleType == SampleType.Recvonly ? Sora.Role.Recvonly :
+                fixedSampleType == SampleType.MultiSendonly ? Sora.Role.Sendonly :
+                fixedSampleType == SampleType.MultiRecvonly ? Sora.Role.Recvonly : Sora.Role.Sendrecv;
         }
     }
 
@@ -85,7 +85,7 @@ public class SoraSample : MonoBehaviour
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
         DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
 
-        if (!MultiSub)
+        if (!MultiRecv)
         {
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
@@ -127,7 +127,7 @@ public class SoraSample : MonoBehaviour
 
         sora.DispatchEvents();
 
-        if (!MultiSub)
+        if (!MultiRecv)
         {
             if (trackId != 0)
             {
@@ -149,7 +149,7 @@ public class SoraSample : MonoBehaviour
         DisposeSora();
 
         sora = new Sora();
-        if (!MultiSub)
+        if (!MultiRecv)
         {
             sora.OnAddTrack = (trackId) =>
             {
@@ -246,7 +246,7 @@ public class SoraSample : MonoBehaviour
             sora.Dispose();
             sora = null;
             Debug.Log("Sora is Disposed");
-            if (MultiSub)
+            if (MultiRecv)
             {
                 foreach (var track in tracks)
                 {
