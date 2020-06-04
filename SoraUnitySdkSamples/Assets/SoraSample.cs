@@ -85,11 +85,9 @@ public class SoraSample : MonoBehaviour
 #endif
         fixedSampleType = sampleType;
 
-#if !UNITY_ANDROID
         DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
         DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
-#endif
 
         if (!MultiRecv)
         {
