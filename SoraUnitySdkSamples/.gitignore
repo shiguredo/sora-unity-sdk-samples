@@ -61,9 +61,16 @@ crashlytics-build.properties
 *.dll
 
 /Assets/Plugins.meta
-/Assets/Plugins/SoraUnitySdk
 /Assets/Plugins/SoraUnitySdk.meta
-/Assets/SoraUnitySdk
+/Assets/Plugins/SoraUnitySdk/android.meta
+/Assets/Plugins/SoraUnitySdk/android/arm64-v8a.meta
+/Assets/Plugins/SoraUnitySdk/android/arm64-v8a/libSoraUnitySdk.so
+/Assets/Plugins/SoraUnitySdk/android/webrtc.jar
+/Assets/Plugins/SoraUnitySdk/macos.meta
+/Assets/Plugins/SoraUnitySdk/macos/SoraUnitySdk.bundle/
+/Assets/Plugins/SoraUnitySdk/windows.meta
+/Assets/Plugins/SoraUnitySdk/windows/x86_64.meta
 /Assets/SoraUnitySdk.meta
+/Assets/SoraUnitySdk/
 /webrtc_logs_*
 /.env.json
