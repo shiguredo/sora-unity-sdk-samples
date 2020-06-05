@@ -861,6 +861,7 @@ MonoBehaviour:
   signalingKey: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 0}
+  videoCodec: 0
   unityAudioInput: 0
   audioSourceInput: {fileID: 0}
   unityAudioOutput: 0

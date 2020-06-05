@@ -536,6 +536,7 @@ MonoBehaviour:
   signalingKey: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 1285571995}
+  videoCodec: 0
   unityAudioInput: 0
   audioSourceInput: {fileID: 1854054948}
   unityAudioOutput: 0

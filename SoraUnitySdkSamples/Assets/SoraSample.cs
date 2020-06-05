@@ -79,6 +79,10 @@ public class SoraSample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+#if !UNITY_EDITOR && UNITY_ANDROID
+        var x = WebCamTexture.devices;
+        var y = Microphone.devices;
+#endif
         fixedSampleType = sampleType;
 
         DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
