@@ -95,6 +95,7 @@ public class SoraSample : MonoBehaviour
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
         }
         StartCoroutine(Render());
+        StartCoroutine(GetStats());
     }
 
     IEnumerator Render()
@@ -118,6 +119,22 @@ public class SoraSample : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+    IEnumerator GetStats()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(10);
+            if (sora == null)
+            {
+                continue;
+            }
+
+            sora.GetStats((stats) =>
+            {
+                Debug.LogFormat("GetStats: {0}", stats);
+            });
         }
     }
 

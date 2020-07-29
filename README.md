@@ -23,6 +23,8 @@ Sora Unity SDK サンプルに対する有償のサポートについては提�
 - Unity 2019.1
 - Unity 2019.2
 - Unity 2019.3
+- Unity 2019.4
+- Unity 2020.1
 
 ## sora-unity-sdk のインストール
 
