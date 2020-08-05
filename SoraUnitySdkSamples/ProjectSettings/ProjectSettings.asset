@@ -161,6 +161,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: jp.shiguredo.SoraUnitySdkSamples
+    iPhone: jp.shiguredo.SoraUnitySdkSamples
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 23
@@ -416,9 +417,9 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
+  cameraUsageDescription: Use Camera
   locationUsageDescription: 
-  microphoneUsageDescription: 
+  microphoneUsageDescription: Use Microphone
   switchNetLibKey: 
   switchSocketMemoryPoolSize: 6144
   switchSocketAllocatorPoolSize: 128
