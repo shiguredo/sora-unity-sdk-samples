@@ -4,7 +4,7 @@ set -ex
 
 # SoraUnitySdk をダウンロードして SoraUnitySdkSamples にインストールする
 
-SORAUNITYSDK_VERSION="2020.9"
+SORAUNITYSDK_VERSION="2020.10"
 
 # 掃除
 rm -f SoraUnitySdk.zip
