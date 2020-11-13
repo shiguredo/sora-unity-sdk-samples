@@ -3,7 +3,7 @@
 $ErrorActionPreference = 'Stop'
 
 
-$SORAUNITYSDK_VERSION = "2020.9"
+$SORAUNITYSDK_VERSION = "2020.10"
 
 # 一通り掃除
 if (Test-Path "SoraUnitySdk.zip") {
