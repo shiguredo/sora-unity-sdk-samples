@@ -48,6 +48,9 @@ public class SoraSample : MonoBehaviour
     public string audioRecordingDevice = "";
     public string audioPlayoutDevice = "";
 
+    public bool spotlight = false;
+    public bool simulcast = false;
+
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
     public bool Multistream { get { return fixedSampleType == SampleType.MultiSendonly || fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -350,6 +353,8 @@ public class SoraSample : MonoBehaviour
             VideoCapturerDevice = videoCapturerDevice,
             AudioRecordingDevice = audioRecordingDevice,
             AudioPlayoutDevice = audioPlayoutDevice,
+            Spotlight = spotlight,
+            Simulcast = simulcast,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
