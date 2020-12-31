@@ -51,6 +51,17 @@ public class SoraSample : MonoBehaviour
     public bool spotlight = false;
     public bool simulcast = false;
 
+    public int videoBitrate = 0;
+    public enum VideoSize
+    {
+        QVGA,
+        VGA,
+        HD,
+        FHD,
+        _4K,
+    }
+    public VideoSize videoSize = VideoSize.VGA;
+
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
     public bool Multistream { get { return fixedSampleType == SampleType.MultiSendonly || fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -340,6 +351,33 @@ public class SoraSample : MonoBehaviour
 
         InitSora();
 
+        int videoWidth = 640;
+        int videoHeight = 480;
+
+        switch (videoSize)
+        {
+            case VideoSize.QVGA:
+                videoWidth = 320;
+                videoHeight = 240;
+                break;
+            case VideoSize.VGA:
+                videoWidth = 640;
+                videoHeight = 480;
+                break;
+            case VideoSize.HD:
+                videoWidth = 1280;
+                videoHeight = 720;
+                break;
+            case VideoSize.FHD:
+                videoWidth = 1920;
+                videoHeight = 1080;
+                break;
+            case VideoSize._4K:
+                videoWidth = 3840;
+                videoHeight = 2160;
+                break;
+        }
+
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
@@ -348,6 +386,9 @@ public class SoraSample : MonoBehaviour
             Role = Role,
             Multistream = Multistream,
             VideoCodec = videoCodec,
+            VideoBitrate = videoBitrate,
+            VideoWidth = videoWidth,
+            VideoHeight = videoHeight,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
             VideoCapturerDevice = videoCapturerDevice,
