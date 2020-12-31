@@ -49,6 +49,7 @@ public class SoraSample : MonoBehaviour
     public string audioPlayoutDevice = "";
 
     public bool spotlight = false;
+    public int spotlightNumber = 0;
     public bool simulcast = false;
 
     public int videoBitrate = 0;
@@ -395,6 +396,7 @@ public class SoraSample : MonoBehaviour
             AudioRecordingDevice = audioRecordingDevice,
             AudioPlayoutDevice = audioPlayoutDevice,
             Spotlight = spotlight,
+            SpotlightNumber = spotlightNumber,
             Simulcast = simulcast,
         };
         if (captureUnityCamera && capturedCamera != null)
