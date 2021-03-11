@@ -11,13 +11,9 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 利用前に https://github.com/shiguredo/oss をお読みください。
 
-## システム条件
+## 対応 Unity バージョン
 
-- Unity 2019.1
-- Unity 2019.2
-- Unity 2019.3
-- Unity 2019.4
-- Unity 2020.1
+- Unity 2019.4 (LTS)
 
 ## sora-unity-sdk のインストール
 
