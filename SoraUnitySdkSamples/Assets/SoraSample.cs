@@ -37,7 +37,7 @@ public class SoraSample : MonoBehaviour
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
-    public Sora.VideoCodec videoCodec = Sora.VideoCodec.VP9;
+    public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
 
     public bool unityAudioInput = false;
     public AudioSource audioSourceInput;
@@ -52,7 +52,7 @@ public class SoraSample : MonoBehaviour
     public int spotlightNumber = 0;
     public bool simulcast = false;
 
-    public int videoBitrate = 0;
+    public int videoBitRate = 0;
     public enum VideoSize
     {
         QVGA,
@@ -391,8 +391,8 @@ public class SoraSample : MonoBehaviour
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
-            VideoCodec = videoCodec,
-            VideoBitrate = videoBitrate,
+            VideoCodecType = videoCodecType,
+            VideoBitRate = videoBitRate,
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
             UnityAudioInput = unityAudioInput,
