@@ -62,6 +62,11 @@ public class SoraSample : MonoBehaviour
         _4K,
     }
     public VideoSize videoSize = VideoSize.VGA;
+    [Header("DataChannel の設定")]
+    public bool dataChannelSignaling = false;
+    public int dataChannelSignalingTimeout = 30;
+    public bool ignoreDisconnectWebsocket = false;
+    public bool closeWebsocket = true;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -398,6 +403,10 @@ public class SoraSample : MonoBehaviour
             Spotlight = spotlight,
             SpotlightNumber = spotlightNumber,
             Simulcast = simulcast,
+            DataChannelSignaling = dataChannelSignaling,
+            DataChannelSignalingTimeout = dataChannelSignalingTimeout,
+            IgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
+            CloseWebsocket = closeWebsocket,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
