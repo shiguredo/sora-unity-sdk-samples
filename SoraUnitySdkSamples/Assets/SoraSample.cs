@@ -51,9 +51,9 @@ public class SoraSample : MonoBehaviour
     public bool spotlight = false;
     public int spotlightNumber = 0;
     public bool spotlightFocusRid = false;
-	public Sora.SpotlightFocusRidType spotlightFocusRidType = Sora.SpotlightFocusRidType.none;
+    public Sora.SpotlightFocusRidType spotlightFocusRidType = Sora.SpotlightFocusRidType.none;
     public bool spotlightUnfocusRid = false;
-	public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.none;
+    public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.none;
     public bool simulcast = false;
 
     public int videoBitrate = 0;
