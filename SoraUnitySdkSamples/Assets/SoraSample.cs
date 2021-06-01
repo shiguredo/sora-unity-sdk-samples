@@ -50,6 +50,10 @@ public class SoraSample : MonoBehaviour
 
     public bool spotlight = false;
     public int spotlightNumber = 0;
+    public bool spotlightFocusRid = false;
+	public Sora.SpotlightFocusRidType spotlightFocusRidType = Sora.SpotlightFocusRidType.none;
+    public bool spotlightUnfocusRid = false;
+	public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.none;
     public bool simulcast = false;
 
     public int videoBitrate = 0;
@@ -403,6 +407,15 @@ public class SoraSample : MonoBehaviour
         {
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
+        }
+        if(spotlightFocusRid != false)
+        {
+            config.SpotlightFocusRid = spotlightFocusRidType;
+        }
+
+        if(spotlightUnfocusRid != false)
+        {
+            config.SpotlightUnfocusRid = spotlightUnfocusRidType;
         }
 
         var success = sora.Connect(config);
