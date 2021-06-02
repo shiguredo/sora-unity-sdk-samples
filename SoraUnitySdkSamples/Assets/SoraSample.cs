@@ -408,12 +408,12 @@ public class SoraSample : MonoBehaviour
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
         }
-        if(spotlightFocusRid != false)
+        if (!spotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRidType;
         }
 
-        if(spotlightUnfocusRid != false)
+        if (!spotlightUnfocusRid)
         {
             config.SpotlightUnfocusRid = spotlightUnfocusRidType;
         }
