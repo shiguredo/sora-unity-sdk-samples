@@ -32,6 +32,7 @@ public class SoraSample : MonoBehaviour
     // 以下共通
     public string signalingUrl = "";
     public string channelId = "";
+    public string clientId = "";
     public string signalingKey = "";
 
     public bool captureUnityCamera;
@@ -387,6 +388,7 @@ public class SoraSample : MonoBehaviour
         {
             SignalingUrl = signalingUrl,
             ChannelId = channelId,
+            ClientId = clientId,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
