@@ -66,7 +66,7 @@ public class SoraSample : MonoBehaviour
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
     public bool ignoreDisconnectWebsocket = false;
-    public bool closeWebsocket = true;
+    public int disconnectWaitTimeout = 5;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -403,10 +403,14 @@ public class SoraSample : MonoBehaviour
             Spotlight = spotlight,
             SpotlightNumber = spotlightNumber,
             Simulcast = simulcast,
+            // この実装だと dataChannelSignaling == false の場合は data_channel_signaling が無指定になるので、
+            // サーバ側の判断によっては DC に切り替えられる可能性はある。
+            EnableDataChannelSignaling = dataChannelSignaling,
             DataChannelSignaling = dataChannelSignaling,
             DataChannelSignalingTimeout = dataChannelSignalingTimeout,
+            EnableIgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
             IgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
-            CloseWebsocket = closeWebsocket,
+            DisconnectWaitTimeout = disconnectWaitTimeout,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
