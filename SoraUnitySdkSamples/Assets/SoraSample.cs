@@ -56,6 +56,8 @@ public class SoraSample : MonoBehaviour
     public bool spotlightUnfocusRid = false;
     public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.None;
     public bool simulcast = false;
+    public bool simulcastRid = false;
+    public Sora.SimulcastRidType simulcastRidType = Sora.SimulcastRidType.R0;
 
     public int videoBitrate = 0;
     public enum VideoSize
@@ -418,6 +420,11 @@ public class SoraSample : MonoBehaviour
         if (spotlightUnfocusRid)
         {
             config.SpotlightUnfocusRid = spotlightUnfocusRidType;
+        }
+
+        if (simulcastRid)
+        {
+            config.SimulcastRid = simulcastRidType;
         }
 
         var success = sora.Connect(config);
