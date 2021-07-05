@@ -422,8 +422,7 @@ public class SoraSample : MonoBehaviour
             config.SpotlightUnfocusRid = spotlightUnfocusRidType;
         }
 
-        // spotlight の場合は simulcastRid を設定しない
-        if (simulcastRid && !spotlight)
+        if (simulcastRid)
         {
             config.SimulcastRid = simulcastRidType;
         }
