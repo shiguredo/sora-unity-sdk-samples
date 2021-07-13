@@ -32,6 +32,7 @@ public class SoraSample : MonoBehaviour
     // 以下共通
     public string signalingUrl = "";
     public string channelId = "";
+    public string clientId = "";
     public string signalingKey = "";
 
     public bool captureUnityCamera;
@@ -50,7 +51,13 @@ public class SoraSample : MonoBehaviour
 
     public bool spotlight = false;
     public int spotlightNumber = 0;
+    public bool spotlightFocusRid = false;
+    public Sora.SpotlightFocusRidType spotlightFocusRidType = Sora.SpotlightFocusRidType.None;
+    public bool spotlightUnfocusRid = false;
+    public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.None;
     public bool simulcast = false;
+    public bool simulcastRid = false;
+    public Sora.SimulcastRidType simulcastRidType = Sora.SimulcastRidType.R0;
 
     public int videoBitRate = 0;
     public enum VideoSize
@@ -388,6 +395,7 @@ public class SoraSample : MonoBehaviour
         {
             SignalingUrl = signalingUrl,
             ChannelId = channelId,
+            ClientId = clientId,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
@@ -416,6 +424,20 @@ public class SoraSample : MonoBehaviour
         {
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
+        }
+        if (spotlightFocusRid)
+        {
+            config.SpotlightFocusRid = spotlightFocusRidType;
+        }
+
+        if (spotlightUnfocusRid)
+        {
+            config.SpotlightUnfocusRid = spotlightUnfocusRidType;
+        }
+
+        if (simulcastRid)
+        {
+            config.SimulcastRid = simulcastRidType;
         }
 
         var success = sora.Connect(config);
