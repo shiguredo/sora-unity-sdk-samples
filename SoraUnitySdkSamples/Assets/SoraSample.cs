@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 public class SoraSample : MonoBehaviour
@@ -69,11 +70,32 @@ public class SoraSample : MonoBehaviour
         _4K,
     }
     public VideoSize videoSize = VideoSize.VGA;
-    [Header("DataChannel の設定")]
+    [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
     public bool ignoreDisconnectWebsocket = false;
     public int disconnectWaitTimeout = 5;
+
+    [System.Serializable]
+    public class DataChannelMessaging
+    {
+        public string label = "";
+        public Sora.Direction direction = Sora.Direction.Sendrecv;
+        public bool enableOrdered;
+        public bool ordered;
+        public bool enableMaxPacketLifeTime;
+        public int maxPacketLifeTime;
+        public bool enableMaxRetransmits;
+        public int maxRetransmits;
+        public bool enableProtocol;
+        public string protocol;
+        public bool enableCompress;
+        public bool compress;
+    }
+
+    [Header("DataChannel メッセージングの設定")]
+    public DataChannelMessaging[] dataChannelMessagings;
+    string[] fixedDataChannelLabels;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -245,6 +267,10 @@ public class SoraSample : MonoBehaviour
                 audioBuffer.Enqueue(buf);
                 audioBufferSamples += samples;
             }
+        };
+        sora.OnMessage = (label, data) =>
+        {
+            Debug.LogFormat("OnMessage: label={0} data={1}", label, System.Text.Encoding.UTF8.GetString(data));
         };
 
         if (unityAudioOutput)
@@ -439,6 +465,22 @@ public class SoraSample : MonoBehaviour
         {
             config.SimulcastRid = simulcastRidType;
         }
+        if (dataChannelMessagings != null)
+        {
+            foreach (var m in dataChannelMessagings)
+            {
+                var c = new Sora.DataChannelMessaging();
+                c.Label = m.label;
+                c.Direction = m.direction;
+                if (m.enableOrdered) c.Ordered = m.ordered;
+                if (m.enableMaxPacketLifeTime) c.MaxPacketLifeTime = m.maxPacketLifeTime;
+                if (m.enableMaxRetransmits) c.MaxRetransmits = m.maxRetransmits;
+                if (m.enableProtocol) c.Protocol = m.protocol;
+                if (m.enableCompress) c.Compress = m.compress;
+                config.DataChannelMessaging.Add(c);
+            }
+            fixedDataChannelLabels = config.DataChannelMessaging.Select(x => x.Label).ToArray();
+        }
 
         var success = sora.Connect(config);
         if (!success)
@@ -453,6 +495,20 @@ public class SoraSample : MonoBehaviour
     public void OnClickEnd()
     {
         DisposeSora();
+    }
+
+    public void OnClickSend()
+    {
+        if (fixedDataChannelLabels == null || sora == null)
+        {
+            return;
+        }
+        // DataChannel メッセージを使って全てのラベルに適当なデータを送る
+        foreach (var label in fixedDataChannelLabels)
+        {
+            string message = "aaa";
+            sora.SendMessage(label, System.Text.Encoding.UTF8.GetBytes(message));
+        }
     }
 
     void OnApplicationQuit()
