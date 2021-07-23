@@ -320,13 +320,13 @@ public class SoraSample : MonoBehaviour
             audioSourceInput.Play();
         }
     }
-    void CloseSora()
+    void DisconnectSora()
     {
         if (sora == null)
         {
             return;
         }
-        sora.Close();
+        sora.Disconnect();
         DestroyComponents();
         started = false;
     }
@@ -516,7 +516,7 @@ public class SoraSample : MonoBehaviour
     }
     public void OnClickEnd()
     {
-        CloseSora();
+        DisconnectSora();
     }
 
     public void OnClickSend()
