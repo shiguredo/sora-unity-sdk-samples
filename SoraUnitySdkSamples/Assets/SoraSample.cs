@@ -232,6 +232,10 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnNotify: {0}", json);
         };
+        sora.OnPush = (json) =>
+        {
+            Debug.LogFormat("OnPush: {0}", json);
+        };
         // これは別スレッドからやってくるので注意すること
         sora.OnHandleAudio = (buf, samples, channels) =>
         {
