@@ -3,6 +3,8 @@ mkdir -p SoraUnitySdkSamples/Assets/SoraUnitySdk
 cp ../sora-unity-sdk/Sora/Sora.cs SoraUnitySdkSamples/Assets/SoraUnitySdk
 rm -rf SoraUnitySdkSamples/Assets/SoraUnitySdk/Editor/
 cp -r ../sora-unity-sdk/Sora/Editor/ SoraUnitySdkSamples/Assets/SoraUnitySdk/Editor/
+rm -rf SoraUnitySdkSamples/Assets/SoraUnitySdk/Generated/
+cp -r ../sora-unity-sdk/Sora/Generated/ SoraUnitySdkSamples/Assets/SoraUnitySdk/Generated/
 
 if [ "$1" = "macos" ]; then
   mkdir -p SoraUnitySdkSamples/Assets/Plugins/SoraUnitySdk/macos
