@@ -36,6 +36,9 @@ function copy_file() {
 pushd SoraUnitySdk
   _dstbase="../SoraUnitySdkSamples/Assets"
   copy_file SoraUnitySdk/Editor/SoraUnitySdkPostProcessor.cs $_dstbase
+  copy_file SoraUnitySdk/Generated/Jsonif.cs $_dstbase
+  copy_file SoraUnitySdk/Generated/SoraConf.cs $_dstbase
+  copy_file SoraUnitySdk/Generated/SoraConfInternal.cs $_dstbase
   copy_file SoraUnitySdk/Sora.cs $_dstbase
   copy_file Plugins/SoraUnitySdk/android/webrtc.jar $_dstbase
   copy_file Plugins/SoraUnitySdk/android/arm64-v8a/libSoraUnitySdk.so $_dstbase

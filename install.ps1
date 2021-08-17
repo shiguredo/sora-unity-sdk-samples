@@ -33,6 +33,9 @@ function Copy-File($src, $dstbase) {
 Push-Location SoraUnitySdk
     $_dstbase="..\SoraUnitySdkSamples\Assets"
     Copy-File SoraUnitySdk\Editor\SoraUnitySdkPostProcessor.cs $_dstbase
+    Copy-File SoraUnitySdk\Generated\Jsonif.cs $_dstbase
+    Copy-File SoraUnitySdk\Generated\SoraConf.cs $_dstbase
+    Copy-File SoraUnitySdk\Generated\SoraConfInternal.cs $_dstbase
     Copy-File SoraUnitySdk\Sora.cs $_dstbase
     Copy-File Plugins\SoraUnitySdk\android\webrtc.jar $_dstbase
     Copy-File Plugins\SoraUnitySdk\android\arm64-v8a\libSoraUnitySdk.so $_dstbase
