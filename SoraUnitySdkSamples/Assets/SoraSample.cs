@@ -33,6 +33,7 @@ public class SoraSample : MonoBehaviour
 
     // 以下共通
     public string signalingUrl = "";
+    public string[] signalingUrlCandidate = new string[0];
     public string channelId = "";
     public string clientId = "";
     public string signalingKey = "";
@@ -377,6 +378,7 @@ public class SoraSample : MonoBehaviour
     class Settings
     {
         public string signaling_url = "";
+        public string[] signaling_url_candidate = new string[0];
         public string channel_id = "";
         public string signaling_key = "";
     }
@@ -395,11 +397,12 @@ public class SoraSample : MonoBehaviour
         {
             var settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(".env.json"));
             signalingUrl = settings.signaling_url;
+            signalingUrlCandidate = settings.signaling_url_candidate;
             channelId = settings.channel_id;
             signalingKey = settings.signaling_key;
         }
 
-        if (signalingUrl.Length == 0)
+        if (signalingUrl.Length == 0 && signalingUrlCandidate.Length == 0)
         {
             Debug.LogError("シグナリング URL が設定されていません");
             return;
@@ -452,6 +455,7 @@ public class SoraSample : MonoBehaviour
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
+            SignalingUrlCandidate = signalingUrlCandidate,
             ChannelId = channelId,
             ClientId = clientId,
             Metadata = metadata,
