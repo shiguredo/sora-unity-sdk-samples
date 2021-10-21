@@ -78,7 +78,7 @@ public class SoraSample : MonoBehaviour
     public int disconnectWaitTimeout = 5;
 
     [System.Serializable]
-    public class DataChannelMessaging
+    public class DataChannel
     {
         public string label = "";
         public Sora.Direction direction = Sora.Direction.Sendrecv;
@@ -95,7 +95,7 @@ public class SoraSample : MonoBehaviour
     }
 
     [Header("DataChannel メッセージングの設定")]
-    public DataChannelMessaging[] dataChannelMessagings;
+    public DataChannel[] dataChannels;
     string[] fixedDataChannelLabels;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
@@ -497,9 +497,9 @@ public class SoraSample : MonoBehaviour
         {
             config.SimulcastRid = simulcastRidType;
         }
-        if (dataChannelMessagings != null)
+        if (dataChannels != null)
         {
-            foreach (var m in dataChannelMessagings)
+            foreach (var m in dataChannels)
             {
                 var c = new Sora.DataChannel();
                 c.Label = m.label;
