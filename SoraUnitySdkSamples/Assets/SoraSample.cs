@@ -501,7 +501,7 @@ public class SoraSample : MonoBehaviour
         {
             foreach (var m in dataChannelMessagings)
             {
-                var c = new Sora.DataChannelMessaging();
+                var c = new Sora.DataChannel();
                 c.Label = m.label;
                 c.Direction = m.direction;
                 if (m.enableOrdered) c.Ordered = m.ordered;
@@ -509,9 +509,9 @@ public class SoraSample : MonoBehaviour
                 if (m.enableMaxRetransmits) c.MaxRetransmits = m.maxRetransmits;
                 if (m.enableProtocol) c.Protocol = m.protocol;
                 if (m.enableCompress) c.Compress = m.compress;
-                config.DataChannelMessaging.Add(c);
+                config.DataChannels.Add(c);
             }
-            fixedDataChannelLabels = config.DataChannelMessaging.Select(x => x.Label).ToArray();
+            fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
         }
 
         sora.Connect(config);
