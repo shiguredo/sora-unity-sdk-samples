@@ -79,7 +79,7 @@ public class SoraSample : MonoBehaviour
     public int disconnectWaitTimeout = 5;
 
     [System.Serializable]
-    public class DataChannelMessaging
+    public class DataChannel
     {
         public string label = "";
         public Sora.Direction direction = Sora.Direction.Sendrecv;
@@ -96,7 +96,7 @@ public class SoraSample : MonoBehaviour
     }
 
     [Header("DataChannel メッセージングの設定")]
-    public DataChannelMessaging[] dataChannelMessagings;
+    public DataChannel[] dataChannels;
     string[] fixedDataChannelLabels;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
@@ -501,11 +501,11 @@ public class SoraSample : MonoBehaviour
         {
             config.SimulcastRid = simulcastRidType;
         }
-        if (dataChannelMessagings != null)
+        if (dataChannels != null)
         {
-            foreach (var m in dataChannelMessagings)
+            foreach (var m in dataChannels)
             {
-                var c = new Sora.DataChannelMessaging();
+                var c = new Sora.DataChannel();
                 c.Label = m.label;
                 c.Direction = m.direction;
                 if (m.enableOrdered) c.Ordered = m.ordered;
@@ -513,9 +513,9 @@ public class SoraSample : MonoBehaviour
                 if (m.enableMaxRetransmits) c.MaxRetransmits = m.maxRetransmits;
                 if (m.enableProtocol) c.Protocol = m.protocol;
                 if (m.enableCompress) c.Compress = m.compress;
-                config.DataChannelMessaging.Add(c);
+                config.DataChannels.Add(c);
             }
-            fixedDataChannelLabels = config.DataChannelMessaging.Select(x => x.Label).ToArray();
+            fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
         }
 
         sora.Connect(config);
