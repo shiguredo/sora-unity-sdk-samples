@@ -34,6 +34,8 @@ public class SoraSample : MonoBehaviour
     // 以下共通
     public string signalingUrl = "";
     public string[] signalingUrlCandidate = new string[0];
+
+    public bool insecure = false;
     public string channelId = "";
     public string clientId = "";
     public string signalingKey = "";
@@ -41,6 +43,8 @@ public class SoraSample : MonoBehaviour
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
+    public bool video = true;
+    public bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
 
     public bool unityAudioInput = false;
@@ -461,6 +465,9 @@ public class SoraSample : MonoBehaviour
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
+            Insecure = insecure,
+            Video = video,
+            Audio = audio,
             VideoCodecType = videoCodecType,
             VideoBitRate = videoBitRate,
             VideoWidth = videoWidth,
