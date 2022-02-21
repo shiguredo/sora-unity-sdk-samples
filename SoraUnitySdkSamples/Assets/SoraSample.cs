@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 public class SoraSample : MonoBehaviour
@@ -16,6 +17,7 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
+    bool started;
     public SampleType sampleType;
     // 実行中に変えられたくないので実行時に固定する
     SampleType fixedSampleType;
@@ -31,13 +33,19 @@ public class SoraSample : MonoBehaviour
 
     // 以下共通
     public string signalingUrl = "";
+    public string[] signalingUrlCandidate = new string[0];
+
+    public bool insecure = false;
     public string channelId = "";
+    public string clientId = "";
     public string signalingKey = "";
 
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
-    public Sora.VideoCodec videoCodec = Sora.VideoCodec.VP9;
+    public bool video = true;
+    public bool audio = true;
+    public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
 
     public bool unityAudioInput = false;
     public AudioSource audioSourceInput;
@@ -50,9 +58,15 @@ public class SoraSample : MonoBehaviour
 
     public bool spotlight = false;
     public int spotlightNumber = 0;
+    public bool spotlightFocusRid = false;
+    public Sora.SpotlightFocusRidType spotlightFocusRidType = Sora.SpotlightFocusRidType.None;
+    public bool spotlightUnfocusRid = false;
+    public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.None;
     public bool simulcast = false;
+    public bool simulcastRid = false;
+    public Sora.SimulcastRidType simulcastRidType = Sora.SimulcastRidType.R0;
 
-    public int videoBitrate = 0;
+    public int videoBitRate = 0;
     public enum VideoSize
     {
         QVGA,
@@ -62,6 +76,32 @@ public class SoraSample : MonoBehaviour
         _4K,
     }
     public VideoSize videoSize = VideoSize.VGA;
+    [Header("DataChannel シグナリングの設定")]
+    public bool dataChannelSignaling = false;
+    public int dataChannelSignalingTimeout = 30;
+    public bool ignoreDisconnectWebsocket = false;
+    public int disconnectWaitTimeout = 5;
+
+    [System.Serializable]
+    public class DataChannel
+    {
+        public string label = "";
+        public Sora.Direction direction = Sora.Direction.Sendrecv;
+        public bool enableOrdered;
+        public bool ordered;
+        public bool enableMaxPacketLifeTime;
+        public int maxPacketLifeTime;
+        public bool enableMaxRetransmits;
+        public int maxRetransmits;
+        public bool enableProtocol;
+        public string protocol;
+        public bool enableCompress;
+        public bool compress;
+    }
+
+    [Header("DataChannel メッセージングの設定")]
+    public DataChannel[] dataChannels;
+    string[] fixedDataChannelLabels;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -109,6 +149,7 @@ public class SoraSample : MonoBehaviour
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
         }
+        started = false;
         StartCoroutine(Render());
         StartCoroutine(GetStats());
     }
@@ -118,11 +159,11 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
-            if (sora != null)
+            if (started)
             {
                 sora.OnRender();
             }
-            if (sora != null && !Recvonly)
+            if (started && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -141,7 +182,7 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(10);
-            if (sora == null)
+            if (!started)
             {
                 continue;
             }
@@ -225,6 +266,10 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnNotify: {0}", json);
         };
+        sora.OnPush = (json) =>
+        {
+            Debug.LogFormat("OnPush: {0}", json);
+        };
         // これは別スレッドからやってくるので注意すること
         sora.OnHandleAudio = (buf, samples, channels) =>
         {
@@ -233,6 +278,15 @@ public class SoraSample : MonoBehaviour
                 audioBuffer.Enqueue(buf);
                 audioBufferSamples += samples;
             }
+        };
+        sora.OnMessage = (label, data) =>
+        {
+            Debug.LogFormat("OnMessage: label={0} data={1}", label, System.Text.Encoding.UTF8.GetString(data));
+        };
+        sora.OnDisconnect = (code, message) =>
+        {
+            Debug.LogFormat("OnDisconnect: code={0} message={1}", code.ToString(), message);
+            DisposeSora();
         };
 
         if (unityAudioOutput)
@@ -275,38 +329,60 @@ public class SoraSample : MonoBehaviour
             audioSourceInput.Play();
         }
     }
+    void DisconnectSora()
+    {
+        if (sora == null)
+        {
+            return;
+        }
+        sora.Disconnect();
+        DestroyComponents();
+        started = false;
+    }
+    void DestroyComponents()
+    {
+        if (!started)
+        {
+            return;
+        }
+
+        if (MultiRecv)
+        {
+            foreach (var track in tracks)
+            {
+                GameObject.Destroy(track.Value);
+            }
+            tracks.Clear();
+        }
+        if (!Recvonly)
+        {
+            audioSourceInput.Stop();
+            AudioRenderer.Stop();
+        }
+
+        if (unityAudioOutput)
+        {
+            audioSourceOutput.Stop();
+        }
+    }
     void DisposeSora()
     {
-        if (sora != null)
+        if (sora == null)
         {
-            sora.Dispose();
-            sora = null;
-            Debug.Log("Sora is Disposed");
-            if (MultiRecv)
-            {
-                foreach (var track in tracks)
-                {
-                    GameObject.Destroy(track.Value);
-                }
-                tracks.Clear();
-            }
-            if (!Recvonly)
-            {
-                audioSourceInput.Stop();
-                AudioRenderer.Stop();
-            }
-
-            if (unityAudioOutput)
-            {
-                audioSourceOutput.Stop();
-            }
+            return;
         }
+        sora.Dispose();
+        sora = null;
+        Debug.Log("Sora is Disposed");
+        DestroyComponents();
+        started = false;
     }
 
     [Serializable]
     class Settings
     {
         public string signaling_url = "";
+        public string[] signaling_url_candidate = new string[0];
         public string channel_id = "";
         public string signaling_key = "";
     }
@@ -325,11 +401,12 @@ public class SoraSample : MonoBehaviour
         {
             var settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(".env.json"));
             signalingUrl = settings.signaling_url;
+            signalingUrlCandidate = settings.signaling_url_candidate;
             channelId = settings.channel_id;
             signalingKey = settings.signaling_key;
         }
 
-        if (signalingUrl.Length == 0)
+        if (signalingUrl.Length == 0 && signalingUrlCandidate.Length == 0)
         {
             Debug.LogError("シグナリング URL が設定されていません");
             return;
@@ -382,12 +459,17 @@ public class SoraSample : MonoBehaviour
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
+            SignalingUrlCandidate = signalingUrlCandidate,
             ChannelId = channelId,
+            ClientId = clientId,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
-            VideoCodec = videoCodec,
-            VideoBitrate = videoBitrate,
+            Insecure = insecure,
+            Video = video,
+            Audio = audio,
+            VideoCodecType = videoCodecType,
+            VideoBitRate = videoBitRate,
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
             UnityAudioInput = unityAudioInput,
@@ -398,26 +480,72 @@ public class SoraSample : MonoBehaviour
             Spotlight = spotlight,
             SpotlightNumber = spotlightNumber,
             Simulcast = simulcast,
+            // この実装だと dataChannelSignaling == false の場合は data_channel_signaling が無指定になるので、
+            // サーバ側の判断によっては DC に切り替えられる可能性はある。
+            EnableDataChannelSignaling = dataChannelSignaling,
+            DataChannelSignaling = dataChannelSignaling,
+            DataChannelSignalingTimeout = dataChannelSignalingTimeout,
+            EnableIgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
+            IgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
+            DisconnectWaitTimeout = disconnectWaitTimeout,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
         }
-
-        var success = sora.Connect(config);
-        if (!success)
+        if (spotlightFocusRid)
         {
-            sora.Dispose();
-            sora = null;
-            Debug.LogErrorFormat("Sora.Connect failed: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
-            return;
+            config.SpotlightFocusRid = spotlightFocusRidType;
         }
+
+        if (spotlightUnfocusRid)
+        {
+            config.SpotlightUnfocusRid = spotlightUnfocusRidType;
+        }
+
+        if (simulcastRid)
+        {
+            config.SimulcastRid = simulcastRidType;
+        }
+        if (dataChannels != null)
+        {
+            foreach (var m in dataChannels)
+            {
+                var c = new Sora.DataChannel();
+                c.Label = m.label;
+                c.Direction = m.direction;
+                if (m.enableOrdered) c.Ordered = m.ordered;
+                if (m.enableMaxPacketLifeTime) c.MaxPacketLifeTime = m.maxPacketLifeTime;
+                if (m.enableMaxRetransmits) c.MaxRetransmits = m.maxRetransmits;
+                if (m.enableProtocol) c.Protocol = m.protocol;
+                if (m.enableCompress) c.Compress = m.compress;
+                config.DataChannels.Add(c);
+            }
+            fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
+        }
+
+        sora.Connect(config);
+        started = true;
         Debug.LogFormat("Sora is Created: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
     }
     public void OnClickEnd()
     {
-        DisposeSora();
+        DisconnectSora();
+    }
+
+    public void OnClickSend()
+    {
+        if (fixedDataChannelLabels == null || sora == null)
+        {
+            return;
+        }
+        // DataChannel メッセージを使って全てのラベルに適当なデータを送る
+        foreach (var label in fixedDataChannelLabels)
+        {
+            string message = "aaa";
+            sora.SendMessage(label, System.Text.Encoding.UTF8.GetBytes(message));
+        }
     }
 
     void OnApplicationQuit()

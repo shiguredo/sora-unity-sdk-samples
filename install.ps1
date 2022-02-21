@@ -3,7 +3,7 @@
 $ErrorActionPreference = 'Stop'
 
 
-$SORAUNITYSDK_VERSION = "2021.1.2"
+$SORAUNITYSDK_VERSION = "2022.1.0"
 
 # 一通り掃除
 if (Test-Path "SoraUnitySdk.zip") {
@@ -33,6 +33,9 @@ function Copy-File($src, $dstbase) {
 Push-Location SoraUnitySdk
     $_dstbase="..\SoraUnitySdkSamples\Assets"
     Copy-File SoraUnitySdk\Editor\SoraUnitySdkPostProcessor.cs $_dstbase
+    Copy-File SoraUnitySdk\Generated\Jsonif.cs $_dstbase
+    Copy-File SoraUnitySdk\Generated\SoraConf.cs $_dstbase
+    Copy-File SoraUnitySdk\Generated\SoraConfInternal.cs $_dstbase
     Copy-File SoraUnitySdk\Sora.cs $_dstbase
     Copy-File Plugins\SoraUnitySdk\android\webrtc.jar $_dstbase
     Copy-File Plugins\SoraUnitySdk\android\arm64-v8a\libSoraUnitySdk.so $_dstbase
