@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2022.1.0-1
+
 - [UPDATE] libboost_json.a.metaを追加する
     - iOS の推奨されるビルド初期設定を行う
     - @torikizi
