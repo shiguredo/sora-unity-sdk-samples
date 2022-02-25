@@ -44,6 +44,7 @@ pushd SoraUnitySdk
   copy_file Plugins/SoraUnitySdk/android/arm64-v8a/libSoraUnitySdk.so $_dstbase
   copy_file Plugins/SoraUnitySdk/ios/libwebrtc.a $_dstbase
   copy_file Plugins/SoraUnitySdk/ios/libSoraUnitySdk.a $_dstbase
+  copy_file Plugins/SoraUnitySdk/ios/libboost_json.a $_dstbase
   copy_file Plugins/SoraUnitySdk/windows/x86_64/SoraUnitySdk.dll $_dstbase
   mkdir -p $_dstbase/Plugins/SoraUnitySdk/macos/
   rm -rf $_dstbase/Plugins/SoraUnitySdk/macos/SoraUnitySdk.bundle/

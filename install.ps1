@@ -41,6 +41,7 @@ Push-Location SoraUnitySdk
     Copy-File Plugins\SoraUnitySdk\android\arm64-v8a\libSoraUnitySdk.so $_dstbase
     Copy-File Plugins\SoraUnitySdk\ios\libwebrtc.a $_dstbase
     Copy-File Plugins\SoraUnitySdk\ios\libSoraUnitySdk.a $_dstbase
+    Copy-File Plugins\SoraUnitySdk\ios\libboost_json.a $_dstbase
     Copy-File Plugins\SoraUnitySdk\windows\x86_64\SoraUnitySdk.dll $_dstbase
     New-Item $_dstbase\Plugins\SoraUnitySdk\macos -ItemType Directory -ErrorAction SilentlyContinue
     if (Test-Path "$_dstbase\Plugins\SoraUnitySdk\macos\SoraUnitySdk.bundle") {
