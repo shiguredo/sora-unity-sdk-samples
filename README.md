@@ -18,7 +18,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## sora-unity-sdk のインストール
 
-Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実行して下さい。
+`python3 install.py` を実行して下さい。
 これで各種サンプルを実行するために必要になる sora-unity-sdk をインストールできます。
 
 ## サンプルと実行方法
