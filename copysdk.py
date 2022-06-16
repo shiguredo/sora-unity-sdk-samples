@@ -88,6 +88,18 @@ def main():
     copy_if_exists(
         os.path.join(src_base, '_install', 'ios', 'release', 'boost', 'lib', 'libboost_json.a'),
         os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libboost_json.a'))
+    copy_if_exists(
+        os.path.join(src_base, '_install', 'ios', 'release', 'sora', 'lib', 'libsora.a'),
+        os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libsora.a'))
+    #copy_if_exists(
+    #    os.path.join(src_base, '_build', 'sora-unity-sdk', 'ios', 'libSoraUnitySdk.a'),
+    #    os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libSoraUnitySdk.a'))
+    #copy_if_exists(
+    #    os.path.join(src_base, '_install', 'ios', 'webrtc', 'lib', 'libwebrtc.a'),
+    #    os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libwebrtc.a'))
+    #copy_if_exists(
+    #    os.path.join(src_base, '_install', 'ios', 'boost', 'lib', 'libboost_json.a'),
+    #    os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libboost_json.a'))
 
     # Android
     copy_if_exists(
