@@ -109,6 +109,11 @@ def main():
         os.path.join(android_src_base, '_install', 'android', 'release', 'webrtc', 'jar', 'webrtc.jar'),
         os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'android', 'webrtc.jar'))
 
+    # Ubuntu x86_64
+    copy_if_exists(
+        os.path.join(android_src_base, '_build', 'ubuntu-20.04_x86_64', 'release', 'sora_unity_sdk', 'libSoraUnitySdk.so'),
+        os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'linux', 'x86_64', 'libSoraUnitySdk.so'))
+
 
 if __name__ == '__main__':
     main()
