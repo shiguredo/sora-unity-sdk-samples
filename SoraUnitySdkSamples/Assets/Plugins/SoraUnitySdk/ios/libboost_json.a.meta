@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 82cf273bcbfad410e95fff95a3d37d87
+guid: 472a7b0a190ba4458b0c0c465ee6b707
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -65,9 +65,9 @@ PluginImporter:
       enabled: 1
       settings:
         AddToEmbeddedBinaries: false
-        CPU: AnyCPU
+        CPU: ARM64
         CompileFlags: 
-        FrameworkDependencies: OpenGLES;
+        FrameworkDependencies: 
   userData: 
   assetBundleName: 
   assetBundleVariant: 
