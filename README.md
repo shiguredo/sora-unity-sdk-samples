@@ -13,8 +13,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Unity バージョン
 
-- Unity 2019.4 (LTS)
-- Unity 2020.3 (LTS)
+- Unity 2021.3 (LTS)
 
 ## sora-unity-sdk のインストール
 

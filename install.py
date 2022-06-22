@@ -13,7 +13,7 @@ from typing import Callable, Optional, List, Union
 logging.basicConfig(level=logging.DEBUG)
 
 
-SORA_UNITY_SDK_VERSION="2021.4.0"
+SORA_UNITY_SDK_VERSION="2022.2.0"
 
 
 class ChangeDirectory(object):
@@ -231,6 +231,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     # これを指定している場合、Sora Unity SDK のダウンロードをせず、このディレクトリの内容をコピーする
+    # GitHub Actions からバイナリをダウンロードしてきたものを反映させる時用のフラグ
     parser.add_argument("--sdk-path")
 
     args = parser.parse_args()
