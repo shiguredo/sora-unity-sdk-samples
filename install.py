@@ -6,6 +6,7 @@ import zipfile
 import tarfile
 import shutil
 import platform
+import argparse
 from typing import Callable, Optional, List, Union
 
 
@@ -228,26 +229,36 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 def main():
     os.chdir(BASE_DIR)
 
-    rm_rf('SoraUnitySdk.zip')
-    rm_rf('SoraUnitySdk')
-    url = f'https://github.com/shiguredo/sora-unity-sdk/releases/download/{SORA_UNITY_SDK_VERSION}/SoraUnitySdk.zip'
-    path = download(url, '.')
-    extract(path, '.', 'SoraUnitySdk')
+    parser = argparse.ArgumentParser()
+    # これを指定している場合、Sora Unity SDK のダウンロードをせず、このディレクトリの内容をコピーする
+    parser.add_argument("--sdk-path")
+
+    args = parser.parse_args()
+
+    if args.sdk_path is None:
+        rm_rf('SoraUnitySdk.zip')
+        rm_rf('SoraUnitySdk')
+        url = f'https://github.com/shiguredo/sora-unity-sdk/releases/download/{SORA_UNITY_SDK_VERSION}/SoraUnitySdk.zip'
+        path = download(url, '.')
+        extract(path, '.', 'SoraUnitySdk')
+
     # 既存のファイル（特にメタデータ系）が残ってる可能性があるので
     # １個１個ファイルをコピーしていく
-    for file in enum_all_files('SoraUnitySdk', 'SoraUnitySdk'):
+    sdk_path = 'SoraUnitySdk' if args.sdk_path is None else args.sdk_path
+    for file in enum_all_files(sdk_path, sdk_path):
         dst_base = os.path.join('SoraUnitySdkSamples', 'Assets')
         # このディレクトリだけは全部置き換える
         if 'SoraUnitySdk.bundle' in file:
             continue
-        srcfile = os.path.join('SoraUnitySdk', file)
+        srcfile = os.path.join(sdk_path, file)
         dstfile = os.path.join(dst_base, file)
         dstdir = os.path.dirname(dstfile)
         mkdir_p(dstdir)
         shutil.copyfile(srcfile, dstfile)
 
-    rm_rf('SoraUnitySdk.zip')
-    rm_rf('SoraUnitySdk')
+    if args.sdk_path is None:
+        rm_rf('SoraUnitySdk.zip')
+        rm_rf('SoraUnitySdk')
 
 
 if __name__ == '__main__':

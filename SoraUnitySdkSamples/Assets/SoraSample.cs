@@ -38,6 +38,7 @@ public class SoraSample : MonoBehaviour
     public bool insecure = false;
     public string channelId = "";
     public string clientId = "";
+    public string bundleId = "";
     public string signalingKey = "";
 
     public bool captureUnityCamera;
@@ -102,6 +103,11 @@ public class SoraSample : MonoBehaviour
     [Header("DataChannel メッセージングの設定")]
     public DataChannel[] dataChannels;
     string[] fixedDataChannelLabels;
+
+    [Header("HTTP Proxy の設定")]
+    public string proxyUrl;
+    public string proxyUsername;
+    public string proxyPassword;
 
     public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
     public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
@@ -462,6 +468,7 @@ public class SoraSample : MonoBehaviour
             SignalingUrlCandidate = signalingUrlCandidate,
             ChannelId = channelId,
             ClientId = clientId,
+            BundleId = bundleId,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
@@ -488,6 +495,9 @@ public class SoraSample : MonoBehaviour
             EnableIgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
             IgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
             DisconnectWaitTimeout = disconnectWaitTimeout,
+            ProxyUrl = proxyUrl,
+            ProxyUsername = proxyUsername,
+            ProxyPassword = proxyPassword,
         };
         if (captureUnityCamera && capturedCamera != null)
         {
