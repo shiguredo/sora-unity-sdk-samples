@@ -256,6 +256,17 @@ def main():
         dstdir = os.path.dirname(dstfile)
         mkdir_p(dstdir)
         shutil.copyfile(srcfile, dstfile)
+    # .bundle ディレクトリの置き換え
+    for root, dirs, _ in os.walk(sdk_path):
+        dst_base = os.path.join('SoraUnitySdkSamples', 'Assets')
+        for dir in dirs:
+            if dir == 'SoraUnitySdk.bundle':
+                bundle_dir = os.path.relpath(os.path.join(root, dir), sdk_path)
+                src_bundle_dir = os.path.join(sdk_path, bundle_dir)
+                dst_bundle_dir = os.path.join(dst_base, bundle_dir)
+                mkdir_p(os.path.dirname(dst_bundle_dir))
+                rm_rf(dst_bundle_dir)
+                shutil.copytree(src_bundle_dir, dst_bundle_dir)
 
     if args.sdk_path is None:
         rm_rf('SoraUnitySdk.zip')
