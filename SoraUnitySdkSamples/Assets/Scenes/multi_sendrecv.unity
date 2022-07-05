@@ -2185,7 +2185,7 @@ MonoBehaviour:
   channelId: 
   clientId: 
   bundleId: 
-  signalingKey: 
+  metadata: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 759273323}
   video: 1

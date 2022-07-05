@@ -388,7 +388,7 @@ MonoBehaviour:
   baseContent: {fileID: 1255258845}
   signalingUrl: 
   channelId: 
-  signalingKey: 
+  metadata: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 0}
   videoCodecType: 0
