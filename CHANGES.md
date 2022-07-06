@@ -19,6 +19,8 @@
     - @melpon
 - [ADD] BundleId の設定を追加
     - @melpon
+- [ADD] tobiAccessToken の設定を追加
+    - @miosakuma
 
 ## sora-unity-sdk-2022.1.0-1
 
