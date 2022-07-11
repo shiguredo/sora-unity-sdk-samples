@@ -388,6 +388,7 @@ MonoBehaviour:
   baseContent: {fileID: 1255258845}
   signalingUrl: 
   channelId: 
+  tobiAccessToken: 
   signalingKey: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 0}
