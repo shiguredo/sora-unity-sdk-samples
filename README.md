@@ -21,11 +21,11 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 プラットフォーム
 
-- Windows 10 以降
+- Windows 10 1809 x86_64 以降
 - macOS 12.4 M1 以降
 - Android 7 以降
 - iOS 12 以降
-- Ubuntu 20.04 以降
+- Ubuntu 20.04 x86_64 以降
 
 ## Sora Unity SDK サンプル集を使ってみる
 
@@ -51,10 +51,9 @@ python3 install.py
 
 ### Unity Editor 上でサンプルを実行する
 
-1. Unity の開発環境で、`SoraUnitySdkSamples`　を指定してプロジェクトを開きます
+1. Unity の開発環境で、 `SoraUnitySdkSamples` を指定してプロジェクトを開きます。
 
-2. `Assets > Scene` から実行するサンプルを選択します。
-    各サンプルはシーンとして用意しています。
+2. `Assets > Scene` から実行するサンプルシーンを選択します。
 
    - `sendonly`: シングルストリーム送信
    - `recvonly`: シングルストリーム受信
