@@ -11,6 +11,19 @@
 
 ## develop
 
+## sora-unity-sdk-2022.2.0
+
+- [CHANGE] プロジェクトを Unity 2021.3 LTS にアップデート
+    - @melpon
+- [UPDATE] Sora Unity SDK 2022.2.0 に対応
+    - @melpon
+- [ADD] HTTP Proxy の設定を追加
+    - @melpon
+- [ADD] BundleId の設定を追加
+    - @melpon
+- [ADD] tobiAccessToken の設定を追加
+    - @miosakuma
+
 ## sora-unity-sdk-2022.1.0-1
 
 - [UPDATE] libboost_json.a.metaを追加する

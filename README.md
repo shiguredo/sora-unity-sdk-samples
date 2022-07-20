@@ -13,27 +13,65 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Unity バージョン
 
-- Unity 2019.4 (LTS)
-- Unity 2020.3 (LTS)
+- Unity 2021.3 (LTS)
 
-## sora-unity-sdk のインストール
+## 対応 Sora バージョン
 
-Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実行して下さい。
-これで各種サンプルを実行するために必要になる sora-unity-sdk をインストールできます。
+- Sora 2022.1.1
 
-## サンプルと実行方法
+## 対応 プラットフォーム
 
-各サンプルはシーンとして用意しています。
-実行したいサンプルを "Assets > Scene" から選んでください。
+- Windows 10 1809 x86_64 以降
+- macOS 12.4 M1 以降
+- Android 7 以降
+- iOS 12 以降
+- Ubuntu 20.04 x86_64 以降
 
-- `sendonly`: シングルストリーム送信
-- `recvonly`: シングルストリーム受信
-- `multi_sendrecv`: マルチストリーム送受信
-- `multi_sendonly`: マルチストリーム送信
-- `multi_recvonly`: マルチストリーム受信
+## Sora Unity SDK サンプル集を使ってみる
 
-プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すと Sora サーバーに接続します。
-映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
+### 準備するもの
+
+- Unity 開発環境 ([対応 Unity バージョン](#対応-unity-バージョン))
+- サーバー (Sora, Tobi, Sora Labo) への接続情報  ([対応 Sora バージョン](#対応-sora-バージョン))
+- Python 3
+
+### sora-unity-sdk のインストール
+
+1. [master ブランチ](https://github.com/shiguredo/sora-unity-sdk-samples/tree/master) をダウンロード、もしくはクローンして利用してください。
+    develop ブランチは開発ブランチであり、正常に動作しないことがあります。
+
+2. ダウンロードされたディレクトリに移動して、以下コマンドを実行して下さい。
+    各種サンプルを実行するために必要になる sora-unity-sdk をインストールできます。[^1] 利用している sora-unity-sdk のバージョンは install.py に定義されています。
+
+```
+python3 install.py
+```
+
+[^1]: `--sdk-path` で `SoraUnitySdk` ディレクトリを指定することでローカルにダウンロードした sora-unity-sdk をインストールすることができます。
+
+### Unity Editor 上でサンプルを実行する
+
+1. Unity の開発環境で、 `SoraUnitySdkSamples` を指定してプロジェクトを開きます。
+
+2. `Assets > Scene` から実行するサンプルシーンを選択します。
+
+   - `sendonly`: シングルストリーム送信
+   - `recvonly`: シングルストリーム受信
+   - `multi_sendrecv`: マルチストリーム送受信
+   - `multi_sendonly`: マルチストリーム送信
+   - `multi_recvonly`: マルチストリーム受信
+
+3. Script オブジェクトのインスペクターにサーバーに送信する情報を設定します
+    `Signaling Url` と `Channel Id` は必須です。それ以外の設定は各環境に応じて設定してください。
+    設定内容については [Sora のドキュメント](https://sora-doc.shiguredo.jp/SIGNALING) も参考にしてください。
+
+   - `Signaling Url`: シグナリング URL
+   - `Channel Id`: チャネル ID
+   - `Tobi Access Token`: Tobi 向けのアクセストークン
+   - `Signaling Key`: シグナリングキー
+
+4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
+    映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
 
 ### 諸注意
 
@@ -41,13 +79,6 @@ Windows の場合は `install.bat` を、macOS の場合は `install.sh` を実�
 Development Build を選択してビルドを行うと事象を回避できることが確認されています。
 サンプルを Android で動作させる場合は Development Build を選択してビルドを行なってください。
 
-## 接続先の設定
-
-各サンプルのシーンの "Script" オブジェクトのインスペクタで接続先を指定できます。
-
-- `Signaling Url`: シグナリング URL
-- `Channel Id`: チャネル ID
-- `Signaling Key`: シグナリングキー
 
 ## 動作例
 
