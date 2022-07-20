@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2022.2.0
+
 - [CHANGE] プロジェクトを Unity 2021.3 LTS にアップデート
     - @melpon
 - [UPDATE] Sora Unity SDK 2022.2.0 に対応

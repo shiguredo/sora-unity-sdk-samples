@@ -17,7 +17,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Sora バージョン
 
-- Sora 2022.1.0 
+- Sora 2022.1.1
 
 ## 対応 プラットフォーム
 
