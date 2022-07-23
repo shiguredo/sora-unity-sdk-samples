@@ -7,12 +7,12 @@ import argparse
 from install import mkdir_p, rm_rf, enum_all_files
 
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 def copy_if_exists(srcfile, dstfile):
     if not os.path.exists(srcfile):
-        logging.info(f'[COPY] Not found: {srcfile}')
+        # logging.info(f'[COPY] Not found: {srcfile}')
         return
     if os.path.isdir(srcfile):
         rm_rf(dstfile)
