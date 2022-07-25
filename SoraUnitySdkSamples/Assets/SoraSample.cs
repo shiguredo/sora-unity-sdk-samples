@@ -211,6 +211,12 @@ public class SoraSample : MonoBehaviour
 
         sora.DispatchEvents();
 
+        // DispatchEvents で OnDisconnect → DisposeSora と呼ばれて sora が null になることがある
+        if (sora == null)
+        {
+            return;
+        }
+
         if (!MultiRecv)
         {
             if (trackId != 0)
