@@ -11,6 +11,13 @@
 
 ## develop
 
+## sora-unity-sdk-2022.2.1
+
+- [UPDATE] copysdk.py のログ出力内容を変更する
+    - @melpon
+- [FIX] sora が null の時に参照してしまうケースについて修正する
+    - @melpon
+
 ## sora-unity-sdk-2022.2.0
 
 - [CHANGE] プロジェクトを Unity 2021.3 LTS にアップデート
