@@ -241,22 +241,22 @@ public class SoraSample : MonoBehaviour
         sora = new Sora();
         if (!MultiRecv)
         {
-            sora.OnAddTrack = (trackId) =>
+            sora.OnAddTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 this.trackId = trackId;
             };
-            sora.OnRemoveTrack = (trackId) =>
+            sora.OnRemoveTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 this.trackId = 0;
             };
         }
         else
         {
-            sora.OnAddTrack = (trackId) =>
+            sora.OnAddTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 var obj = GameObject.Instantiate(baseContent, Vector3.zero, Quaternion.identity);
                 obj.name = string.Format("track {0}", trackId);
                 obj.transform.SetParent(scrollViewContent.transform);
@@ -265,9 +265,9 @@ public class SoraSample : MonoBehaviour
                 image.texture = new Texture2D(320, 240, TextureFormat.RGBA32, false);
                 tracks.Add(trackId, obj);
             };
-            sora.OnRemoveTrack = (trackId) =>
+            sora.OnRemoveTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 if (tracks.ContainsKey(trackId))
                 {
                     GameObject.Destroy(tracks[trackId]);
