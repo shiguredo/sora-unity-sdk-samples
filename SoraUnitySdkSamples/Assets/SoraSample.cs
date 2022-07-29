@@ -301,6 +301,10 @@ public class SoraSample : MonoBehaviour
             Debug.LogFormat("OnDisconnect: code={0} message={1}", code.ToString(), message);
             DisposeSora();
         };
+        sora.OnDataChannel = (label) =>
+        {
+            Debug.LogFormat("OnDataChannel: label={0}", label);
+        };
 
         if (unityAudioOutput)
         {
