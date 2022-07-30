@@ -312,7 +312,7 @@ public class SoraSample : MonoBehaviour
             {
                 lock (audioBuffer)
                 {
-                    if (audioBufferSamples < data.Length)
+                    if (audioBuffer.Count == 0 || audioBufferSamples < data.Length)
                     {
                         for (int i = 0; i < data.Length; i++)
                         {
