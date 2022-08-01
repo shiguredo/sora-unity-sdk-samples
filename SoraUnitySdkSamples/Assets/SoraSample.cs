@@ -46,7 +46,7 @@ public class SoraSample : MonoBehaviour
     public Camera capturedCamera;
 
     public bool video = true;
-    public bool audio = true;
+    public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
 
     public bool unityAudioInput = false;
@@ -170,7 +170,7 @@ public class SoraSample : MonoBehaviour
             {
                 sora.OnRender();
             }
-            if (started && !Recvonly)
+            if (started && unityAudioInput && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -324,14 +324,14 @@ public class SoraSample : MonoBehaviour
                     var p = audioBuffer.Peek();
                     for (int i = 0; i < data.Length; i++)
                     {
-                        data[i] = p[audioBufferPosition] / 32768.0f;
-                        ++audioBufferPosition;
-                        if (audioBufferPosition >= p.Length)
+                        while (audioBufferPosition >= p.Length)
                         {
                             audioBuffer.Dequeue();
                             p = audioBuffer.Peek();
                             audioBufferPosition = 0;
                         }
+                        data[i] = p[audioBufferPosition] / 32768.0f;
+                        ++audioBufferPosition;
                     }
                     audioBufferSamples -= data.Length;
                 }
@@ -340,7 +340,7 @@ public class SoraSample : MonoBehaviour
             audioSourceOutput.Play();
         }
 
-        if (!Recvonly)
+        if (unityAudioInput && !Recvonly)
         {
             AudioRenderer.Start();
             audioSourceInput.Play();
@@ -371,7 +371,7 @@ public class SoraSample : MonoBehaviour
             }
             tracks.Clear();
         }
-        if (!Recvonly)
+        if (unityAudioInput && !Recvonly)
         {
             audioSourceInput.Stop();
             AudioRenderer.Stop();
