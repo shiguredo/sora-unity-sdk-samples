@@ -34,6 +34,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 - Unity 開発環境 ([対応 Unity バージョン](#対応-unity-バージョン))
 - サーバー (Sora, Tobi, Sora Labo) への接続情報  ([対応 Sora バージョン](#対応-sora-バージョン))
 - Python 3
+- (Ubuntu 20.04 x86_64 のみ) libva2 パッケージおよび libva-drm2 パッケージ
 
 ### sora-unity-sdk のインストール
 
@@ -72,13 +73,6 @@ python3 install.py
 
 4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
     映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
-
-### 諸注意
-
-現在 Android 向けにビルドを行った際に Sora との接続がエラーになる現象が発生しています。
-Development Build を選択してビルドを行うと事象を回避できることが確認されています。
-サンプルを Android で動作させる場合は Development Build を選択してビルドを行なってください。
-
 
 ## 動作例
 
