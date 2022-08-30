@@ -56,20 +56,20 @@ python3 install.py
 
 2. `Assets > Scene` から実行するサンプルシーンを選択します。
 
-   - `sendonly`: シングルストリーム送信
-   - `recvonly`: シングルストリーム受信
-   - `multi_sendrecv`: マルチストリーム送受信
-   - `multi_sendonly`: マルチストリーム送信
-   - `multi_recvonly`: マルチストリーム受信
+    - `sendonly`: シングルストリーム送信
+    - `recvonly`: シングルストリーム受信
+    - `multi_sendrecv`: マルチストリーム送受信
+    - `multi_sendonly`: マルチストリーム送信
+    - `multi_recvonly`: マルチストリーム受信
 
 3. Script オブジェクトのインスペクターにサーバーに送信する情報を設定します
     `Signaling Url` と `Channel Id` は必須です。それ以外の設定は各環境に応じて設定してください。
     設定内容については [Sora のドキュメント](https://sora-doc.shiguredo.jp/SIGNALING) も参考にしてください。
 
-   - `Signaling Url`: シグナリング URL
-   - `Channel Id`: チャネル ID
-   - `Tobi Access Token`: Tobi 向けのアクセストークン
-   - `Signaling Key`: シグナリングキー
+    - `Signaling Url`: シグナリング URL
+    - `Channel Id`: チャネル ID
+    - `Tobi Access Token`: Tobi 向けのアクセストークン
+    - `Signaling Key`: シグナリングキー
 
 4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
     映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
