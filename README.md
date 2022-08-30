@@ -35,6 +35,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 - サーバー (Sora, Tobi, Sora Labo) への接続情報  ([対応 Sora バージョン](#対応-sora-バージョン))
 - Python 3
 - (Ubuntu 20.04 x86_64 のみ) libva2 パッケージおよび libva-drm2 パッケージ
+    - apt を利用してインストールしてください
 
 ### sora-unity-sdk のインストール
 
