@@ -25,7 +25,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 - macOS 12.4 M1 以降
 - Android 7 以降
 - iOS 12 以降
-- Ubuntu 20.04 x86_64 以降
+- Ubuntu 20.04 x86_64
 
 ## Sora Unity SDK サンプル集を使ってみる
 
