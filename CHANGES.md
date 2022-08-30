@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2022.3.0
+
 - [CHANGE] signalingkey を accesstoken に修正
     - @torikizi
 
