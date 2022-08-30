@@ -40,13 +40,13 @@ public class SoraSample : MonoBehaviour
     public string clientId = "";
     public string bundleId = "";
     public string tobiAccessToken = "";
-    public string signalingKey = "";
+    public string accessToken = "";
 
     public bool captureUnityCamera;
     public Camera capturedCamera;
 
     public bool video = true;
-    public bool audio = true;
+    public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
 
     public bool unityAudioInput = false;
@@ -170,7 +170,7 @@ public class SoraSample : MonoBehaviour
             {
                 sora.OnRender();
             }
-            if (started && !Recvonly)
+            if (started && unityAudioInput && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -241,22 +241,22 @@ public class SoraSample : MonoBehaviour
         sora = new Sora();
         if (!MultiRecv)
         {
-            sora.OnAddTrack = (trackId) =>
+            sora.OnAddTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 this.trackId = trackId;
             };
-            sora.OnRemoveTrack = (trackId) =>
+            sora.OnRemoveTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 this.trackId = 0;
             };
         }
         else
         {
-            sora.OnAddTrack = (trackId) =>
+            sora.OnAddTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnAddTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 var obj = GameObject.Instantiate(baseContent, Vector3.zero, Quaternion.identity);
                 obj.name = string.Format("track {0}", trackId);
                 obj.transform.SetParent(scrollViewContent.transform);
@@ -265,9 +265,9 @@ public class SoraSample : MonoBehaviour
                 image.texture = new Texture2D(320, 240, TextureFormat.RGBA32, false);
                 tracks.Add(trackId, obj);
             };
-            sora.OnRemoveTrack = (trackId) =>
+            sora.OnRemoveTrack = (trackId, connectionId) =>
             {
-                Debug.LogFormat("OnRemoveTrack: trackId={0}", trackId);
+                Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 if (tracks.ContainsKey(trackId))
                 {
                     GameObject.Destroy(tracks[trackId]);
@@ -301,6 +301,10 @@ public class SoraSample : MonoBehaviour
             Debug.LogFormat("OnDisconnect: code={0} message={1}", code.ToString(), message);
             DisposeSora();
         };
+        sora.OnDataChannel = (label) =>
+        {
+            Debug.LogFormat("OnDataChannel: label={0}", label);
+        };
 
         if (unityAudioOutput)
         {
@@ -308,7 +312,7 @@ public class SoraSample : MonoBehaviour
             {
                 lock (audioBuffer)
                 {
-                    if (audioBufferSamples < data.Length)
+                    if (audioBuffer.Count == 0 || audioBufferSamples < data.Length)
                     {
                         for (int i = 0; i < data.Length; i++)
                         {
@@ -320,14 +324,14 @@ public class SoraSample : MonoBehaviour
                     var p = audioBuffer.Peek();
                     for (int i = 0; i < data.Length; i++)
                     {
-                        data[i] = p[audioBufferPosition] / 32768.0f;
-                        ++audioBufferPosition;
-                        if (audioBufferPosition >= p.Length)
+                        while (audioBufferPosition >= p.Length)
                         {
                             audioBuffer.Dequeue();
                             p = audioBuffer.Peek();
                             audioBufferPosition = 0;
                         }
+                        data[i] = p[audioBufferPosition] / 32768.0f;
+                        ++audioBufferPosition;
                     }
                     audioBufferSamples -= data.Length;
                 }
@@ -336,7 +340,7 @@ public class SoraSample : MonoBehaviour
             audioSourceOutput.Play();
         }
 
-        if (!Recvonly)
+        if (unityAudioInput && !Recvonly)
         {
             AudioRenderer.Start();
             audioSourceInput.Play();
@@ -367,7 +371,7 @@ public class SoraSample : MonoBehaviour
             }
             tracks.Clear();
         }
-        if (!Recvonly)
+        if (unityAudioInput && !Recvonly)
         {
             audioSourceInput.Stop();
             AudioRenderer.Stop();
@@ -398,14 +402,14 @@ public class SoraSample : MonoBehaviour
         public string[] signaling_url_candidate = new string[0];
         public string channel_id = "";
         public string tobi_access_token = "";
-        public string signaling_key = "";
+        public string access_token = "";
     }
 
     [Serializable]
     class Metadata
     {
         public string tobi_access_token;
-        public string signaling_key;
+        public string access_token;
     }
 
     public void OnClickStart()
@@ -419,7 +423,7 @@ public class SoraSample : MonoBehaviour
             signalingUrlCandidate = settings.signaling_url_candidate;
             channelId = settings.channel_id;
             tobiAccessToken = settings.tobi_access_token;
-            signalingKey = settings.signaling_key;
+            accessToken = settings.access_token;
         }
 
         if (signalingUrl.Length == 0 && signalingUrlCandidate.Length == 0)
@@ -432,14 +436,14 @@ public class SoraSample : MonoBehaviour
             Debug.LogError("チャンネル ID が設定されていません");
             return;
         }
-        // signalingKey または tobiAccessToken がある場合はメタデータを設定する
+        // accessToken または tobiAccessToken がある場合はメタデータを設定する
         string metadata = "";
-        if (tobiAccessToken.Length != 0 || signalingKey.Length != 0)
+        if (tobiAccessToken.Length != 0 || accessToken.Length != 0)
         {
             var md = new Metadata()
             {
                 tobi_access_token = tobiAccessToken,
-                signaling_key = signalingKey
+                access_token = accessToken
             };
             metadata = JsonUtility.ToJson(md);
         }

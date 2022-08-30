@@ -11,6 +11,11 @@
 
 ## develop
 
+## sora-unity-sdk-2022.3.0
+
+- [CHANGE] signalingkey を accesstoken に修正
+    - @torikizi
+
 ## sora-unity-sdk-2022.2.1
 
 - [UPDATE] copysdk.py のログ出力内容を変更する
