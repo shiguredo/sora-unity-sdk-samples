@@ -11,6 +11,11 @@
 
 ## develop
 
+## sora-unity-sdk-2022.4.0
+
+- [UPDATE] Sora Unity SDK 2022.4.0 に上げる
+    - @miosakuma
+
 ## sora-unity-sdk-2022.3.0
 
 - [CHANGE] signalingkey を accesstoken に修正
