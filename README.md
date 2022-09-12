@@ -36,15 +36,20 @@ In other languages, we won't be able to deal with them. Thank you for your under
 - Python 3
 - (Ubuntu 20.04 x86_64 のみ) libva-drm2 パッケージ (apt インストール)
 
-### sora-unity-sdk のインストール
+### Sora Unity SDK のインストール
 
-1. [master ブランチ](https://github.com/shiguredo/sora-unity-sdk-samples/tree/master) をダウンロード、もしくはクローンして利用してください。
+1. このリポジトリの [master ブランチ](https://github.com/shiguredo/sora-unity-sdk-samples/tree/master) をクローンして利用してください。
     develop ブランチは開発ブランチであり、正常に動作しないことがあります。
 
-2. ダウンロードされたディレクトリに移動して、以下コマンドを実行して下さい。
-    各種サンプルを実行するために必要になる sora-unity-sdk をインストールできます。[^1] 利用している sora-unity-sdk のバージョンは install.py に定義されています。
+```
+git clone --branch master https://github.com/shiguredo/sora-unity-sdk-samples.git
+```
+
+2. ダウンロードされたディレクトリに移動して、`install.py` を実行して下さい。
+    [Sora Unity SDK](https://github.com/shiguredo/sora-unity-sdk) がダウンロードされ、インストールされます。[^1] 利用している sora-unity-sdk のバージョンは install.py に定義されています。
 
 ```
+cd sora-unity-sdk-samples
 python3 install.py
 ```
 
@@ -69,7 +74,7 @@ python3 install.py
     - `Signaling Url`: シグナリング URL
     - `Channel Id`: チャネル ID
     - `Tobi Access Token`: Tobi 向けのアクセストークン
-    - `Signaling Key`: シグナリングキー
+    - `Access Token`: Sora Labo 向けのアクセストークン
 
 4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
     映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
