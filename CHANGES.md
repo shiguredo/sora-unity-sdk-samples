@@ -11,8 +11,8 @@
 
 ## develop
 
-- [UPDATE] Sora Unity SDK 2022.5.0 に上げる
-    - @melpon
+- [UPDATE] Sora Unity SDK 2022.5.1 に上げる
+    - @melpon, @miosakuma
 
 ## sora-unity-sdk-2022.4.0
 

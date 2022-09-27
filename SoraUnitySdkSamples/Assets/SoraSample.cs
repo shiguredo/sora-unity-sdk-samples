@@ -69,6 +69,7 @@ public class SoraSample : MonoBehaviour
     public Sora.SimulcastRidType simulcastRidType = Sora.SimulcastRidType.R0;
 
     public int videoBitRate = 0;
+    public int videoFps = 30;
     public enum VideoSize
     {
         QVGA,
@@ -516,6 +517,7 @@ public class SoraSample : MonoBehaviour
             Audio = audio,
             VideoCodecType = videoCodecType,
             VideoBitRate = videoBitRate,
+            VideoFps = videoFps,
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
             UnityAudioInput = unityAudioInput,
