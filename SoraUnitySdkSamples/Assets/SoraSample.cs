@@ -69,6 +69,7 @@ public class SoraSample : MonoBehaviour
     public Sora.SimulcastRidType simulcastRidType = Sora.SimulcastRidType.R0;
 
     public int videoBitRate = 0;
+    public int videoFps = 30;
     public enum VideoSize
     {
         QVGA,
@@ -305,6 +306,30 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnDataChannel: label={0}", label);
         };
+        // カメラデバイスから取得したフレーム情報を受け取るコールバック。
+        // これは別スレッドからやってくるので注意すること。
+        // また、このコールバックの範囲外ではポインタは無効になるので必要に応じてデータをコピーして利用すること。
+        sora.OnCapturerFrame = (frame) =>
+        {
+            // var vfb = frame.video_frame_buffer;
+            // Debug.LogFormat("OnCapturerFrame: type={0} width={1} height={2}", vfb.type, vfb.width, vfb.height);
+
+            // // I420 の映像データを byte[] にコピーする
+            // if (vfb.type == SoraConf.VideoFrameBuffer.Type.kI420)
+            // {
+            //     var size_y = vfb.i420_stride_y * vfb.height;
+            //     var data_y = new byte[size_y];
+            //     Marshal.Copy((IntPtr)vfb.i420_data_y, data_y, 0, size_y);
+
+            //     var size_u = vfb.i420_stride_u * ((vfb.height + 1) / 2);
+            //     var data_u = new byte[size_u];
+            //     Marshal.Copy((IntPtr)vfb.i420_data_u, data_u, 0, size_u);
+
+            //     var size_v = vfb.i420_stride_v * ((vfb.height + 1) / 2);
+            //     var data_v = new byte[size_v];
+            //     Marshal.Copy((IntPtr)vfb.i420_data_v, data_v, 0, size_v);
+            // }
+        };
 
         if (unityAudioOutput)
         {
@@ -492,6 +517,7 @@ public class SoraSample : MonoBehaviour
             Audio = audio,
             VideoCodecType = videoCodecType,
             VideoBitRate = videoBitRate,
+            VideoFps = videoFps,
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
             UnityAudioInput = unityAudioInput,

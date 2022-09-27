@@ -9,7 +9,12 @@
 - FIX
     - バグ修正
 
-## develop
+## sora-unity-sdk-2022.5.1
+
+- [UPDATE] Sora Unity SDK 2022.5.1 に上げる
+    - @melpon, @miosakuma
+- [ADD] Video Fps の設定を追加
+    - @miosakuma
 
 ## sora-unity-sdk-2022.4.0
 
