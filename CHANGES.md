@@ -9,6 +9,13 @@
 - FIX
     - バグ修正
 
+## develop
+
+## sora-unity-sdk-2022.5.2
+
+- [UPDATE] Sora Unity SDK 2022.5.2 に上げる
+    - @miosakuma
+
 ## sora-unity-sdk-2022.5.1
 
 - [UPDATE] Sora Unity SDK 2022.5.1 に上げる
