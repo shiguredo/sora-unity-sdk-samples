@@ -84,8 +84,6 @@ public class SoraSample : MonoBehaviour
     public int dataChannelSignalingTimeout = 30;
     public bool ignoreDisconnectWebsocket = false;
     public int disconnectWaitTimeout = 5;
-    public bool AudioEnabled = false;
-    public bool VideoEnabled = false;
 
     [System.Serializable]
     public class DataChannel
@@ -603,10 +601,18 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickVideoMute()
     {
+        if (sora == null)
+        {
+            return;
+        }
         sora.VideoEnabled = !sora.VideoEnabled; 
     }
     public void OnClickAudioMute()
     {
+        if (sora == null)
+        {
+            return;
+        }
         sora.AudioEnabled = !sora.AudioEnabled; 
     }
 
