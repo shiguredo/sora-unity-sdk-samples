@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] tobiAccessToken の設定を削除
+    - @torikizi
 - [ADD] 音声と映像のミュートを追加
     - @torikizi
 

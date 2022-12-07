@@ -762,7 +762,6 @@ MonoBehaviour:
   channelId: 
   clientId: 
   bundleId: 
-  tobiAccessToken: 
   signalingKey: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 1285571995}

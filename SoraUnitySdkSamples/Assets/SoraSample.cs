@@ -39,7 +39,6 @@ public class SoraSample : MonoBehaviour
     public string channelId = "";
     public string clientId = "";
     public string bundleId = "";
-    public string tobiAccessToken = "";
     public string accessToken = "";
 
     public bool captureUnityCamera;
@@ -426,14 +425,12 @@ public class SoraSample : MonoBehaviour
         public string signaling_url = "";
         public string[] signaling_url_candidate = new string[0];
         public string channel_id = "";
-        public string tobi_access_token = "";
         public string access_token = "";
     }
 
     [Serializable]
     class Metadata
     {
-        public string tobi_access_token;
         public string access_token;
     }
 
@@ -447,7 +444,6 @@ public class SoraSample : MonoBehaviour
             signalingUrl = settings.signaling_url;
             signalingUrlCandidate = settings.signaling_url_candidate;
             channelId = settings.channel_id;
-            tobiAccessToken = settings.tobi_access_token;
             accessToken = settings.access_token;
         }
 
@@ -461,13 +457,12 @@ public class SoraSample : MonoBehaviour
             Debug.LogError("チャンネル ID が設定されていません");
             return;
         }
-        // accessToken または tobiAccessToken がある場合はメタデータを設定する
+        // accessToken がある場合はメタデータを設定する
         string metadata = "";
-        if (tobiAccessToken.Length != 0 || accessToken.Length != 0)
+        if (accessToken.Length != 0)
         {
             var md = new Metadata()
             {
-                tobi_access_token = tobiAccessToken,
                 access_token = accessToken
             };
             metadata = JsonUtility.ToJson(md);
