@@ -13,7 +13,7 @@ from typing import Callable, Optional, List, Union
 logging.basicConfig(level=logging.DEBUG)
 
 
-SORA_UNITY_SDK_VERSION="2022.5.2"
+SORA_UNITY_SDK_VERSION="2022.6.0"
 
 
 class ChangeDirectory(object):
