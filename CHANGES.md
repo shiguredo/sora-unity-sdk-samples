@@ -11,6 +11,13 @@
 
 ## develop
 
+## sora-unity-sdk-2022.6.0
+
+- [CHANGE] tobiAccessToken の設定を削除
+    - @torikizi
+- [ADD] 音声と映像のミュートを追加
+    - @torikizi
+
 ## sora-unity-sdk-2022.5.2
 
 - [UPDATE] Sora Unity SDK 2022.5.2 に上げる

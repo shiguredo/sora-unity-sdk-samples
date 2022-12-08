@@ -17,7 +17,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Sora バージョン
 
-- WebRTC SFU Sora 2022.1.1 以降
+- WebRTC SFU Sora 2022.1.3 以降
 
 ## 対応 プラットフォーム
 
@@ -32,7 +32,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 ### 準備するもの
 
 - Unity 開発環境 ([対応 Unity バージョン](#対応-unity-バージョン))
-- サーバー (Sora, Tobi, Sora Labo) への接続情報  ([対応 Sora バージョン](#対応-sora-バージョン))
+- サーバー (Sora, Sora Cloud, Sora Labo) への接続情報  ([対応 Sora バージョン](#対応-sora-バージョン))
 - Python 3
 - (Ubuntu 20.04 x86_64 のみ) libva-drm2 パッケージ (apt インストール)
 
@@ -73,7 +73,6 @@ python3 install.py
 
     - `Signaling Url`: シグナリング URL
     - `Channel Id`: チャネル ID
-    - `Tobi Access Token`: Tobi 向けのアクセストークン
     - `Access Token`: Sora Labo 向けのアクセストークン
 
 4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
