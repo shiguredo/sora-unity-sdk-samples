@@ -47,6 +47,9 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
+    public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
+    // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
+    public bool useDtx = false;
 
     public bool unityAudioInput = false;
     public AudioSource audioSourceInput;
@@ -497,6 +500,17 @@ public class SoraSample : MonoBehaviour
                 break;
         }
 
+        string audioCodecLyraParams = "";
+        if (audioCodecType == Sora.AudioCodecType.LYRA) {
+            audioCodecLyraParams += "{\"version\":\"1.3.0\"";
+            if (useDtx) {
+                audioCodecLyraParams += ",\"usedtx\":true";
+            }
+            audioCodecLyraParams += "}";
+            Debug.Log("SORA_LYRA_MODEL_COEFFS_PATH=" + Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs");
+            Sora.Setenv("SORA_LYRA_MODEL_COEFFS_PATH", Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs");
+        }
+
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
@@ -515,6 +529,8 @@ public class SoraSample : MonoBehaviour
             VideoFps = videoFps,
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
+            AudioCodecType = audioCodecType,
+            AudioCodecLyraParams = audioCodecLyraParams,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
             VideoCapturerDevice = videoCapturerDevice,

@@ -62,6 +62,13 @@ def main():
             os.path.join(src_base, 'Sora', file),
             os.path.join(dst_base, 'SoraUnitySdk', file))
 
+    # Lyra モデル
+    for platform in ('windows_x86_64', 'macos_x86_64', 'macos_arm64', 'ios', 'android', 'ubuntu-20.04_x86_64'):
+        copy_if_exists(
+            os.path.join(src_base, '_install', platform, 'release', 'lyra', 'share', 'model_coeffs'),
+            os.path.join(dst_base, 'StreamingAssets', 'SoraUnitySdk', 'model_coeffs')
+        )
+
     # Windows
     copy_if_exists(
         os.path.join(src_base, '_build', 'windows_x86_64', 'release', 'sora_unity_sdk', vsconfigdir, 'SoraUnitySdk.dll'),
