@@ -94,5 +94,7 @@ crashlytics-build.properties
 /Assets/Plugins/SoraUnitySdk/windows/x86_64.meta
 /Assets/SoraUnitySdk.meta
 /Assets/SoraUnitySdk/
+/Assets/StreamingAssets/SoraUnitySdk.meta
+/Assets/StreamingAssets/SoraUnitySdk/
 /webrtc_logs_*
 /.env.json

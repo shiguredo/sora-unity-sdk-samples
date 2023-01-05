@@ -162,6 +162,9 @@ public class SoraSample : MonoBehaviour
         started = false;
         StartCoroutine(Render());
         StartCoroutine(GetStats());
+#if !UNITY_EDITOR && UNITY_ANDROID
+        StartCoroutine(SaveStreamingAssetsToLocal());
+#endif
     }
 
     IEnumerator Render()
@@ -439,6 +442,11 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickStart()
     {
+        if (!savedAssetsToLocal)
+        {
+            return;
+        }
+
         // 開発用の機能。
         // .env.json ファイルがあったら、それを読んでシグナリングURLとチャンネルIDを設定する。
         if (signalingUrl.Length == 0 && channelId.Length == 0 && System.IO.File.Exists(".env.json"))
@@ -507,8 +515,12 @@ public class SoraSample : MonoBehaviour
                 audioCodecLyraParams += ",\"usedtx\":true";
             }
             audioCodecLyraParams += "}";
-            Debug.Log("SORA_LYRA_MODEL_COEFFS_PATH=" + Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs");
-            Sora.Setenv("SORA_LYRA_MODEL_COEFFS_PATH", Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs");
+            string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
+#if !UNITY_EDITOR && UNITY_ANDROID
+            modelPath = Application.temporaryCachePath;
+#endif
+            Debug.Log("SORA_LYRA_MODEL_COEFFS_PATH=" + modelPath);
+            Sora.Setenv("SORA_LYRA_MODEL_COEFFS_PATH", modelPath);
         }
 
         var config = new Sora.Config()
@@ -630,5 +642,41 @@ public class SoraSample : MonoBehaviour
     void OnApplicationQuit()
     {
         DisposeSora();
+    }
+
+    // Android の場合、StreamingAssets へのパスは apk バイナリ内への URI になるため、
+    // ネイティブ側のコードで読み込むことができない。
+    // そのため Unity 側で StreamingAssets にあるデータを読み込んでローカルに保存することで、
+    // ネイティブ側で利用可能にする。
+    bool savedAssetsToLocal = true;
+    IEnumerator SaveStreamingAssetsToLocal()
+    {
+        savedAssetsToLocal = false;
+        string[] files = {"lyra_config.binarypb", "lyragan.tflite", "quantizer.tflite", "soundstream_encoder.tflite"};
+        string baseUrl = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
+        foreach (string file in files)
+        {
+            string outPath = System.IO.Path.Combine(Application.temporaryCachePath, file);
+            if (System.IO.File.Exists(outPath))
+            {
+                continue;
+            }
+
+            byte[] data;
+            string uri = baseUrl + "/" + file;
+            using (var req = UnityEngine.Networking.UnityWebRequest.Get(uri))
+            {
+                yield return req.SendWebRequest();
+
+                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("Failed to Get: uri=" + uri + " error=" + req.error);
+                    yield break;
+                }
+                data = req.downloadHandler.data;
+            }
+            System.IO.File.WriteAllBytes(outPath, data);
+        }
+        savedAssetsToLocal = true;
     }
 }
