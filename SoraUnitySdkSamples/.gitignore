@@ -86,7 +86,9 @@ crashlytics-build.properties
 /Assets/Plugins/SoraUnitySdk/ios/libSoraUnitySdk.a
 /Assets/Plugins/SoraUnitySdk/ios/libwebrtc.a
 /Assets/Plugins/SoraUnitySdk/ios/libsora.a
+/Assets/Plugins/SoraUnitySdk/ios/liblyra.a
 /Assets/Plugins/SoraUnitySdk/ios/libboost_json.a
+/Assets/Plugins/SoraUnitySdk/ios/libboost_filesystem.a
 /Assets/Plugins/SoraUnitySdk/linux.meta
 /Assets/Plugins/SoraUnitySdk/linux/x86_64.meta
 /Assets/Plugins/SoraUnitySdk/linux/x86_64/libSoraUnitySdk.so
@@ -94,5 +96,7 @@ crashlytics-build.properties
 /Assets/Plugins/SoraUnitySdk/windows/x86_64.meta
 /Assets/SoraUnitySdk.meta
 /Assets/SoraUnitySdk/
+/Assets/StreamingAssets/SoraUnitySdk.meta
+/Assets/StreamingAssets/SoraUnitySdk/
 /webrtc_logs_*
 /.env.json
