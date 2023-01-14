@@ -50,6 +50,7 @@ public class SoraSample : MonoBehaviour
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public bool useDtx = false;
+    public string audioStreamingLanguageCode = "";
 
     public bool unityAudioInput = false;
     public AudioSource audioSourceInput;
@@ -543,6 +544,7 @@ public class SoraSample : MonoBehaviour
             VideoHeight = videoHeight,
             AudioCodecType = audioCodecType,
             AudioCodecLyraParams = audioCodecLyraParams,
+            AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
             VideoCapturerDevice = videoCapturerDevice,
