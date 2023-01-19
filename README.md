@@ -17,7 +17,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Sora バージョン
 
-- WebRTC SFU Sora 2022.1.3 以降
+- WebRTC SFU Sora 2022.2.0 以降
 
 ## 対応 プラットフォーム
 
