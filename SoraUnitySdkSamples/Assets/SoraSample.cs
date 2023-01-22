@@ -39,6 +39,7 @@ public class SoraSample : MonoBehaviour
     public string channelId = "";
     public string clientId = "";
     public string bundleId = "";
+    public string signaling_notify_metadata = "";
     public string accessToken = "";
 
     public bool captureUnityCamera;
@@ -531,6 +532,7 @@ public class SoraSample : MonoBehaviour
             ChannelId = channelId,
             ClientId = clientId,
             BundleId = bundleId,
+            SignalingNotifyMetadata = signaling_notify_metadata,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
