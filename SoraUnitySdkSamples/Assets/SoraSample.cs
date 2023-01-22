@@ -39,7 +39,7 @@ public class SoraSample : MonoBehaviour
     public string channelId = "";
     public string clientId = "";
     public string bundleId = "";
-    public string signaling_notify_metadata = "";
+    public string signalingNotifyMetadata = "";
     public string accessToken = "";
 
     public bool captureUnityCamera;
@@ -437,6 +437,12 @@ public class SoraSample : MonoBehaviour
     }
 
     [Serializable]
+    class SignalingNotifyMetadata
+    {
+        public string message_for_signaling_notify;
+    }
+
+    [Serializable]
     class Metadata
     {
         public string access_token;
@@ -469,6 +475,15 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogError("チャンネル ID が設定されていません");
             return;
+        }
+        // signalingNotifyMetadata がある場合はメタデータを設定する
+        if (signalingNotifyMetadata.Length != 0)
+        {
+            var snmd = new SignalingNotifyMetadata()
+            {
+                message_for_signaling_notify = signalingNotifyMetadata
+            };
+            signalingNotifyMetadata = JsonUtility.ToJson(snmd);
         }
         // accessToken がある場合はメタデータを設定する
         string metadata = "";
@@ -532,7 +547,7 @@ public class SoraSample : MonoBehaviour
             ChannelId = channelId,
             ClientId = clientId,
             BundleId = bundleId,
-            SignalingNotifyMetadata = signaling_notify_metadata,
+            SignalingNotifyMetadata = signalingNotifyMetadata,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
