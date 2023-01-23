@@ -17,7 +17,19 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
-    bool started;
+    enum State
+    {
+        Init,
+        Started,
+        Disconnecting,
+    }
+    State state;
+    public UnityEngine.UI.Button buttonStart;
+    public UnityEngine.UI.Button buttonEnd;
+    public UnityEngine.UI.Button buttonSend;
+    public UnityEngine.UI.Button buttonVideoMute;
+    public UnityEngine.UI.Button buttonAudioMute;
+
     public SampleType sampleType;
     // 実行中に変えられたくないので実行時に固定する
     SampleType fixedSampleType;
@@ -161,7 +173,7 @@ public class SoraSample : MonoBehaviour
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
         }
-        started = false;
+        SetState(State.Init);
         StartCoroutine(Render());
         StartCoroutine(GetStats());
 #if !UNITY_EDITOR && UNITY_ANDROID
@@ -174,11 +186,11 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
-            if (started)
+            if (state == State.Started)
             {
                 sora.OnRender();
             }
-            if (started && unityAudioInput && !Recvonly)
+            if (state == State.Started && unityAudioInput && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -197,7 +209,7 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(10);
-            if (!started)
+            if (state != State.Started)
             {
                 continue;
             }
@@ -386,11 +398,11 @@ public class SoraSample : MonoBehaviour
         }
         sora.Disconnect();
         DestroyComponents();
-        started = false;
+        SetState(State.Disconnecting);
     }
     void DestroyComponents()
     {
-        if (!started)
+        if (state != State.Started)
         {
             return;
         }
@@ -424,7 +436,36 @@ public class SoraSample : MonoBehaviour
         sora = null;
         Debug.Log("Sora is Disposed");
         DestroyComponents();
-        started = false;
+        SetState(State.Init);
+    }
+
+    void SetState(State state)
+    {
+        if (state == State.Init)
+        {
+            buttonStart.interactable = true;
+            buttonEnd.interactable = false;
+            buttonSend.interactable = false;
+            if (buttonVideoMute != null) buttonVideoMute.interactable = false;
+            if (buttonAudioMute != null) buttonAudioMute.interactable = false;
+        }
+        if (state == State.Started)
+        {
+            buttonStart.interactable = false;
+            buttonEnd.interactable = true;
+            buttonSend.interactable = true;
+            if (buttonVideoMute != null) buttonVideoMute.interactable = true;
+            if (buttonAudioMute != null) buttonAudioMute.interactable = true;
+        }
+        if (state == State.Disconnecting)
+        {
+            buttonStart.interactable = false;
+            buttonEnd.interactable = false;
+            buttonSend.interactable = false;
+            if (buttonVideoMute != null) buttonVideoMute.interactable = false;
+            if (buttonAudioMute != null) buttonAudioMute.interactable = false;
+        }
+        this.state = state;
     }
 
     [Serializable]
@@ -619,7 +660,7 @@ public class SoraSample : MonoBehaviour
         }
 
         sora.Connect(config);
-        started = true;
+        SetState(State.Started);
         Debug.LogFormat("Sora is Created: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
     }
     public void OnClickEnd()

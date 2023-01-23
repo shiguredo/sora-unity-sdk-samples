@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1947,6 +1947,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55ab6b1a03c1f314bbb0a245b1741ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonStart: {fileID: 1679627014}
+  buttonEnd: {fileID: 556923267}
+  buttonSend: {fileID: 518727828}
+  buttonVideoMute: {fileID: 676789342}
+  buttonAudioMute: {fileID: 1826910819}
   sampleType: 2
   renderTarget: {fileID: 1624637938}
   scrollViewContent: {fileID: 0}
@@ -1957,12 +1962,15 @@ MonoBehaviour:
   channelId: 
   clientId: 
   bundleId: 
-  signalingKey: 
+  accessToken: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 763227567}
   video: 1
   audio: 1
   videoCodecType: 0
+  audioCodecType: 0
+  useDtx: 0
+  audioStreamingLanguageCode: 
   unityAudioInput: 0
   audioSourceInput: {fileID: 1033452465}
   unityAudioOutput: 0
@@ -1980,13 +1988,12 @@ MonoBehaviour:
   simulcastRid: 0
   simulcastRidType: 0
   videoBitRate: 0
+  videoFps: 30
   videoSize: 1
   dataChannelSignaling: 0
   dataChannelSignalingTimeout: 30
   ignoreDisconnectWebsocket: 0
   disconnectWaitTimeout: 5
-  AudioEnabled: 0
-  VideoEnabled: 0
   dataChannels: []
   proxyUrl: 
   proxyUsername: 
