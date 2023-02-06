@@ -295,6 +295,10 @@ public class SoraSample : MonoBehaviour
                 }
             };
         }
+        sora.OnSetOffer = (json) =>
+        {
+            Debug.LogFormat("OnSetOffer: {0}", json);
+        };
         sora.OnNotify = (json) =>
         {
             Debug.LogFormat("OnNotify: {0}", json);
