@@ -96,8 +96,10 @@ public class SoraSample : MonoBehaviour
     }
     public VideoSize videoSize = VideoSize.VGA;
     [Header("DataChannel シグナリングの設定")]
+    public bool enableDataChannelSignaling = false;
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
+    public bool enableIgnoreDisconnectWebsocket = false;
     public bool ignoreDisconnectWebsocket = false;
     public int disconnectWaitTimeout = 5;
 
@@ -617,10 +619,10 @@ public class SoraSample : MonoBehaviour
             Simulcast = simulcast,
             // この実装だと dataChannelSignaling == false の場合は data_channel_signaling が無指定になるので、
             // サーバ側の判断によっては DC に切り替えられる可能性はある。
-            EnableDataChannelSignaling = dataChannelSignaling,
+            EnableDataChannelSignaling = enableDataChannelSignaling,
             DataChannelSignaling = dataChannelSignaling,
             DataChannelSignalingTimeout = dataChannelSignalingTimeout,
-            EnableIgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
+            EnableIgnoreDisconnectWebsocket = enableIgnoreDisconnectWebsocket,
             IgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
             DisconnectWaitTimeout = disconnectWaitTimeout,
             ProxyUrl = proxyUrl,
