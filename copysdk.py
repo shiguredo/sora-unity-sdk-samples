@@ -67,10 +67,17 @@ def main():
             os.path.join(src_base, 'Sora', file),
             os.path.join(dst_base, 'SoraUnitySdk', file))
 
+    if args.android_sdk_path is not None:
+        for file in enum_all_files(os.path.join(android_src_base, 'Sora'), os.path.join(android_src_base, 'Sora')):
+            copy_if_exists(
+                os.path.join(android_src_base, 'Sora', file),
+                os.path.join(dst_base, 'SoraUnitySdk', file))
+
     # Lyra モデル
     for platform in ('windows_x86_64', 'macos_x86_64', 'macos_arm64', 'ios', 'android', 'ubuntu-20.04_x86_64'):
+        src = src_base if platform != 'android' else android_src_base
         copy_if_exists(
-            os.path.join(src_base, '_install', platform, configdir, 'lyra', 'share', 'model_coeffs'),
+            os.path.join(src, '_install', platform, configdir, 'lyra', 'share', 'model_coeffs'),
             os.path.join(dst_base, 'StreamingAssets', 'SoraUnitySdk', 'model_coeffs')
         )
 
