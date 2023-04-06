@@ -63,7 +63,7 @@ public class SoraSample : MonoBehaviour
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public int audioCodecLyraBitrate = 0;
-    public bool useDtx = false;
+    public bool audioCodecLyraUsedtx = false;
     public bool checkLyraVersion = false;
     public string audioStreamingLanguageCode = "";
 
@@ -631,7 +631,7 @@ public class SoraSample : MonoBehaviour
         if (audioCodecType == Sora.AudioCodecType.LYRA)
         {
             config.AudioCodecLyraBitrate = audioCodecLyraBitrate;
-            config.AudioCodecLyraUsedtx = useDtx;
+            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
             config.CheckLyraVersion = checkLyraVersion;
         }
         if (spotlightFocusRid)
