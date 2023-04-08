@@ -631,8 +631,12 @@ public class SoraSample : MonoBehaviour
         if (audioCodecType == Sora.AudioCodecType.LYRA)
         {
             config.AudioCodecLyraBitrate = audioCodecLyraBitrate;
-            config.EnableAudioCodecLyraUsedtx = audioCodecLyraUsedtx;
-            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
+            // usedtx が指定されている場合のみ設定する
+            if (audioCodecLyraUsedtx)
+            {
+                config.EnableAudioCodecLyraUsedtx = audioCodecLyraUsedtx;
+                config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
+            }
             config.CheckLyraVersion = checkLyraVersion;
         }
         if (spotlightFocusRid)
