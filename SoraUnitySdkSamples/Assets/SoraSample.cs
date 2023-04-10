@@ -63,6 +63,7 @@ public class SoraSample : MonoBehaviour
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public int audioCodecLyraBitrate = 0;
+    public bool enableAudioCodecLyraUsedtx = false;
     public bool audioCodecLyraUsedtx = false;
     public bool checkLyraVersion = false;
     public string audioStreamingLanguageCode = "";
@@ -601,6 +602,8 @@ public class SoraSample : MonoBehaviour
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
             AudioCodecType = audioCodecType,
+            AudioCodecLyraBitrate = audioCodecLyraBitrate,
+            CheckLyraVersion = checkLyraVersion,
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
@@ -627,17 +630,10 @@ public class SoraSample : MonoBehaviour
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
         }
-        // Lyra の場合のみパラメータを設定する
-        if (audioCodecType == Sora.AudioCodecType.LYRA)
+        // usedtx が指定されている場合のみ設定する
+        if (enableAudioCodecLyraUsedtx)
         {
-            config.AudioCodecLyraBitrate = audioCodecLyraBitrate;
-            // usedtx が指定されている場合のみ設定する
-            if (audioCodecLyraUsedtx)
-            {
-                config.EnableAudioCodecLyraUsedtx = audioCodecLyraUsedtx;
-                config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
-            }
-            config.CheckLyraVersion = checkLyraVersion;
+            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
         }
         if (spotlightFocusRid)
         {
