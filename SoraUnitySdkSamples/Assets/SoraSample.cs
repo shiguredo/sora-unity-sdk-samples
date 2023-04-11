@@ -62,7 +62,10 @@ public class SoraSample : MonoBehaviour
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
-    public bool useDtx = false;
+    public int audioCodecLyraBitrate = 0;
+    public bool enableAudioCodecLyraUsedtx = false;
+    public bool audioCodecLyraUsedtx = false;
+    public bool checkLyraVersion = false;
     public string audioStreamingLanguageCode = "";
 
     public bool unityAudioInput = false;
@@ -570,13 +573,7 @@ public class SoraSample : MonoBehaviour
                 break;
         }
 
-        string audioCodecLyraParams = "";
         if (audioCodecType == Sora.AudioCodecType.LYRA) {
-            audioCodecLyraParams += "{\"version\":\"1.3.0\"";
-            if (useDtx) {
-                audioCodecLyraParams += ",\"usedtx\":true";
-            }
-            audioCodecLyraParams += "}";
             string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
 #if !UNITY_EDITOR && UNITY_ANDROID
             modelPath = Application.temporaryCachePath;
@@ -605,7 +602,8 @@ public class SoraSample : MonoBehaviour
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
             AudioCodecType = audioCodecType,
-            AudioCodecLyraParams = audioCodecLyraParams,
+            AudioCodecLyraBitrate = audioCodecLyraBitrate,
+            CheckLyraVersion = checkLyraVersion,
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
@@ -632,16 +630,18 @@ public class SoraSample : MonoBehaviour
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
         }
+        if (enableAudioCodecLyraUsedtx)
+        {
+            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
+        }
         if (spotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRidType;
         }
-
         if (spotlightUnfocusRid)
         {
             config.SpotlightUnfocusRid = spotlightUnfocusRidType;
         }
-
         if (simulcastRid)
         {
             config.SimulcastRid = simulcastRidType;
