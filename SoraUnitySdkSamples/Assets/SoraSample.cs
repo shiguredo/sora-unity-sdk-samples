@@ -630,7 +630,6 @@ public class SoraSample : MonoBehaviour
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
         }
-        // usedtx が指定されている場合のみ設定する
         if (enableAudioCodecLyraUsedtx)
         {
             config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
