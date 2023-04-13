@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2023.1.0
+
 - [UPDATE] Sora Unity SDK 2023.1.0 にあげる
     - @miosakuma
 - [ADD] オーディオコーデックに Lyra を追加
