@@ -17,7 +17,19 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
-    bool started;
+    enum State
+    {
+        Init,
+        Started,
+        Disconnecting,
+    }
+    State state;
+    public UnityEngine.UI.Button buttonStart;
+    public UnityEngine.UI.Button buttonEnd;
+    public UnityEngine.UI.Button buttonSend;
+    public UnityEngine.UI.Button buttonVideoMute;
+    public UnityEngine.UI.Button buttonAudioMute;
+
     public SampleType sampleType;
     // 実行中に変えられたくないので実行時に固定する
     SampleType fixedSampleType;
@@ -39,6 +51,7 @@ public class SoraSample : MonoBehaviour
     public string channelId = "";
     public string clientId = "";
     public string bundleId = "";
+    public string signalingNotifyMetadata = "";
     public string accessToken = "";
 
     public bool captureUnityCamera;
@@ -47,6 +60,13 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
+    public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
+    // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
+    public int audioCodecLyraBitrate = 0;
+    public bool enableAudioCodecLyraUsedtx = false;
+    public bool audioCodecLyraUsedtx = false;
+    public bool checkLyraVersion = false;
+    public string audioStreamingLanguageCode = "";
 
     public bool unityAudioInput = false;
     public AudioSource audioSourceInput;
@@ -156,9 +176,12 @@ public class SoraSample : MonoBehaviour
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
         }
-        started = false;
+        SetState(State.Init);
         StartCoroutine(Render());
         StartCoroutine(GetStats());
+#if !UNITY_EDITOR && UNITY_ANDROID
+        StartCoroutine(SaveStreamingAssetsToLocal());
+#endif
     }
 
     IEnumerator Render()
@@ -166,11 +189,11 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
-            if (started)
+            if (state == State.Started)
             {
                 sora.OnRender();
             }
-            if (started && unityAudioInput && !Recvonly)
+            if (state == State.Started && unityAudioInput && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
                 if (AudioSettings.speakerMode == AudioSpeakerMode.Stereo)
@@ -189,7 +212,7 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(10);
-            if (!started)
+            if (state != State.Started)
             {
                 continue;
             }
@@ -275,6 +298,10 @@ public class SoraSample : MonoBehaviour
                 }
             };
         }
+        sora.OnSetOffer = (json) =>
+        {
+            Debug.LogFormat("OnSetOffer: {0}", json);
+        };
         sora.OnNotify = (json) =>
         {
             Debug.LogFormat("OnNotify: {0}", json);
@@ -378,11 +405,11 @@ public class SoraSample : MonoBehaviour
         }
         sora.Disconnect();
         DestroyComponents();
-        started = false;
+        SetState(State.Disconnecting);
     }
     void DestroyComponents()
     {
-        if (!started)
+        if (state != State.Started)
         {
             return;
         }
@@ -416,7 +443,36 @@ public class SoraSample : MonoBehaviour
         sora = null;
         Debug.Log("Sora is Disposed");
         DestroyComponents();
-        started = false;
+        SetState(State.Init);
+    }
+
+    void SetState(State state)
+    {
+        if (state == State.Init)
+        {
+            buttonStart.interactable = true;
+            buttonEnd.interactable = false;
+            buttonSend.interactable = false;
+            if (buttonVideoMute != null) buttonVideoMute.interactable = false;
+            if (buttonAudioMute != null) buttonAudioMute.interactable = false;
+        }
+        if (state == State.Started)
+        {
+            buttonStart.interactable = false;
+            buttonEnd.interactable = true;
+            buttonSend.interactable = true;
+            if (buttonVideoMute != null) buttonVideoMute.interactable = true;
+            if (buttonAudioMute != null) buttonAudioMute.interactable = true;
+        }
+        if (state == State.Disconnecting)
+        {
+            buttonStart.interactable = false;
+            buttonEnd.interactable = false;
+            buttonSend.interactable = false;
+            if (buttonVideoMute != null) buttonVideoMute.interactable = false;
+            if (buttonAudioMute != null) buttonAudioMute.interactable = false;
+        }
+        this.state = state;
     }
 
     [Serializable]
@@ -429,6 +485,12 @@ public class SoraSample : MonoBehaviour
     }
 
     [Serializable]
+    class SignalingNotifyMetadata
+    {
+        public string message_for_signaling_notify;
+    }
+
+    [Serializable]
     class Metadata
     {
         public string access_token;
@@ -436,6 +498,11 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickStart()
     {
+        if (!savedAssetsToLocal)
+        {
+            return;
+        }
+
         // 開発用の機能。
         // .env.json ファイルがあったら、それを読んでシグナリングURLとチャンネルIDを設定する。
         if (signalingUrl.Length == 0 && channelId.Length == 0 && System.IO.File.Exists(".env.json"))
@@ -456,6 +523,15 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogError("チャンネル ID が設定されていません");
             return;
+        }
+        // signalingNotifyMetadata がある場合はメタデータを設定する
+        if (signalingNotifyMetadata.Length != 0)
+        {
+            var snmd = new SignalingNotifyMetadata()
+            {
+                message_for_signaling_notify = signalingNotifyMetadata
+            };
+            signalingNotifyMetadata = JsonUtility.ToJson(snmd);
         }
         // accessToken がある場合はメタデータを設定する
         string metadata = "";
@@ -497,6 +573,15 @@ public class SoraSample : MonoBehaviour
                 break;
         }
 
+        if (audioCodecType == Sora.AudioCodecType.LYRA) {
+            string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
+#if !UNITY_EDITOR && UNITY_ANDROID
+            modelPath = Application.temporaryCachePath;
+#endif
+            Debug.Log("SORA_LYRA_MODEL_COEFFS_PATH=" + modelPath);
+            Sora.Setenv("SORA_LYRA_MODEL_COEFFS_PATH", modelPath);
+        }
+
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
@@ -504,6 +589,7 @@ public class SoraSample : MonoBehaviour
             ChannelId = channelId,
             ClientId = clientId,
             BundleId = bundleId,
+            SignalingNotifyMetadata = signalingNotifyMetadata,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
@@ -515,6 +601,10 @@ public class SoraSample : MonoBehaviour
             VideoFps = videoFps,
             VideoWidth = videoWidth,
             VideoHeight = videoHeight,
+            AudioCodecType = audioCodecType,
+            AudioCodecLyraBitrate = audioCodecLyraBitrate,
+            CheckLyraVersion = checkLyraVersion,
+            AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
             VideoCapturerDevice = videoCapturerDevice,
@@ -540,16 +630,18 @@ public class SoraSample : MonoBehaviour
             config.CapturerType = Sora.CapturerType.UnityCamera;
             config.UnityCamera = capturedCamera;
         }
+        if (enableAudioCodecLyraUsedtx)
+        {
+            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
+        }
         if (spotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRidType;
         }
-
         if (spotlightUnfocusRid)
         {
             config.SpotlightUnfocusRid = spotlightUnfocusRidType;
         }
-
         if (simulcastRid)
         {
             config.SimulcastRid = simulcastRidType;
@@ -572,7 +664,7 @@ public class SoraSample : MonoBehaviour
         }
 
         sora.Connect(config);
-        started = true;
+        SetState(State.Started);
         Debug.LogFormat("Sora is Created: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
     }
     public void OnClickEnd()
@@ -614,5 +706,41 @@ public class SoraSample : MonoBehaviour
     void OnApplicationQuit()
     {
         DisposeSora();
+    }
+
+    // Android の場合、StreamingAssets へのパスは apk バイナリ内への URI になるため、
+    // ネイティブ側のコードで読み込むことができない。
+    // そのため Unity 側で StreamingAssets にあるデータを読み込んでローカルに保存することで、
+    // ネイティブ側で利用可能にする。
+    bool savedAssetsToLocal = true;
+    IEnumerator SaveStreamingAssetsToLocal()
+    {
+        savedAssetsToLocal = false;
+        string[] files = {"lyra_config.binarypb", "lyragan.tflite", "quantizer.tflite", "soundstream_encoder.tflite"};
+        string baseUrl = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
+        foreach (string file in files)
+        {
+            string outPath = System.IO.Path.Combine(Application.temporaryCachePath, file);
+            if (System.IO.File.Exists(outPath))
+            {
+                continue;
+            }
+
+            byte[] data;
+            string uri = baseUrl + "/" + file;
+            using (var req = UnityEngine.Networking.UnityWebRequest.Get(uri))
+            {
+                yield return req.SendWebRequest();
+
+                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("Failed to Get: uri=" + uri + " error=" + req.error);
+                    yield break;
+                }
+                data = req.downloadHandler.data;
+            }
+            System.IO.File.WriteAllBytes(outPath, data);
+        }
+        savedAssetsToLocal = true;
     }
 }

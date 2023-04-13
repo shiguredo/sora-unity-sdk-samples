@@ -17,14 +17,14 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Sora バージョン
 
-- WebRTC SFU Sora 2022.1.3 以降
+- WebRTC SFU Sora 2022.2.0 以降
 
 ## 対応 プラットフォーム
 
 - Windows 10 1809 x86_64 以降
-- macOS 12.4 M1 以降
+- macOS 13.3 M1 以降
 - Android 7 以降
-- iOS 12 以降
+- iOS 13 以降
 - Ubuntu 20.04 x86_64
 
 ## Sora Unity SDK サンプル集を使ってみる
@@ -73,7 +73,7 @@ python3 install.py
 
     - `Signaling Url`: シグナリング URL
     - `Channel Id`: チャネル ID
-    - `Access Token`: Sora Labo 向けのアクセストークン
+    - `Access Token`: Sora Labo, Sora Cloud 向けのアクセストークン
 
 4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
     映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
@@ -89,8 +89,8 @@ python3 install.py
 Apache License 2.0
 
 ```
-Copyright 2019-2022, Wandbox LLC (Original Author)
-Copyright 2019-2022, Shiguredo Inc
+Copyright 2019-2023, Wandbox LLC (Original Author)
+Copyright 2019-2023, Shiguredo Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

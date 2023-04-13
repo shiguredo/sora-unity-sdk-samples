@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -554,7 +554,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00005634562}
+  m_AnchoredPosition: {x: 0, y: 0.00016804073}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &527347498
@@ -2032,7 +2032,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1621032052}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9995116
+  m_Size: 0.99974257
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2605,6 +2605,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55ab6b1a03c1f314bbb0a245b1741ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonStart: {fileID: 1900295221}
+  buttonEnd: {fileID: 1586870540}
+  buttonSend: {fileID: 1546352282}
+  buttonVideoMute: {fileID: 1383599888}
+  buttonAudioMute: {fileID: 1782410807}
   sampleType: 0
   renderTarget: {fileID: 0}
   scrollViewContent: {fileID: 527347496}
@@ -2615,12 +2620,15 @@ MonoBehaviour:
   channelId: 
   clientId: 
   bundleId: 
-  signalingKey: 
+  accessToken: 
   captureUnityCamera: 0
   capturedCamera: {fileID: 759273323}
   video: 1
   audio: 1
   videoCodecType: 0
+  audioCodecType: 0
+  useDtx: 0
+  audioStreamingLanguageCode: 
   unityAudioInput: 0
   audioSourceInput: {fileID: 1000410327}
   unityAudioOutput: 0
@@ -2638,13 +2646,12 @@ MonoBehaviour:
   simulcastRid: 0
   simulcastRidType: 0
   videoBitRate: 0
+  videoFps: 30
   videoSize: 1
   dataChannelSignaling: 0
   dataChannelSignalingTimeout: 30
   ignoreDisconnectWebsocket: 0
   disconnectWaitTimeout: 5
-  AudioEnabled: 0
-  VideoEnabled: 0
   dataChannels: []
   proxyUrl: 
   proxyUsername: 
