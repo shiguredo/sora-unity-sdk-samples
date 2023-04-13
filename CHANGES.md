@@ -11,6 +11,22 @@
 
 ## develop
 
+- [UPDATE] Sora Unity SDK 2023.1.0 にあげる
+    - @miosakuma
+- [ADD] オーディオコーデックに Lyra を追加
+    - @melpon, @torikizi
+- [ADD] SignalingNotifyMetadata の設定を追加
+    - @torikizi
+- [ADD] AudioStreamingLanguageCode の設定を追加
+    - @melpon
+- [ADD] デバッグバイナリをコピーする機能を追加
+    - @melpon
+- [ADD] OnSetOffer コールバックを追加
+    - @melpon
+- [FIX] 開始ボタンを 2 回連続で押した時にクラッシュする不具合を修正
+    - 開始、終了ボタンの表示制御を行う
+    - @melpon
+
 ## sora-unity-sdk-2022.6.0
 
 - [CHANGE] tobiAccessToken の設定を削除
