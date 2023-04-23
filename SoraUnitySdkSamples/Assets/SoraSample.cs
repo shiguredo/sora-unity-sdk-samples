@@ -98,6 +98,35 @@ public class SoraSample : MonoBehaviour
         _4K,
     }
     public VideoSize videoSize = VideoSize.VGA;
+
+    // 追加
+    [System.Serializable]
+    public class Rule
+    {
+        public string field;
+        public string op;
+        public string[] values;
+    }
+    [System.Serializable]
+    public class RuleList
+    {
+        public string action;
+        public Rule[] data;
+    }
+
+    [Header("ForwardingFilter の設定")]
+    public RuleList[] forwardingFilters;
+
+    // Inspector の見た目の調整用
+    [Header(" ")]
+    [Header(" ")]
+    [Header(" ")]
+    [Header(" ")]
+    [Header(" ")]
+    [Header(" ")]
+    [Header(" ")]
+    [Header(" ")]
+
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
@@ -662,6 +691,30 @@ public class SoraSample : MonoBehaviour
                 config.DataChannels.Add(c);
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
+        }
+        if (forwardingFilters != null)
+        {
+            foreach (var rs in forwardingFilters)
+            {
+                // forwardingFilters.Action をいれる 
+                // まずは Rule の設定が可能か確認したいので一度コメントアウト Sora.cs のほうは ActionAllow を設定しておく
+                //config.ForwardingFilter.Action = rs.action;
+                var ccrs = new List<Sora.ForwardingFilter.Rule>();
+                foreach (var r in rs.data)
+                {
+                    var ccr = new Sora.ForwardingFilter.Rule();
+                    ccr.Field = r.field;
+                    ccr.Operator = r.op;
+                    ccr.Values = new List<string>();
+                    foreach (var v in r.values)
+                    {
+                        ccr.Values.Add(v);
+                    }
+                    ccrs.Add(ccr);
+                }
+                Debug.Log(config.ForwardingFilter);
+                config.ForwardingFilter.Rules.Add(ccrs);
+            }
         }
 
         sora.Connect(config);
