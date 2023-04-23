@@ -525,13 +525,14 @@ public class SoraSample : MonoBehaviour
             return;
         }
         // signalingNotifyMetadata がある場合はメタデータを設定する
+        string signalingNotifyMetadataJson = "";
         if (signalingNotifyMetadata.Length != 0)
         {
             var snmd = new SignalingNotifyMetadata()
             {
                 message_for_signaling_notify = signalingNotifyMetadata
             };
-            signalingNotifyMetadata = JsonUtility.ToJson(snmd);
+            signalingNotifyMetadataJson = JsonUtility.ToJson(snmd);
         }
         // accessToken がある場合はメタデータを設定する
         string metadata = "";
@@ -589,7 +590,7 @@ public class SoraSample : MonoBehaviour
             ChannelId = channelId,
             ClientId = clientId,
             BundleId = bundleId,
-            SignalingNotifyMetadata = signalingNotifyMetadata,
+            SignalingNotifyMetadata = signalingNotifyMetadataJson,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
