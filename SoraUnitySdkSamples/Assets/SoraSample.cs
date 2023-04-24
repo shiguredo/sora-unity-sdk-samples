@@ -694,11 +694,10 @@ public class SoraSample : MonoBehaviour
         }
         if (forwardingFilters != null)
         {
+            config.ForwardingFilter = new Sora.ForwardingFilter();
             foreach (var rs in forwardingFilters)
             {
-                // forwardingFilters.Action をいれる 
-                // まずは Rule の設定が可能か確認したいので一度コメントアウト Sora.cs のほうは ActionAllow を設定しておく
-                //config.ForwardingFilter.Action = rs.action;
+                config.ForwardingFilter.Action = rs.action;
                 var ccrs = new List<Sora.ForwardingFilter.Rule>();
                 foreach (var r in rs.data)
                 {
