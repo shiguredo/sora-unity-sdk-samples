@@ -110,11 +110,11 @@ public class SoraSample : MonoBehaviour
     [System.Serializable]
     public class RuleList
     {
-        public string action;
         public Rule[] data;
     }
 
     [Header("ForwardingFilter の設定")]
+    public string forwardingFilterAction;
     public RuleList[] forwardingFilters;
 
     // Inspector の見た目の調整用
@@ -692,12 +692,12 @@ public class SoraSample : MonoBehaviour
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
         }
-        if (forwardingFilters != null)
+        if (forwardingFilters.Length != 0)
         {
             config.ForwardingFilter = new Sora.ForwardingFilter();
+            config.ForwardingFilter.Action = forwardingFilterAction;
             foreach (var rs in forwardingFilters)
             {
-                config.ForwardingFilter.Action = rs.action;
                 var ccrs = new List<Sora.ForwardingFilter.Rule>();
                 foreach (var r in rs.data)
                 {
