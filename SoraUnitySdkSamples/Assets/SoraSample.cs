@@ -117,16 +117,6 @@ public class SoraSample : MonoBehaviour
     public string forwardingFilterAction;
     public RuleList[] forwardingFilters;
 
-    // Inspector の見た目の調整用
-    [Header(" ")]
-    [Header(" ")]
-    [Header(" ")]
-    [Header(" ")]
-    [Header(" ")]
-    [Header(" ")]
-    [Header(" ")]
-    [Header(" ")]
-
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
