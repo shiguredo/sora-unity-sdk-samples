@@ -99,7 +99,6 @@ public class SoraSample : MonoBehaviour
     }
     public VideoSize videoSize = VideoSize.VGA;
 
-    // 追加
     [System.Serializable]
     public class Rule
     {
@@ -115,7 +114,7 @@ public class SoraSample : MonoBehaviour
 
     [Header("ForwardingFilter の設定")]
     public string forwardingFilterAction;
-    public RuleList[] forwardingFilters;
+    public RuleList[] forwardingFilter;
 
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
@@ -682,11 +681,11 @@ public class SoraSample : MonoBehaviour
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
         }
-        if (forwardingFilters.Length != 0)
+        if (forwardingFilter.Length != 0)
         {
             config.ForwardingFilter = new Sora.ForwardingFilter();
             config.ForwardingFilter.Action = forwardingFilterAction;
-            foreach (var rs in forwardingFilters)
+            foreach (var rs in forwardingFilter)
             {
                 var ccrs = new List<Sora.ForwardingFilter.Rule>();
                 foreach (var r in rs.data)
@@ -694,14 +693,12 @@ public class SoraSample : MonoBehaviour
                     var ccr = new Sora.ForwardingFilter.Rule();
                     ccr.Field = r.field;
                     ccr.Operator = r.op;
-                    ccr.Values = new List<string>();
                     foreach (var v in r.values)
                     {
                         ccr.Values.Add(v);
                     }
                     ccrs.Add(ccr);
                 }
-                Debug.Log(config.ForwardingFilter);
                 config.ForwardingFilter.Rules.Add(ccrs);
             }
         }
