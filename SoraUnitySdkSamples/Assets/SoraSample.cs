@@ -60,9 +60,9 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
-    public string VideoVp9Params = "";
-    public string VideoAv1Params = "";
-    public string VideoH264Params = "";
+    public string videoVp9Params = "";
+    public string videoAv1Params = "";
+    public string videoH264Params = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public int audioCodecLyraBitrate = 0;
