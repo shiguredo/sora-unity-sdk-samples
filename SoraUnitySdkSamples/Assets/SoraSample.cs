@@ -60,6 +60,9 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
+    public string VideoVp9Params = "";
+    public string VideoAv1Params = "";
+    public string VideoH264Params = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public int audioCodecLyraBitrate = 0;
@@ -495,6 +498,21 @@ public class SoraSample : MonoBehaviour
     {
         public string access_token;
     }
+    [Serializable]
+    class VideoVp9Params
+    {
+        public string params_for_vp9;
+    }
+    [Serializable]
+    class VideoAv1Params
+    {
+        public string params_for_av1;
+    }
+    [Serializable]
+    class Videoh264Params
+    {
+        public string params_for_h264;
+    }
 
     public void OnClickStart()
     {
@@ -543,6 +561,36 @@ public class SoraSample : MonoBehaviour
                 access_token = accessToken
             };
             metadata = JsonUtility.ToJson(md);
+        }
+        // videoVp9Params がある場合はメタデータを設定する
+        string videoVp9ParamsJson = "";
+        if (videoVp9Params.Length != 0)
+        {
+            var vp9Params = new VideoVp9Params()
+            {
+                params_for_vp9 = videoVp9Params
+            };
+            videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
+        }
+        // videoAv1Params がある場合はメタデータを設定する
+        string videoAv1ParamsJson = "";
+        if (videoAv1Params.Length != 0)
+        {
+            var av1Params = new VideoAv1Params()
+            {
+                params_for_av1 = videoAv1Params
+            };
+            videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
+        }
+        // videoH264Params がある場合はメタデータを設定する
+        string videoH264ParamsJson = "";
+        if (videoH264Params.Length != 0)
+        {
+            var h264Params = new Videoh264Params()
+            {
+                params_for_h264 = videoH264Params
+            };
+            videoH264ParamsJson = JsonUtility.ToJson(h264Params);
         }
 
         InitSora();
@@ -598,6 +646,9 @@ public class SoraSample : MonoBehaviour
             Video = video,
             Audio = audio,
             VideoCodecType = videoCodecType,
+            VideoVp9Params = videoVp9ParamsJson,
+            VideoAv1Params = videoAv1ParamsJson,
+            VideoH264Params = videoH264ParamsJson,
             VideoBitRate = videoBitRate,
             VideoFps = videoFps,
             VideoWidth = videoWidth,
