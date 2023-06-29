@@ -501,17 +501,17 @@ public class SoraSample : MonoBehaviour
     [Serializable]
     class VideoVp9Params
     {
-        public string params_for_vp9;
+        public int profile_id;
     }
     [Serializable]
     class VideoAv1Params
     {
-        public string params_for_av1;
+        public int profile;
     }
     [Serializable]
     class Videoh264Params
     {
-        public string params_for_h264;
+        public string profile_level_id;
     }
 
     public void OnClickStart()
@@ -566,21 +566,33 @@ public class SoraSample : MonoBehaviour
         string videoVp9ParamsJson = "";
         if (videoVp9Params.Length != 0)
         {
-            var vp9Params = new VideoVp9Params()
+            int profile_id;
+            bool isParseSuccessful = Int32.TryParse(videoVp9Params, out profile_id);
+
+            if (isParseSuccessful)
             {
-                params_for_vp9 = videoVp9Params
-            };
-            videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
+                var vp9Params = new VideoVp9Params()
+                {
+                    profile_id = profile_id
+                };
+                videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
+            }
         }
         // videoAv1Params がある場合はメタデータを設定する
         string videoAv1ParamsJson = "";
         if (videoAv1Params.Length != 0)
         {
-            var av1Params = new VideoAv1Params()
+            int profile;
+            bool isParseSuccessful = Int32.TryParse(videoAv1Params, out profile);
+
+            if (isParseSuccessful)
             {
-                params_for_av1 = videoAv1Params
-            };
-            videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
+                var av1Params = new VideoAv1Params()
+                {
+                    profile = profile
+                };
+                videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
+            }
         }
         // videoH264Params がある場合はメタデータを設定する
         string videoH264ParamsJson = "";
@@ -588,7 +600,7 @@ public class SoraSample : MonoBehaviour
         {
             var h264Params = new Videoh264Params()
             {
-                params_for_h264 = videoH264Params
+                profile_level_id = videoH264Params
             };
             videoH264ParamsJson = JsonUtility.ToJson(h264Params);
         }
