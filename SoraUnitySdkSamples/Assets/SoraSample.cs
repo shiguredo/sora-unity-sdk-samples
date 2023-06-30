@@ -60,9 +60,9 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
-    public string videoVp9Params = "";
-    public string videoAv1Params = "";
-    public string videoH264Params = "";
+    public string videoVp9ParamsProfileId = "";
+    public string videoAv1ParamsProfile = "";
+    public string videoH264ParamsProfileLevelId = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public int audioCodecLyraBitrate = 0;
@@ -564,10 +564,10 @@ public class SoraSample : MonoBehaviour
         }
         // videoVp9Params がある場合はメタデータを設定する
         string videoVp9ParamsJson = "";
-        if (videoVp9Params.Length != 0)
+        if (videoVp9ParamsProfileId.Length != 0)
         {
             int profile_id;
-            bool isParseSuccessful = Int32.TryParse(videoVp9Params, out profile_id);
+            bool isParseSuccessful = Int32.TryParse(videoVp9ParamsProfileId, out profile_id);
 
             if (isParseSuccessful)
             {
@@ -580,10 +580,10 @@ public class SoraSample : MonoBehaviour
         }
         // videoAv1Params がある場合はメタデータを設定する
         string videoAv1ParamsJson = "";
-        if (videoAv1Params.Length != 0)
+        if (videoAv1ParamsProfile.Length != 0)
         {
             int profile;
-            bool isParseSuccessful = Int32.TryParse(videoAv1Params, out profile);
+            bool isParseSuccessful = Int32.TryParse(videoAv1ParamsProfile, out profile);
 
             if (isParseSuccessful)
             {
@@ -596,11 +596,11 @@ public class SoraSample : MonoBehaviour
         }
         // videoH264Params がある場合はメタデータを設定する
         string videoH264ParamsJson = "";
-        if (videoH264Params.Length != 0)
+        if (videoH264ParamsProfileLevelId.Length != 0)
         {
             var h264Params = new Videoh264Params()
             {
-                profile_level_id = videoH264Params
+                profile_level_id = videoH264ParamsProfileLevelId
             };
             videoH264ParamsJson = JsonUtility.ToJson(h264Params);
         }
