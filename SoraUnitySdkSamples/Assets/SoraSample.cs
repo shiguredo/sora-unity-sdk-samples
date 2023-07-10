@@ -569,10 +569,9 @@ public class SoraSample : MonoBehaviour
         string videoVp9ParamsJson = "";
         if (enableVideoVp9Params)
         {
-            int profile_id = 0;
             var vp9Params = new VideoVp9Params()
             {
-                profile_id = profile_id
+                profile_id = videoVp9ParamsProfileId
             };
             videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
         }
@@ -580,10 +579,9 @@ public class SoraSample : MonoBehaviour
         string videoAv1ParamsJson = "";
         if (enableVideoAv1Params)
         {
-            int profile = 0;
             var av1Params = new VideoAv1Params()
             {
-                profile = profile
+                profile = videoAv1ParamsProfile
             };
             videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
         }
