@@ -60,8 +60,11 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
-    public string videoVp9ParamsProfileId = "";
-    public string videoAv1ParamsProfile = "";
+    public bool enableVideoVp9Params = false;
+    public int videoVp9ParamsProfileId;
+    public bool enableVideoAv1Params = false;
+    public int videoAv1ParamsProfile;
+    public bool enableVideoH264Params = false;
     public string videoH264ParamsProfileLevelId = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
@@ -509,7 +512,7 @@ public class SoraSample : MonoBehaviour
         public int profile;
     }
     [Serializable]
-    class Videoh264Params
+    class VideoH264Params
     {
         public string profile_level_id;
     }
@@ -562,43 +565,33 @@ public class SoraSample : MonoBehaviour
             };
             metadata = JsonUtility.ToJson(md);
         }
-        // videoVp9Params がある場合はメタデータを設定する
+        // enableVideoVp9Params が true の場合はメタデータを設定する
         string videoVp9ParamsJson = "";
-        if (videoVp9ParamsProfileId.Length != 0)
+        if (enableVideoVp9Params)
         {
-            int profile_id;
-            bool isParseSuccessful = Int32.TryParse(videoVp9ParamsProfileId, out profile_id);
-
-            if (isParseSuccessful)
+            int profile_id = 0;
+            var vp9Params = new VideoVp9Params()
             {
-                var vp9Params = new VideoVp9Params()
-                {
-                    profile_id = profile_id
-                };
-                videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
-            }
+                profile_id = profile_id
+            };
+            videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
         }
-        // videoAv1Params がある場合はメタデータを設定する
+        // enableVideoAv1Params が true の場合はメタデータを設定する
         string videoAv1ParamsJson = "";
-        if (videoAv1ParamsProfile.Length != 0)
+        if (enableVideoAv1Params)
         {
-            int profile;
-            bool isParseSuccessful = Int32.TryParse(videoAv1ParamsProfile, out profile);
-
-            if (isParseSuccessful)
+            int profile = 0;
+            var av1Params = new VideoAv1Params()
             {
-                var av1Params = new VideoAv1Params()
-                {
-                    profile = profile
-                };
-                videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
-            }
+                profile = profile
+            };
+            videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
         }
-        // videoH264Params がある場合はメタデータを設定する
+        // enableVideoH264Params が true の場合はメタデータを設定する
         string videoH264ParamsJson = "";
-        if (videoH264ParamsProfileLevelId.Length != 0)
+        if (enableVideoH264Params)
         {
-            var h264Params = new Videoh264Params()
+            var h264Params = new VideoH264Params()
             {
                 profile_level_id = videoH264ParamsProfileLevelId
             };
