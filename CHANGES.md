@@ -11,6 +11,12 @@
 
 ## develop
 
+- [ADD] CodecParams の設定を追加
+    - video_vp9_params を追加
+    - video_av1_params を追加
+    - video_h264_params を追加
+    - @torikizi
+
 ## sora-unity-sdk-2023.1.0
 
 - [UPDATE] Sora Unity SDK 2023.1.0 にあげる
