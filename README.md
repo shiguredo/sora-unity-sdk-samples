@@ -17,12 +17,12 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Sora バージョン
 
-- WebRTC SFU Sora 2022.2.0 以降
+- WebRTC SFU Sora 2023.1.0 以降
 
 ## 対応 プラットフォーム
 
-- Windows 10 1809 x86_64 以降
-- macOS 13.3 M1 以降
+- Windows 10 22H2 x86_64 以降
+- macOS 13.4.1 M1 以降
 - Android 7 以降
 - iOS 13 以降
 - Ubuntu 20.04 x86_64
