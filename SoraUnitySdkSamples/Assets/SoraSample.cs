@@ -60,6 +60,12 @@ public class SoraSample : MonoBehaviour
     public bool video = true;
     public new bool audio = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
+    public bool enableVideoVp9Params = false;
+    public int videoVp9ParamsProfileId;
+    public bool enableVideoAv1Params = false;
+    public int videoAv1ParamsProfile;
+    public bool enableVideoH264Params = false;
+    public string videoH264ParamsProfileLevelId = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
     public int audioCodecLyraBitrate = 0;
@@ -98,6 +104,24 @@ public class SoraSample : MonoBehaviour
         _4K,
     }
     public VideoSize videoSize = VideoSize.VGA;
+
+    [System.Serializable]
+    public class Rule
+    {
+        public string field;
+        public string op;
+        public string[] values;
+    }
+    [System.Serializable]
+    public class RuleList
+    {
+        public Rule[] data;
+    }
+
+    [Header("ForwardingFilter の設定")]
+    public string forwardingFilterAction;
+    public RuleList[] forwardingFilter;
+
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
@@ -495,6 +519,21 @@ public class SoraSample : MonoBehaviour
     {
         public string access_token;
     }
+    [Serializable]
+    class VideoVp9Params
+    {
+        public int profile_id;
+    }
+    [Serializable]
+    class VideoAv1Params
+    {
+        public int profile;
+    }
+    [Serializable]
+    class VideoH264Params
+    {
+        public string profile_level_id;
+    }
 
     public void OnClickStart()
     {
@@ -525,13 +564,14 @@ public class SoraSample : MonoBehaviour
             return;
         }
         // signalingNotifyMetadata がある場合はメタデータを設定する
+        string signalingNotifyMetadataJson = "";
         if (signalingNotifyMetadata.Length != 0)
         {
             var snmd = new SignalingNotifyMetadata()
             {
                 message_for_signaling_notify = signalingNotifyMetadata
             };
-            signalingNotifyMetadata = JsonUtility.ToJson(snmd);
+            signalingNotifyMetadataJson = JsonUtility.ToJson(snmd);
         }
         // accessToken がある場合はメタデータを設定する
         string metadata = "";
@@ -542,6 +582,36 @@ public class SoraSample : MonoBehaviour
                 access_token = accessToken
             };
             metadata = JsonUtility.ToJson(md);
+        }
+        // enableVideoVp9Params が true の場合はメタデータを設定する
+        string videoVp9ParamsJson = "";
+        if (enableVideoVp9Params)
+        {
+            var vp9Params = new VideoVp9Params()
+            {
+                profile_id = videoVp9ParamsProfileId
+            };
+            videoVp9ParamsJson = JsonUtility.ToJson(vp9Params);
+        }
+        // enableVideoAv1Params が true の場合はメタデータを設定する
+        string videoAv1ParamsJson = "";
+        if (enableVideoAv1Params)
+        {
+            var av1Params = new VideoAv1Params()
+            {
+                profile = videoAv1ParamsProfile
+            };
+            videoAv1ParamsJson = JsonUtility.ToJson(av1Params);
+        }
+        // enableVideoH264Params が true の場合はメタデータを設定する
+        string videoH264ParamsJson = "";
+        if (enableVideoH264Params)
+        {
+            var h264Params = new VideoH264Params()
+            {
+                profile_level_id = videoH264ParamsProfileLevelId
+            };
+            videoH264ParamsJson = JsonUtility.ToJson(h264Params);
         }
 
         InitSora();
@@ -589,7 +659,7 @@ public class SoraSample : MonoBehaviour
             ChannelId = channelId,
             ClientId = clientId,
             BundleId = bundleId,
-            SignalingNotifyMetadata = signalingNotifyMetadata,
+            SignalingNotifyMetadata = signalingNotifyMetadataJson,
             Metadata = metadata,
             Role = Role,
             Multistream = Multistream,
@@ -597,6 +667,9 @@ public class SoraSample : MonoBehaviour
             Video = video,
             Audio = audio,
             VideoCodecType = videoCodecType,
+            VideoVp9Params = videoVp9ParamsJson,
+            VideoAv1Params = videoAv1ParamsJson,
+            VideoH264Params = videoH264ParamsJson,
             VideoBitRate = videoBitRate,
             VideoFps = videoFps,
             VideoWidth = videoWidth,
@@ -661,6 +734,27 @@ public class SoraSample : MonoBehaviour
                 config.DataChannels.Add(c);
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
+        }
+        if (forwardingFilter.Length != 0)
+        {
+            config.ForwardingFilter = new Sora.ForwardingFilter();
+            config.ForwardingFilter.Action = forwardingFilterAction;
+            foreach (var rs in forwardingFilter)
+            {
+                var ccrs = new List<Sora.ForwardingFilter.Rule>();
+                foreach (var r in rs.data)
+                {
+                    var ccr = new Sora.ForwardingFilter.Rule();
+                    ccr.Field = r.field;
+                    ccr.Operator = r.op;
+                    foreach (var v in r.values)
+                    {
+                        ccr.Values.Add(v);
+                    }
+                    ccrs.Add(ccr);
+                }
+                config.ForwardingFilter.Rules.Add(ccrs);
+            }
         }
 
         sora.Connect(config);

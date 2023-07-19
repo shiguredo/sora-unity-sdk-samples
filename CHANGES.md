@@ -11,6 +11,18 @@
 
 ## develop
 
+## sora-unity-sdk-2023.2.0
+
+- [ADD] CodecParams の設定を追加
+    - video_vp9_params を追加
+    - video_av1_params を追加
+    - video_h264_params を追加
+    - @torikizi
+- [ADD] forwardingfilter の設定を追加
+    - @torikizi
+- [FIX] signalingNotifyMetadata が JSON 文字列化を再帰的に行っているのを修正
+    - @melpon
+
 ## sora-unity-sdk-2023.1.0
 
 - [UPDATE] Sora Unity SDK 2023.1.0 にあげる
