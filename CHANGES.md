@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2023.2.0
+
 - [ADD] CodecParams の設定を追加
     - video_vp9_params を追加
     - video_av1_params を追加
