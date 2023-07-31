@@ -616,34 +616,12 @@ public class SoraSample : MonoBehaviour
 
         InitSora();
 
-        int videoWidth = 640;
-        int videoHeight = 480;
+        int videoWidth;
+        int videoHeight;
+        GetVideoSize(videoSize, out videoWidth, out videoHeight);
 
-        switch (videoSize)
+        if (audioCodecType == Sora.AudioCodecType.LYRA)
         {
-            case VideoSize.QVGA:
-                videoWidth = 320;
-                videoHeight = 240;
-                break;
-            case VideoSize.VGA:
-                videoWidth = 640;
-                videoHeight = 480;
-                break;
-            case VideoSize.HD:
-                videoWidth = 1280;
-                videoHeight = 720;
-                break;
-            case VideoSize.FHD:
-                videoWidth = 1920;
-                videoHeight = 1080;
-                break;
-            case VideoSize._4K:
-                videoWidth = 3840;
-                videoHeight = 2160;
-                break;
-        }
-
-        if (audioCodecType == Sora.AudioCodecType.LYRA) {
             string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
 #if !UNITY_EDITOR && UNITY_ANDROID
             modelPath = Application.temporaryCachePath;
@@ -671,16 +649,21 @@ public class SoraSample : MonoBehaviour
             VideoAv1Params = videoAv1ParamsJson,
             VideoH264Params = videoH264ParamsJson,
             VideoBitRate = videoBitRate,
-            VideoFps = videoFps,
-            VideoWidth = videoWidth,
-            VideoHeight = videoHeight,
+            CameraConfig = new Sora.CameraConfig()
+            {
+                CapturerType = captureUnityCamera && capturedCamera != null ? Sora.CapturerType.UnityCamera : Sora.CapturerType.DeviceCamera,
+                UnityCamera = capturedCamera,
+                VideoFps = videoFps,
+                VideoWidth = videoWidth,
+                VideoHeight = videoHeight,
+                VideoCapturerDevice = videoCapturerDevice,
+            },
             AudioCodecType = audioCodecType,
             AudioCodecLyraBitrate = audioCodecLyraBitrate,
             CheckLyraVersion = checkLyraVersion,
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
-            VideoCapturerDevice = videoCapturerDevice,
             AudioRecordingDevice = audioRecordingDevice,
             AudioPlayoutDevice = audioPlayoutDevice,
             Spotlight = spotlight,
@@ -698,11 +681,6 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
-        if (captureUnityCamera && capturedCamera != null)
-        {
-            config.CapturerType = Sora.CapturerType.UnityCamera;
-            config.UnityCamera = capturedCamera;
-        }
         if (enableAudioCodecLyraUsedtx)
         {
             config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
@@ -761,6 +739,37 @@ public class SoraSample : MonoBehaviour
         SetState(State.Started);
         Debug.LogFormat("Sora is Created: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
     }
+
+    private static void GetVideoSize(VideoSize videoSize, out int videoWidth, out int videoHeight)
+    {
+        videoWidth = 640;
+        videoHeight = 480;
+
+        switch (videoSize)
+        {
+            case VideoSize.QVGA:
+                videoWidth = 320;
+                videoHeight = 240;
+                break;
+            case VideoSize.VGA:
+                videoWidth = 640;
+                videoHeight = 480;
+                break;
+            case VideoSize.HD:
+                videoWidth = 1280;
+                videoHeight = 720;
+                break;
+            case VideoSize.FHD:
+                videoWidth = 1920;
+                videoHeight = 1080;
+                break;
+            case VideoSize._4K:
+                videoWidth = 3840;
+                videoHeight = 2160;
+                break;
+        }
+    }
+
     public void OnClickEnd()
     {
         DisconnectSora();
@@ -786,7 +795,7 @@ public class SoraSample : MonoBehaviour
         {
             return;
         }
-        sora.VideoEnabled = !sora.VideoEnabled; 
+        sora.VideoEnabled = !sora.VideoEnabled;
     }
     public void OnClickAudioMute()
     {
@@ -794,7 +803,29 @@ public class SoraSample : MonoBehaviour
         {
             return;
         }
-        sora.AudioEnabled = !sora.AudioEnabled; 
+        sora.AudioEnabled = !sora.AudioEnabled;
+    }
+
+    public void OnClickSwitchCamera()
+    {
+        if (sora == null)
+        {
+            return;
+        }
+        int videoWidth;
+        int videoHeight;
+        GetVideoSize(videoSize, out videoWidth, out videoHeight);
+
+        if (captureUnityCamera)
+        {
+            sora.SwitchCamera(Sora.CameraConfig.FromDeviceCamera(videoCapturerDevice, videoWidth, videoHeight, videoFps));
+            captureUnityCamera = false;
+        }
+        else
+        {
+            sora.SwitchCamera(Sora.CameraConfig.FromUnityCamera(capturedCamera, 16, videoWidth, videoHeight, videoFps));
+            captureUnityCamera = true;
+        }
     }
 
     void OnApplicationQuit()
@@ -810,7 +841,7 @@ public class SoraSample : MonoBehaviour
     IEnumerator SaveStreamingAssetsToLocal()
     {
         savedAssetsToLocal = false;
-        string[] files = {"lyra_config.binarypb", "lyragan.tflite", "quantizer.tflite", "soundstream_encoder.tflite"};
+        string[] files = { "lyra_config.binarypb", "lyragan.tflite", "quantizer.tflite", "soundstream_encoder.tflite" };
         string baseUrl = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
         foreach (string file in files)
         {
@@ -826,7 +857,7 @@ public class SoraSample : MonoBehaviour
             {
                 yield return req.SendWebRequest();
 
-                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+                //if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
                 {
                     Debug.LogError("Failed to Get: uri=" + uri + " error=" + req.error);
                     yield break;
