@@ -857,7 +857,7 @@ public class SoraSample : MonoBehaviour
             {
                 yield return req.SendWebRequest();
 
-                //if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
                 {
                     Debug.LogError("Failed to Get: uri=" + uri + " error=" + req.error);
                     yield break;
