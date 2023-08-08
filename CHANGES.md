@@ -11,6 +11,11 @@
 
 ## develop
 
+## sora-unity-sdk-2023.3.0
+
+- [UPDATE] Sora Unity SDK 2023.3.0 にあげる
+    - @miosakuma
+
 ## sora-unity-sdk-2023.2.0
 
 - [ADD] CodecParams の設定を追加
