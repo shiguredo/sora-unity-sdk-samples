@@ -17,6 +17,7 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
+    Sora.AudioOutputHelper audioOutputHelper;
     enum State
     {
         Init,
@@ -356,6 +357,10 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnDataChannel: label={0}", label);
         };
+        audioOutputHelper = new Sora.AudioOutputHelper(() =>
+        {
+            Debug.Log("OnChangeRoute");
+        });
         // カメラデバイスから取得したフレーム情報を受け取るコールバック。
         // これは別スレッドからやってくるので注意すること。
         // また、このコールバックの範囲外ではポインタは無効になるので必要に応じてデータをコピーして利用すること。
@@ -828,9 +833,21 @@ public class SoraSample : MonoBehaviour
         }
     }
 
+    public void OnClickSetHandsfree()
+    {
+        if (sora == null)
+        {
+            return;
+        }
+        bool isHandsfree = audioOutputHelper.IsHandsfree();
+        audioOutputHelper.SetHandsfree(!isHandsfree);
+    }
+
+
     void OnApplicationQuit()
     {
         DisposeSora();
+        audioOutputHelper.Dispose();
     }
 
     // Android の場合、StreamingAssets へのパスは apk バイナリ内への URI になるため、
