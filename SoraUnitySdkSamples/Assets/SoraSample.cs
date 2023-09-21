@@ -17,6 +17,7 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
+    Sora.AudioOutputHelper audioOutputHelper;
     enum State
     {
         Init,
@@ -206,6 +207,7 @@ public class SoraSample : MonoBehaviour
 #if !UNITY_EDITOR && UNITY_ANDROID
         StartCoroutine(SaveStreamingAssetsToLocal());
 #endif
+        audioOutputHelper = new Sora.AudioOutputHelper(() => { Debug.Log("OnChangeRoute"); });
     }
 
     IEnumerator Render()
@@ -465,6 +467,7 @@ public class SoraSample : MonoBehaviour
         }
         sora.Dispose();
         sora = null;
+        audioOutputHelper.Dispose();
         Debug.Log("Sora is Disposed");
         DestroyComponents();
         SetState(State.Init);
