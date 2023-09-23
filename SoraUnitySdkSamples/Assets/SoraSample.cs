@@ -59,6 +59,7 @@ public class SoraSample : MonoBehaviour
 
     public bool video = true;
     public new bool audio = true;
+    public bool useHardwareEncoder = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
     public bool enableVideoVp9Params = false;
     public int videoVp9ParamsProfileId;
@@ -644,6 +645,7 @@ public class SoraSample : MonoBehaviour
             Insecure = insecure,
             Video = video,
             Audio = audio,
+            UseHardwareEncoder = useHardwareEncoder,
             VideoCodecType = videoCodecType,
             VideoVp9Params = videoVp9ParamsJson,
             VideoAv1Params = videoAv1ParamsJson,
