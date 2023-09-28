@@ -242,6 +242,9 @@ public class SoraSample : MonoBehaviour
                 continue;
             }
 
+            Debug.LogFormat("SelectedSignalingURL is : {0}", sora.SelectedSignalingURL);
+            Debug.LogFormat("ConnectedSignalingURL is : {0}", sora.ConnectedSignalingURL);
+
             sora.GetStats((stats) =>
             {
                 Debug.LogFormat("GetStats: {0}", stats);
