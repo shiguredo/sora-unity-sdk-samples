@@ -58,7 +58,9 @@ public class SoraSample : MonoBehaviour
     public Camera capturedCamera;
 
     public bool video = true;
+    public bool noVideoDevice = false;
     public new bool audio = true;
+    public bool noAudioDevice = false;
     public bool useHardwareEncoder = true;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
     public bool enableVideoVp9Params = false;
@@ -644,7 +646,9 @@ public class SoraSample : MonoBehaviour
             Multistream = Multistream,
             Insecure = insecure,
             Video = video,
+            NoVideoDevice = noVideoDevice,
             Audio = audio,
+            NoAudioDevice = noAudioDevice,
             UseHardwareEncoder = useHardwareEncoder,
             VideoCodecType = videoCodecType,
             VideoVp9Params = videoVp9ParamsJson,
