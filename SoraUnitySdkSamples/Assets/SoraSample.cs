@@ -17,6 +17,7 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
+    Sora.AudioOutputHelper audioOutputHelper;
     enum State
     {
         Init,
@@ -423,6 +424,7 @@ public class SoraSample : MonoBehaviour
             AudioRenderer.Start();
             audioSourceInput.Play();
         }
+        audioOutputHelper = new Sora.AudioOutputHelper(() => { Debug.Log("OnChangeRoute"); });
     }
     void DisconnectSora()
     {
@@ -834,9 +836,20 @@ public class SoraSample : MonoBehaviour
         }
     }
 
+    public void OnClickSetHandsfree()
+    {
+        if (sora == null)
+        {
+            return;
+        }
+        bool isHandsfree = audioOutputHelper.IsHandsfree();
+        audioOutputHelper.SetHandsfree(!isHandsfree);
+    }
+
     void OnApplicationQuit()
     {
         DisposeSora();
+        audioOutputHelper.Dispose();
     }
 
     // Android の場合、StreamingAssets へのパスは apk バイナリ内への URI になるため、
