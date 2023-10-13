@@ -13,7 +13,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Unity バージョン
 
-- Unity 2021.3 (LTS)
+- Unity 2022.3 (LTS)
 
 ## 対応 Sora バージョン
 
@@ -32,21 +32,21 @@ In other languages, we won't be able to deal with them. Thank you for your under
 ### 準備するもの
 
 - Unity 開発環境 ([対応 Unity バージョン](#対応-unity-バージョン))
-- サーバー (Sora, Sora Cloud, Sora Labo) への接続情報  ([対応 Sora バージョン](#対応-sora-バージョン))
+- サーバー (Sora, Sora Cloud, Sora Labo) への接続情報 ([対応 Sora バージョン](#対応-sora-バージョン))
 - Python 3
 - (Ubuntu 20.04 x86_64 のみ) libva-drm2 パッケージ (apt インストール)
 
 ### Sora Unity SDK のインストール
 
 1. このリポジトリの [master ブランチ](https://github.com/shiguredo/sora-unity-sdk-samples/tree/master) をクローンして利用してください。
-    develop ブランチは開発ブランチであり、正常に動作しないことがあります。
+   develop ブランチは開発ブランチであり、正常に動作しないことがあります。
 
 ```
 git clone --branch master https://github.com/shiguredo/sora-unity-sdk-samples.git
 ```
 
 2. ダウンロードされたディレクトリに移動して、`install.py` を実行して下さい。
-    [Sora Unity SDK](https://github.com/shiguredo/sora-unity-sdk) がダウンロードされ、インストールされます。[^1] 利用している sora-unity-sdk のバージョンは install.py に定義されています。
+   [Sora Unity SDK](https://github.com/shiguredo/sora-unity-sdk) がダウンロードされ、インストールされます。[^1] 利用している sora-unity-sdk のバージョンは install.py に定義されています。
 
 ```
 cd sora-unity-sdk-samples
@@ -61,26 +61,26 @@ python3 install.py
 
 2. `Assets > Scene` から実行するサンプルシーンを選択します。
 
-    - `sendonly`: シングルストリーム送信
-    - `recvonly`: シングルストリーム受信
-    - `multi_sendrecv`: マルチストリーム送受信
-    - `multi_sendonly`: マルチストリーム送信
-    - `multi_recvonly`: マルチストリーム受信
+   - `sendonly`: シングルストリーム送信
+   - `recvonly`: シングルストリーム受信
+   - `multi_sendrecv`: マルチストリーム送受信
+   - `multi_sendonly`: マルチストリーム送信
+   - `multi_recvonly`: マルチストリーム受信
 
 3. Script オブジェクトのインスペクターにサーバーに送信する情報を設定します
-    `Signaling Url` と `Channel Id` は必須です。それ以外の設定は各環境に応じて設定してください。
-    設定内容については [Sora のドキュメント](https://sora-doc.shiguredo.jp/SIGNALING) も参考にしてください。
+   `Signaling Url` と `Channel Id` は必須です。それ以外の設定は各環境に応じて設定してください。
+   設定内容については [Sora のドキュメント](https://sora-doc.shiguredo.jp/SIGNALING) も参考にしてください。
 
-    - `Signaling Url`: シグナリング URL
-    - `Channel Id`: チャネル ID
-    - `Access Token`: Sora Labo, Sora Cloud 向けのアクセストークン
+   - `Signaling Url`: シグナリング URL
+   - `Channel Id`: チャネル ID
+   - `Access Token`: Sora Labo, Sora Cloud 向けのアクセストークン
 
 4. プレイモードを実行し、ゲームビュー内に表示される「開始」ボタンを押すとサーバーに接続します。
-    映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
+   映像が描画されない場合は、シグナリング URL やコンソールの出力を確認してみてください。
 
 ## 動作例
 
-- [Sora Unity SDK サンプル集を動かしてみた - torikiziのブログ](https://torikizi.hatenablog.jp/entry/2019/12/03/101411)
+- [Sora Unity SDK サンプル集を動かしてみた - torikizi のブログ](https://torikizi.hatenablog.jp/entry/2019/12/03/101411)
 
 [Sora Labo](https://sora-labo.shiguredo.jp/) を使って Sora Unity SDK サンプル集を動かしています。
 
@@ -104,4 +104,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
