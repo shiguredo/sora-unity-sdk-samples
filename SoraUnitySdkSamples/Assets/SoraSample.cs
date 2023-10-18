@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using iOSNative;
 
 public class SoraSample : MonoBehaviour
 {
@@ -838,13 +839,19 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickSetHandsfree()
     {
+        bool isHandsfree = audioOutputHelper.IsHandsfree();
+        audioOutputHelper.SetHandsfree(!isHandsfree);
+    }
+
+    public void OnClickChangeAudioCategory()
+    {
         if (sora == null)
         {
             return;
         }
-        bool isHandsfree = audioOutputHelper.IsHandsfree();
-        audioOutputHelper.SetHandsfree(!isHandsfree);
+        AudioSessionCategoryBridge.SetAudioSessionCategoryPlayAndRecord();
     }
+
 
     void OnApplicationQuit()
     {
