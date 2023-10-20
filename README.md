@@ -61,8 +61,6 @@ python3 install.py
 
 2. `Assets > Scene` から実行するサンプルシーンを選択します。
 
-   - `sendonly`: シングルストリーム送信
-   - `recvonly`: シングルストリーム受信
    - `multi_sendrecv`: マルチストリーム送受信
    - `multi_sendonly`: マルチストリーム送信
    - `multi_recvonly`: マルチストリーム受信
