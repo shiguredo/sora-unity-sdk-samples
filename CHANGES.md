@@ -13,6 +13,8 @@
 
 - [CHANGE] プロジェクトを Unity 2022.3 LTS にアップデート
   - @torikizi
+- [UPDATE] iOS の Target Version を 13.0 にアップデート
+  - @torikizi
 
 ## sora-unity-sdk-2023.3.0
 
