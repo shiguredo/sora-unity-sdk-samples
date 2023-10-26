@@ -11,10 +11,18 @@
 
 ## develop
 
+- [CHANGE] sendonly, recvonly シーンを削除する
+  - @torikizi
 - [CHANGE] プロジェクトを Unity 2022.3 LTS にアップデート
   - @torikizi
 - [UPDATE] iOS の Target Version を 13.0 にアップデート
   - @torikizi
+- [ADD] noVideoDevice, noAudioDevice の設定を追加する
+  - @torikizi
+- [ADD] useHardwareEncoder の設定を追加する
+  - @torikizi
+- [ADD] 接続中のカメラ切り替えボタンを追加する
+  - @melpon @torikizi
 
 ## sora-unity-sdk-2023.3.0
 
