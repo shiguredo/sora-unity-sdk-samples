@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2023.4.0
+
 - [CHANGE] sendonly, recvonly シーンを削除する
   - @torikizi
 - [CHANGE] プロジェクトを Unity 2022.3 LTS にアップデート
