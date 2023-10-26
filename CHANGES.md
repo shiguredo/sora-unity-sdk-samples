@@ -1,105 +1,120 @@
 # 変更履歴
 
 - CHANGE
-    - 下位互換のない変更
+  - 下位互換のない変更
 - UPDATE
-    - 下位互換がある変更
+  - 下位互換がある変更
 - ADD
-    - 下位互換がある追加
+  - 下位互換がある追加
 - FIX
-    - バグ修正
+  - バグ修正
 
 ## develop
+
+## sora-unity-sdk-2023.4.0
+
+- [CHANGE] sendonly, recvonly シーンを削除する
+  - @torikizi
+- [CHANGE] プロジェクトを Unity 2022.3 LTS にアップデート
+  - @torikizi
+- [UPDATE] iOS の Target Version を 13.0 にアップデート
+  - @torikizi
+- [ADD] noVideoDevice, noAudioDevice の設定を追加する
+  - @torikizi
+- [ADD] useHardwareEncoder の設定を追加する
+  - @torikizi
+- [ADD] 接続中のカメラ切り替えボタンを追加する
+  - @melpon @torikizi
 
 ## sora-unity-sdk-2023.3.0
 
 - [UPDATE] Sora Unity SDK 2023.3.0 にあげる
-    - @miosakuma
+  - @miosakuma
 
 ## sora-unity-sdk-2023.2.0
 
 - [ADD] CodecParams の設定を追加
-    - video_vp9_params を追加
-    - video_av1_params を追加
-    - video_h264_params を追加
-    - @torikizi
+  - video_vp9_params を追加
+  - video_av1_params を追加
+  - video_h264_params を追加
+  - @torikizi
 - [ADD] forwardingfilter の設定を追加
-    - @torikizi
+  - @torikizi
 - [FIX] signalingNotifyMetadata が JSON 文字列化を再帰的に行っているのを修正
-    - @melpon
+  - @melpon
 
 ## sora-unity-sdk-2023.1.0
 
 - [UPDATE] Sora Unity SDK 2023.1.0 にあげる
-    - @miosakuma
+  - @miosakuma
 - [ADD] オーディオコーデックに Lyra を追加
-    - @melpon, @torikizi
+  - @melpon, @torikizi
 - [ADD] SignalingNotifyMetadata の設定を追加
-    - @torikizi
+  - @torikizi
 - [ADD] AudioStreamingLanguageCode の設定を追加
-    - @melpon
+  - @melpon
 - [ADD] デバッグバイナリをコピーする機能を追加
-    - @melpon
+  - @melpon
 - [ADD] OnSetOffer コールバックを追加
-    - @melpon
+  - @melpon
 - [FIX] 開始ボタンを 2 回連続で押した時にクラッシュする不具合を修正
-    - 開始、終了ボタンの表示制御を行う
-    - @melpon
+  - 開始、終了ボタンの表示制御を行う
+  - @melpon
 
 ## sora-unity-sdk-2022.6.0
 
 - [CHANGE] tobiAccessToken の設定を削除
-    - @torikizi
+  - @torikizi
 - [ADD] 音声と映像のミュートを追加
-    - @torikizi
+  - @torikizi
 
 ## sora-unity-sdk-2022.5.2
 
 - [UPDATE] Sora Unity SDK 2022.5.2 に上げる
-    - @miosakuma
+  - @miosakuma
 
 ## sora-unity-sdk-2022.5.1
 
 - [UPDATE] Sora Unity SDK 2022.5.1 に上げる
-    - @melpon, @miosakuma
+  - @melpon, @miosakuma
 - [ADD] Video Fps の設定を追加
-    - @miosakuma
+  - @miosakuma
 
 ## sora-unity-sdk-2022.4.0
 
 - [UPDATE] Sora Unity SDK 2022.4.0 に上げる
-    - @miosakuma
+  - @miosakuma
 
 ## sora-unity-sdk-2022.3.0
 
 - [CHANGE] signalingkey を accesstoken に修正
-    - @torikizi
+  - @torikizi
 
 ## sora-unity-sdk-2022.2.1
 
 - [UPDATE] copysdk.py のログ出力内容を変更する
-    - @melpon
+  - @melpon
 - [FIX] sora が null の時に参照してしまうケースについて修正する
-    - @melpon
+  - @melpon
 
 ## sora-unity-sdk-2022.2.0
 
 - [CHANGE] プロジェクトを Unity 2021.3 LTS にアップデート
-    - @melpon
+  - @melpon
 - [UPDATE] Sora Unity SDK 2022.2.0 に対応
-    - @melpon
+  - @melpon
 - [ADD] HTTP Proxy の設定を追加
-    - @melpon
+  - @melpon
 - [ADD] BundleId の設定を追加
-    - @melpon
+  - @melpon
 - [ADD] tobiAccessToken の設定を追加
-    - @miosakuma
+  - @miosakuma
 
 ## sora-unity-sdk-2022.1.0-1
 
-- [UPDATE] libboost_json.a.metaを追加する
-    - iOS の推奨されるビルド初期設定を行う
-    - @torikizi
+- [UPDATE] libboost_json.a.meta を追加する
+  - iOS の推奨されるビルド初期設定を行う
+  - @torikizi
 - [FIX] install.sh と install.ps1 に libboost_json.a をコピーする処理を追加する
-    - iOS にてサンプルが動作しない問題に対応
-    - @torikizi
+  - iOS にてサンプルが動作しない問題に対応
+  - @torikizi
