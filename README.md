@@ -29,7 +29,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## Sora Unity SDK サンプル集を使ってみる
 
-Sora Unity SDK サンプル集を使うためにドキュメントのチュートリアルを参照してください。
+Sora Unity SDK サンプル集の使い方についてはドキュメントのチュートリアルを参照してください。
 
 [Sora Unity SDK ドキュメントのチュートリアル](https://sora-unity-sdk.shiguredo.jp/tutorial)
 
