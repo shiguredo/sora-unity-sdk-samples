@@ -11,6 +11,11 @@
 
 ## develop
 
+## sora-unity-sdk-2023.5.0
+
+- [UPDATE] Sora Unity SDK 2023.5.0 にあげる
+  - @miosakuma
+
 ## sora-unity-sdk-2023.4.0
 
 - [CHANGE] sendonly, recvonly シーンを削除する
