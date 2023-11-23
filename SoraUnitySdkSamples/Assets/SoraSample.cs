@@ -12,8 +12,6 @@ public class SoraSample : MonoBehaviour
         MultiSendrecv,
         MultiRecvonly,
         MultiSendonly,
-        Sendonly,
-        Recvonly,
     }
 
     Sora sora;
@@ -157,16 +155,17 @@ public class SoraSample : MonoBehaviour
     public string proxyUsername;
     public string proxyPassword;
 
-    public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
-    public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
-    public bool Multistream { get { return fixedSampleType == SampleType.MultiSendonly || fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
+    // Recvonly → 受信のみ
+    // !Recvonly → 送信のみ、あるいは送受信のどちらか
+    public bool Recvonly { get { return fixedSampleType == SampleType.MultiRecvonly; } }
+    // Sendonly → 送信のみ
+    // !Sendonly → 受信のみ、あるいは送受信のどちらか
+    public bool Sendonly { get { return fixedSampleType == SampleType.MultiSendonly; } }
     public Sora.Role Role
     {
         get
         {
             return
-                fixedSampleType == SampleType.Sendonly ? Sora.Role.Sendonly :
-                fixedSampleType == SampleType.Recvonly ? Sora.Role.Recvonly :
                 fixedSampleType == SampleType.MultiSendonly ? Sora.Role.Sendonly :
                 fixedSampleType == SampleType.MultiRecvonly ? Sora.Role.Recvonly : Sora.Role.Sendrecv;
         }
@@ -198,7 +197,7 @@ public class SoraSample : MonoBehaviour
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
         DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
 
-        if (!MultiRecv)
+        if (Sendonly)
         {
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
@@ -267,7 +266,7 @@ public class SoraSample : MonoBehaviour
             return;
         }
 
-        if (!MultiRecv)
+        if (Sendonly)
         {
             if (trackId != 0)
             {
@@ -289,7 +288,7 @@ public class SoraSample : MonoBehaviour
         DisposeSora();
 
         sora = new Sora();
-        if (!MultiRecv)
+        if (Sendonly)
         {
             sora.OnAddTrack = (trackId, connectionId) =>
             {
@@ -441,7 +440,7 @@ public class SoraSample : MonoBehaviour
             return;
         }
 
-        if (MultiRecv)
+        if (!Sendonly)
         {
             foreach (var track in tracks)
             {
@@ -643,7 +642,7 @@ public class SoraSample : MonoBehaviour
             SignalingNotifyMetadata = signalingNotifyMetadataJson,
             Metadata = metadata,
             Role = Role,
-            Multistream = Multistream,
+            Multistream = true,
             Insecure = insecure,
             Video = video,
             NoVideoDevice = noVideoDevice,
