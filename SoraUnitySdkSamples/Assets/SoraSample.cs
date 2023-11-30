@@ -342,7 +342,10 @@ public class SoraSample : MonoBehaviour
                 Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 if (tracks.ContainsKey(trackId))
                 {
-                    GameObject.Destroy(tracks[trackId]);
+                    var obj = tracks[trackId];
+                    var image = obj.GetComponent<UnityEngine.UI.RawImage>();
+                    GameObject.Destroy(image.texture);
+                    GameObject.Destroy(obj);
                     tracks.Remove(trackId);
                 }
             };
@@ -476,7 +479,10 @@ public class SoraSample : MonoBehaviour
         {
             foreach (var track in tracks)
             {
-                GameObject.Destroy(track.Value);
+                var obj = track.Value;
+                var image = obj.GetComponent<UnityEngine.UI.RawImage>();
+                GameObject.Destroy(image.texture);
+                GameObject.Destroy(obj);
             }
             tracks.Clear();
         }
