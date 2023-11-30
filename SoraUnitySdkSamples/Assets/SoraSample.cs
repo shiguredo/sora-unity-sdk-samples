@@ -12,8 +12,6 @@ public class SoraSample : MonoBehaviour
         MultiSendrecv,
         MultiRecvonly,
         MultiSendonly,
-        Sendonly,
-        Recvonly,
     }
 
     Sora sora;
@@ -34,16 +32,17 @@ public class SoraSample : MonoBehaviour
     // 実行中に変えられたくないので実行時に固定する
     SampleType fixedSampleType;
 
-    // 非マルチストリームで利用する
+    // Sendonly で利用する
+    // 受信を行わないので、自身のカメラを表示するための trackId だけ保持しておく
     uint trackId = 0;
     public GameObject renderTarget;
 
-    // マルチストリームで利用する
+    // Recvonly, Sendrecv で利用する
     Dictionary<uint, GameObject> tracks = new Dictionary<uint, GameObject>();
     public GameObject scrollViewContent;
     public GameObject baseContent;
 
-    // 以下共通
+    // 以下は Sendonly, Recvonly, Sendrecv 共通
     public string signalingUrl = "";
     public string[] signalingUrlCandidate = new string[0];
 
@@ -51,11 +50,17 @@ public class SoraSample : MonoBehaviour
     public string channelId = "";
     public string clientId = "";
     public string bundleId = "";
-    public string signalingNotifyMetadata = "";
-    public string accessToken = "";
+    public string signalingNotifyMetadataMessage = "";
+    public string metadataAccessToken = "";
 
     public bool captureUnityCamera;
     public Camera capturedCamera;
+
+    // enableVideoVp9Params や enableOrdered といった enable<FieldName> という名前のフィールドは、
+    // enable<FieldName> == false の場合は Sora に <FieldName> の JSON オブジェクトを送信しないことを意味する。
+    // そのため <FieldName> のフィールドがどのような値であっても無視される。
+    // enable<FieldName> == true の場合は Sora に <FieldName> の JSON オブジェクトを送信することを意味する。
+    // そのため <FieldName> に適切な値を設定する必要がある。
 
     public bool video = true;
     public bool noVideoDevice = false;
@@ -88,13 +93,13 @@ public class SoraSample : MonoBehaviour
 
     public bool spotlight = false;
     public int spotlightNumber = 0;
-    public bool spotlightFocusRid = false;
-    public Sora.SpotlightFocusRidType spotlightFocusRidType = Sora.SpotlightFocusRidType.None;
-    public bool spotlightUnfocusRid = false;
-    public Sora.SpotlightFocusRidType spotlightUnfocusRidType = Sora.SpotlightFocusRidType.None;
+    public bool enableSpotlightFocusRid = false;
+    public Sora.SpotlightFocusRidType spotlightFocusRid = Sora.SpotlightFocusRidType.None;
+    public bool enableSpotlightUnfocusRid = false;
+    public Sora.SpotlightFocusRidType spotlightUnfocusRid = Sora.SpotlightFocusRidType.None;
     public bool simulcast = false;
-    public bool simulcastRid = false;
-    public Sora.SimulcastRidType simulcastRidType = Sora.SimulcastRidType.R0;
+    public bool enableSimulcastRid = false;
+    public Sora.SimulcastRidType simulcastRid = Sora.SimulcastRidType.R0;
 
     public int videoBitRate = 0;
     public int videoFps = 30;
@@ -157,16 +162,18 @@ public class SoraSample : MonoBehaviour
     public string proxyUsername;
     public string proxyPassword;
 
-    public bool Recvonly { get { return fixedSampleType == SampleType.Recvonly || fixedSampleType == SampleType.MultiRecvonly; } }
-    public bool MultiRecv { get { return fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
-    public bool Multistream { get { return fixedSampleType == SampleType.MultiSendonly || fixedSampleType == SampleType.MultiRecvonly || fixedSampleType == SampleType.MultiSendrecv; } }
+    // Recvonly → 受信のみ
+    // !Recvonly → 送信のみ、あるいは送受信のどちらか
+    public bool Recvonly { get { return fixedSampleType == SampleType.MultiRecvonly; } }
+    // Sendonly → 送信のみ
+    // !Sendonly → 受信のみ、あるいは送受信のどちらか
+    public bool Sendonly { get { return fixedSampleType == SampleType.MultiSendonly; } }
+
     public Sora.Role Role
     {
         get
         {
             return
-                fixedSampleType == SampleType.Sendonly ? Sora.Role.Sendonly :
-                fixedSampleType == SampleType.Recvonly ? Sora.Role.Recvonly :
                 fixedSampleType == SampleType.MultiSendonly ? Sora.Role.Sendonly :
                 fixedSampleType == SampleType.MultiRecvonly ? Sora.Role.Recvonly : Sora.Role.Sendrecv;
         }
@@ -189,6 +196,8 @@ public class SoraSample : MonoBehaviour
     void Start()
     {
 #if !UNITY_EDITOR && UNITY_ANDROID
+        // Unity for Android は、C# コード中に WebCamTexture や Microphone にアクセスすることで
+        // 自動的に必要な権限を AndroidManifest.xml に追加してくれるため、ここで適当にアクセスしておく
         var x = WebCamTexture.devices;
         var y = Microphone.devices;
 #endif
@@ -198,7 +207,9 @@ public class SoraSample : MonoBehaviour
         DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
         DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
 
-        if (!MultiRecv)
+        // 送信のみの場合はトラック追加の度にテクスチャを追加したりする必要は無いので、ここで初期化しておく。
+        // 受信がある場合は表示する数が動的に変わるのでここで初期化することはできない。
+        if (Sendonly)
         {
             var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
             image.texture = new Texture2D(640, 480, TextureFormat.RGBA32, false);
@@ -216,10 +227,13 @@ public class SoraSample : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
+            // Unity カメラの映像をキャプチャする
+            // 必ず yield return new WaitForEndOfFrame() の後に呼び出すこと
             if (state == State.Started)
             {
                 sora.OnRender();
             }
+            // Unity から出力された音を録音データとして Sora に渡す
             if (state == State.Started && unityAudioInput && !Recvonly)
             {
                 var samples = AudioRenderer.GetSampleCountForCaptureFrame();
@@ -246,6 +260,7 @@ public class SoraSample : MonoBehaviour
 
             sora.GetStats((stats) =>
             {
+                // ここは Unity スレッドとは別のスレッドで呼び出されるので注意すること
                 Debug.LogFormat("GetStats: {0}", stats);
             });
         }
@@ -259,6 +274,7 @@ public class SoraSample : MonoBehaviour
             return;
         }
 
+        // 各種コールバックの呼び出し
         sora.DispatchEvents();
 
         // DispatchEvents で OnDisconnect → DisposeSora と呼ばれて sora が null になることがある
@@ -267,7 +283,8 @@ public class SoraSample : MonoBehaviour
             return;
         }
 
-        if (!MultiRecv)
+        // 送信してるカメラの映像と、受信した他人の映像をテクスチャにレンダリングする
+        if (Sendonly)
         {
             if (trackId != 0)
             {
@@ -289,8 +306,9 @@ public class SoraSample : MonoBehaviour
         DisposeSora();
 
         sora = new Sora();
-        if (!MultiRecv)
+        if (Sendonly)
         {
+            // 送信のみなので、表示するのは自分のカメラだけになる
             sora.OnAddTrack = (trackId, connectionId) =>
             {
                 Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
@@ -304,8 +322,12 @@ public class SoraSample : MonoBehaviour
         }
         else
         {
+            // 受信する数は動的に増減するので、トラックが追加されるたびに
+            // 動的に GameObject とテクスチャを追加して設定しておく
             sora.OnAddTrack = (trackId, connectionId) =>
             {
+                // connectionId == "" だったら送信者のカメラ映像用のトラックになるが、このサンプルでは区別する必要が無いので
+                // どちらの場合でも気にせず GameObject を作成する
                 Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 var obj = GameObject.Instantiate(baseContent, Vector3.zero, Quaternion.identity);
                 obj.name = string.Format("track {0}", trackId);
@@ -320,7 +342,10 @@ public class SoraSample : MonoBehaviour
                 Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
                 if (tracks.ContainsKey(trackId))
                 {
-                    GameObject.Destroy(tracks[trackId]);
+                    var obj = tracks[trackId];
+                    var image = obj.GetComponent<UnityEngine.UI.RawImage>();
+                    GameObject.Destroy(image.texture);
+                    GameObject.Destroy(obj);
                     tracks.Remove(trackId);
                 }
             };
@@ -350,9 +375,12 @@ public class SoraSample : MonoBehaviour
         {
             Debug.LogFormat("OnMessage: label={0} data={1}", label, System.Text.Encoding.UTF8.GetString(data));
         };
+        // 切断時のコールバック
+        // sora.Connect() を呼び出した後、エラー時や切断時に１回だけ OnDisconnect が呼ばれる。
         sora.OnDisconnect = (code, message) =>
         {
             Debug.LogFormat("OnDisconnect: code={0} message={1}", code.ToString(), message);
+            // sora.Dispose() は必ず OnDisconnect を受信してから行うこと。
             DisposeSora();
         };
         sora.OnDataChannel = (label) =>
@@ -386,6 +414,7 @@ public class SoraSample : MonoBehaviour
 
         if (unityAudioOutput)
         {
+            // 再生デバイスから再生する代わりに、AudioSource を利用して再生する
             var audioClip = AudioClip.Create("AudioClip", 480000, 1, 48000, true, (data) =>
             {
                 lock (audioBuffer)
@@ -420,10 +449,15 @@ public class SoraSample : MonoBehaviour
 
         if (unityAudioInput && !Recvonly)
         {
+            // Unity で再生する音を録音データとしてキャプチャできるようにする
             AudioRenderer.Start();
+            // Unity 内で音を鳴らさないと無音をキャプチャし続けることになって正しく動作してるか分からないので、
+            // 適当な音を無限ループで鳴らしておく
             audioSourceInput.Play();
         }
     }
+    // Sora を切断する。
+    // sora.Disconnect() は非同期処理であるため、この時点ではまだ sora.Dispose() を呼び出してはいけない。
     void DisconnectSora()
     {
         if (sora == null)
@@ -441,11 +475,14 @@ public class SoraSample : MonoBehaviour
             return;
         }
 
-        if (MultiRecv)
+        if (!Sendonly)
         {
             foreach (var track in tracks)
             {
-                GameObject.Destroy(track.Value);
+                var obj = track.Value;
+                var image = obj.GetComponent<UnityEngine.UI.RawImage>();
+                GameObject.Destroy(image.texture);
+                GameObject.Destroy(obj);
             }
             tracks.Clear();
         }
@@ -514,7 +551,7 @@ public class SoraSample : MonoBehaviour
     [Serializable]
     class SignalingNotifyMetadata
     {
-        public string message_for_signaling_notify;
+        public string message;
     }
 
     [Serializable]
@@ -553,7 +590,7 @@ public class SoraSample : MonoBehaviour
             signalingUrl = settings.signaling_url;
             signalingUrlCandidate = settings.signaling_url_candidate;
             channelId = settings.channel_id;
-            accessToken = settings.access_token;
+            metadataAccessToken = settings.access_token;
         }
 
         if (signalingUrl.Length == 0 && signalingUrlCandidate.Length == 0)
@@ -566,23 +603,23 @@ public class SoraSample : MonoBehaviour
             Debug.LogError("チャンネル ID が設定されていません");
             return;
         }
-        // signalingNotifyMetadata がある場合はメタデータを設定する
-        string signalingNotifyMetadataJson = "";
-        if (signalingNotifyMetadata.Length != 0)
+        // signalingNotifyMetadataMessage がある場合はメタデータを設定する
+        string signalingNotifyMetadata = "";
+        if (signalingNotifyMetadataMessage.Length != 0)
         {
             var snmd = new SignalingNotifyMetadata()
             {
-                message_for_signaling_notify = signalingNotifyMetadata
+                message = signalingNotifyMetadataMessage
             };
-            signalingNotifyMetadataJson = JsonUtility.ToJson(snmd);
+            signalingNotifyMetadata = JsonUtility.ToJson(snmd);
         }
-        // accessToken がある場合はメタデータを設定する
+        // metadataAccessToken がある場合はメタデータを設定する
         string metadata = "";
-        if (accessToken.Length != 0)
+        if (metadataAccessToken.Length != 0)
         {
             var md = new Metadata()
             {
-                access_token = accessToken
+                access_token = metadataAccessToken
             };
             metadata = JsonUtility.ToJson(md);
         }
@@ -625,6 +662,8 @@ public class SoraSample : MonoBehaviour
 
         if (audioCodecType == Sora.AudioCodecType.LYRA)
         {
+            // Lyra で使用するモデルのパスを指定する
+            // Android だけ違うパスを指定している理由は SaveStreamingAssetsToLocal() のコメントを参照
             string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
 #if !UNITY_EDITOR && UNITY_ANDROID
             modelPath = Application.temporaryCachePath;
@@ -640,10 +679,10 @@ public class SoraSample : MonoBehaviour
             ChannelId = channelId,
             ClientId = clientId,
             BundleId = bundleId,
-            SignalingNotifyMetadata = signalingNotifyMetadataJson,
+            SignalingNotifyMetadata = signalingNotifyMetadata,
             Metadata = metadata,
             Role = Role,
-            Multistream = Multistream,
+            Multistream = true,
             Insecure = insecure,
             Video = video,
             NoVideoDevice = noVideoDevice,
@@ -675,11 +714,14 @@ public class SoraSample : MonoBehaviour
             Spotlight = spotlight,
             SpotlightNumber = spotlightNumber,
             Simulcast = simulcast,
+            // EnableDataChannelSignaling と DataChannelSignaling に dataChannelSignaling を指定しているが、
             // この実装だと dataChannelSignaling == false の場合は data_channel_signaling が無指定になるので、
-            // サーバ側の判断によっては DC に切り替えられる可能性はある。
+            // サーバ側の判断によっては DC に切り替えられる可能性がある。
             EnableDataChannelSignaling = dataChannelSignaling,
             DataChannelSignaling = dataChannelSignaling,
             DataChannelSignalingTimeout = dataChannelSignalingTimeout,
+            // EnableIgnoreDisconnectWebsocket と IgnoreDisconnectWebsocket に ignoreDisconnectWebsocket を指定しているが、
+            // これも dataChannelSignaling と同じようにサーバ側の判断によっては切断される可能性がある。
             EnableIgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
             IgnoreDisconnectWebsocket = ignoreDisconnectWebsocket,
             DisconnectWaitTimeout = disconnectWaitTimeout,
@@ -691,17 +733,17 @@ public class SoraSample : MonoBehaviour
         {
             config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
         }
-        if (spotlightFocusRid)
+        if (enableSpotlightFocusRid)
         {
-            config.SpotlightFocusRid = spotlightFocusRidType;
+            config.SpotlightFocusRid = spotlightFocusRid;
         }
-        if (spotlightUnfocusRid)
+        if (enableSpotlightUnfocusRid)
         {
-            config.SpotlightUnfocusRid = spotlightUnfocusRidType;
+            config.SpotlightUnfocusRid = spotlightUnfocusRid;
         }
-        if (simulcastRid)
+        if (enableSimulcastRid)
         {
-            config.SimulcastRid = simulcastRidType;
+            config.SimulcastRid = simulcastRid;
         }
         if (dataChannels != null)
         {
