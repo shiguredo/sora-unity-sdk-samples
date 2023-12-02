@@ -11,6 +11,9 @@
 
 ## develop
 
+- [UPDATE] Sora Unity SDK 2023.5.2 にあげる
+  - @torikizi
+
 ## sora-unity-sdk-2023.5.1
 
 - [FIX] テクスチャのメモリリークを解消する
