@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] forwarding filter に Version と Metadata を追加
+  - @torikizi
+
 ## sora-unity-sdk-2023.5.2
 
 - [UPDATE] Sora Unity SDK 2023.5.2 にあげる
