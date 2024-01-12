@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -127,8 +127,13 @@ public class SoraSample : MonoBehaviour
     }
 
     [Header("ForwardingFilter の設定")]
+    public bool enableForwardingFilterAction = false;
     public string forwardingFilterAction;
     public RuleList[] forwardingFilter;
+    public bool enableForwardingFilterVersion = false;
+    public string forwardingFilterVersion = "";
+    public bool enableForwardingFilterMetadata = false;
+    public string forwardingFilterMetadataMessage = "";
 
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
@@ -575,6 +580,12 @@ public class SoraSample : MonoBehaviour
         public string profile_level_id;
     }
 
+    [Serializable]
+    class ForwardingFilterMetadata
+    {
+        public string forwarding_filter_metadata;
+    }
+
     public void OnClickStart()
     {
         if (!savedAssetsToLocal)
@@ -652,6 +663,16 @@ public class SoraSample : MonoBehaviour
                 profile_level_id = videoH264ParamsProfileLevelId
             };
             videoH264ParamsJson = JsonUtility.ToJson(h264Params);
+        }
+        // enableForwardingFilterMetadata が true の場合はメタデータを設定する
+        string forwardingFilterMetadataJson = "";
+        if (enableForwardingFilterMetadata)
+        {
+            var ffm = new ForwardingFilterMetadata()
+            {
+                forwarding_filter_metadata = forwardingFilterMetadataMessage
+            };
+            forwardingFilterMetadataJson = JsonUtility.ToJson(ffm);
         }
 
         InitSora();
@@ -764,7 +785,7 @@ public class SoraSample : MonoBehaviour
         if (forwardingFilter.Length != 0)
         {
             config.ForwardingFilter = new Sora.ForwardingFilter();
-            config.ForwardingFilter.Action = forwardingFilterAction;
+            if (enableForwardingFilterAction) config.ForwardingFilter.Action = forwardingFilterAction;
             foreach (var rs in forwardingFilter)
             {
                 var ccrs = new List<Sora.ForwardingFilter.Rule>();
@@ -781,6 +802,8 @@ public class SoraSample : MonoBehaviour
                 }
                 config.ForwardingFilter.Rules.Add(ccrs);
             }
+            if (enableForwardingFilterVersion) config.ForwardingFilter.Version = forwardingFilterVersion;
+            if (enableForwardingFilterMetadata) config.ForwardingFilter.Metadata = forwardingFilterMetadataJson;
         }
 
         sora.Connect(config);
