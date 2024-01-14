@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] forwarding filter の Action をオプションにする
+  - 必須項目からオプション項目に変更のため破壊的変更となる
+  - @torikizi
 - [ADD] forwarding filter に Version と Metadata を追加
   - @torikizi
 
