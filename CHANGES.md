@@ -11,10 +11,9 @@
 
 ## develop
 
-- [CHANGE] forwarding filter の Action をオプションにする
-  - 必須項目からオプション項目に変更のため破壊的変更となる
+- [ADD] forwardingfilter に version と metadata を追加
   - @torikizi
-- [ADD] forwarding filter に Version と Metadata を追加
+- [FIX] forwardingfilter の action をオプションにする
   - @torikizi
 
 ## sora-unity-sdk-2023.5.2
