@@ -14,8 +14,7 @@ public class SoraSample : MonoBehaviour
         MultiSendonly,
     }
 
-    AndroidJavaObject audioManager = null;
-    bool isHandsfree = false;
+    Sora.AudioOutputHelper audioOutputHelper;
     Sora sora;
     enum State
     {
@@ -307,25 +306,7 @@ public class SoraSample : MonoBehaviour
     {
         DisposeSora();
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-        using (var soraAudioManagerClass = new AndroidJavaClass("jp.shiguredo.sora.audiomanager.SoraAudioManager"))
-        {
-            using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-            {
-                using (var context = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
-                {
-                    // Bluetooth のパーミッションを取得する
-                    soraAudioManagerClass.CallStatic("requestPermissions", context);
-
-                    // SoraAudioManagerのインスタンスを生成
-                    audioManager = soraAudioManagerClass.CallStatic<AndroidJavaObject>("create", context);
-
-                    // startメソッドの呼び出し、コールバックはnull
-                    audioManager.Call("start");
-                }
-            }
-        }
-#endif
+        audioOutputHelper = new Sora.AudioOutputHelper(null);
         sora = new Sora();
         if (Sendonly)
         {
@@ -526,14 +507,12 @@ public class SoraSample : MonoBehaviour
         }
         sora.Dispose();
         sora = null;
-
-        #if UNITY_ANDROID && !UNITY_EDITOR
-        if (audioManager != null)
+        if (audioOutputHelper != null)
         {
-            audioManager.Call("stop");
-            audioManager.Dispose();
+            audioOutputHelper.Dispose();
+            audioOutputHelper = null;
         }
-        #endif
+
         Debug.Log("Sora is Disposed");
         DestroyComponents();
         SetState(State.Init);
@@ -907,18 +886,11 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickHandsfree()
     {
-        if (sora == null)
+        if (audioOutputHelper == null)
         {
             return;
         }
-        // 'setHandsfree' メソッドを呼び出し、結果を取得する
-        bool result = audioManager.Call<bool>("setHandsfree", !isHandsfree);
-
-        // 結果が成功であれば、isHandsfreeの状態を更新する
-        if (result)
-        {
-            isHandsfree = !isHandsfree;
-        }
+        audioOutputHelper.SetHandsfree(!audioOutputHelper.IsHandsfree());
     }
 
     void OnApplicationQuit()
