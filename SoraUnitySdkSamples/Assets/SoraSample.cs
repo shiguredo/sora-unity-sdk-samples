@@ -15,7 +15,7 @@ public class SoraSample : MonoBehaviour
         MultiSendonly,
     }
 
-    Sora.AudioOutputHelper audioOutputHelper;
+    Sora.IAudioOutputHelper audioOutputHelper;
     Sora sora;
     enum State
     {
@@ -316,7 +316,7 @@ public class SoraSample : MonoBehaviour
     {
         DisposeSora();
 
-        audioOutputHelper = new Sora.AudioOutputHelper(OnChangeRoute);
+        audioOutputHelper = Sora.AudioOutputHelperFactory.Create(OnChangeRoute);
         sora = new Sora();
         if (Sendonly)
         {
