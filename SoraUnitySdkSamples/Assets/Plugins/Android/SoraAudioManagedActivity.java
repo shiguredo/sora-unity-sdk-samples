@@ -23,6 +23,7 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity {
     @Override
     protected void onDestroy() {
         stopAudioManager();
+        soraAudioManager = null;
         super.onDestroy();
     }
 
@@ -65,7 +66,6 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity {
             return;
         }
         soraAudioManager.stop();
-        soraAudioManager = null;
         observer = null;
     }
 
