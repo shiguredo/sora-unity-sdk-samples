@@ -551,7 +551,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000035941695}
+  m_AnchoredPosition: {x: 0, y: 0.00008387011}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &527347498
@@ -2880,6 +2880,7 @@ MonoBehaviour:
   buttonSend: {fileID: 1546352282}
   buttonVideoMute: {fileID: 1383599888}
   buttonAudioMute: {fileID: 1782410807}
+  buttonSwitchHandsfree: {fileID: 1921465459}
   sampleType: 0
   renderTarget: {fileID: 0}
   scrollViewContent: {fileID: 527347496}

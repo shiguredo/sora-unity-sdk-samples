@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using UnityEngine.UI;
 
 public class SoraSample : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class SoraSample : MonoBehaviour
     public UnityEngine.UI.Button buttonSend;
     public UnityEngine.UI.Button buttonVideoMute;
     public UnityEngine.UI.Button buttonAudioMute;
+    public UnityEngine.UI.Button buttonSwitchHandsfree;
 
     public SampleType sampleType;
     // 実行中に変えられたくないので実行時に固定する
@@ -302,11 +304,19 @@ public class SoraSample : MonoBehaviour
             }
         }
     }
+
+    void OnChangeRoute()
+    {
+        // ボタンのラベルを変更する
+        buttonSwitchHandsfree.GetComponentInChildren<Text>().text =
+            audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON";
+    }
+
     void InitSora()
     {
         DisposeSora();
 
-        audioOutputHelper = new Sora.AudioOutputHelper(null);
+        audioOutputHelper = new Sora.AudioOutputHelper(OnChangeRoute);
         sora = new Sora();
         if (Sendonly)
         {
@@ -525,6 +535,7 @@ public class SoraSample : MonoBehaviour
             buttonStart.interactable = true;
             buttonEnd.interactable = false;
             buttonSend.interactable = false;
+            buttonSwitchHandsfree.interactable = false;
             if (buttonVideoMute != null) buttonVideoMute.interactable = false;
             if (buttonAudioMute != null) buttonAudioMute.interactable = false;
         }
@@ -533,6 +544,7 @@ public class SoraSample : MonoBehaviour
             buttonStart.interactable = false;
             buttonEnd.interactable = true;
             buttonSend.interactable = true;
+            buttonSwitchHandsfree.interactable = true;
             if (buttonVideoMute != null) buttonVideoMute.interactable = true;
             if (buttonAudioMute != null) buttonAudioMute.interactable = true;
         }
@@ -541,6 +553,7 @@ public class SoraSample : MonoBehaviour
             buttonStart.interactable = false;
             buttonEnd.interactable = false;
             buttonSend.interactable = false;
+            buttonSwitchHandsfree.interactable = false;
             if (buttonVideoMute != null) buttonVideoMute.interactable = false;
             if (buttonAudioMute != null) buttonAudioMute.interactable = false;
         }
