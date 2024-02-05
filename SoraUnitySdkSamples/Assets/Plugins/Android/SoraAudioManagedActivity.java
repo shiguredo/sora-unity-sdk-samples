@@ -8,7 +8,7 @@ import com.unity3d.player.UnityPlayerActivity;
 import jp.shiguredo.sora.audiomanager.SoraAudioManager;
 import jp.shiguredo.sora.audiomanager.SoraThreadUtils;
 
-public class SoraAudioManagedActivity extends UnityPlayerActivity {
+public class SoraAudioManagedActivity extends UnityPlayerActivity implements SoraAudioManager.OnChangeRouteObserver {
 
     private static final int REQUEST_CODE = 1;
     SoraAudioManager soraAudioManager;
@@ -40,6 +40,18 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity {
         }
     }
 
+    public void OnChangeRoute() {
+        //メインスレッドでない場合はメインスレッドで再実行
+        if (!SoraThreadUtils.runOnMainThread(() -> OnChangeRoute())) {
+            return;
+        }
+
+        if (this.observer == null) {
+            return;
+        }
+        this.observer.OnChangeRoute();
+    }
+    
     public void startAudioManager(SoraAudioManager.OnChangeRouteObserver observer) {
         //メインスレッドでない場合はメインスレッドで再実行
         if (!SoraThreadUtils.runOnMainThread(() -> startAudioManager(observer))) {
@@ -52,7 +64,7 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity {
                     != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_CODE);
         } else {
-            soraAudioManager.start(observer);
+            soraAudioManager.start(this);
         }
     }
 
