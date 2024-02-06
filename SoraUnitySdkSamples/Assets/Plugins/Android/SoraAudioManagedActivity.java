@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import com.unity3d.player.UnityPlayerActivity;
 import jp.shiguredo.sora.audiomanager.SoraAudioManager;
+import jp.shiguredo.sora.audiomanager.SoraBluetoothManager;
 import jp.shiguredo.sora.audiomanager.SoraThreadUtils;
 
 public class SoraAudioManagedActivity extends UnityPlayerActivity implements SoraAudioManager.OnChangeRouteObserver {
@@ -59,9 +60,7 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity implements Sor
         }
 
         this.observer = observer;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)
-                    != PackageManager.PERMISSION_GRANTED) {
+        if (!SoraBluetoothManager.checkHasPermission(getApplicationContext())) {
             requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_CODE);
         } else {
             soraAudioManager.start(this);
