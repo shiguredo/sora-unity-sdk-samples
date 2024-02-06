@@ -9,11 +9,31 @@ import jp.shiguredo.sora.audiomanager.SoraAudioManager;
 import jp.shiguredo.sora.audiomanager.SoraBluetoothManager;
 import jp.shiguredo.sora.audiomanager.SoraThreadUtils;
 
-public class SoraAudioManagedActivity extends UnityPlayerActivity implements SoraAudioManager.OnChangeRouteObserver {
+public class SoraAudioManagedActivity extends UnityPlayerActivity {
 
     private static final int REQUEST_CODE = 1;
     SoraAudioManager soraAudioManager;
     SoraAudioManager.OnChangeRouteObserver observer;
+
+    private class OnChangeRouteObserver implements SoraAudioManager.OnChangeRouteObserver {
+        SoraAudioManager.OnChangeRouteObserver observer;
+
+        public OnChangeRouteObserver(SoraAudioManager.OnChangeRouteObserver observer) {
+            this.observer = observer;
+        }
+
+        public void OnChangeRoute() {
+            //メインスレッドでない場合はメインスレッドで再実行
+            if (!SoraThreadUtils.runOnMainThread(() -> OnChangeRoute())) {
+                return;
+            }
+
+            if (this.observer == null) {
+                return;
+            }
+            this.observer.OnChangeRoute();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +54,9 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity implements Sor
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch(requestCode) {
             case REQUEST_CODE: {
-                soraAudioManager.start(this);
+                soraAudioManager.start(new OnChangeRouteObserver(observer));
             }
         }
-    }
-
-    public void OnChangeRoute() {
-        //メインスレッドでない場合はメインスレッドで再実行
-        if (!SoraThreadUtils.runOnMainThread(() -> OnChangeRoute())) {
-            return;
-        }
-
-        if (this.observer == null) {
-            return;
-        }
-        this.observer.OnChangeRoute();
     }
     
     public void startAudioManager(SoraAudioManager.OnChangeRouteObserver observer) {
@@ -61,7 +69,7 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity implements Sor
         if (!SoraBluetoothManager.checkHasPermission(getApplicationContext())) {
             requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_CODE);
         } else {
-            soraAudioManager.start(this);
+            soraAudioManager.start(new OnChangeRouteObserver(observer));
         }
     }
 
