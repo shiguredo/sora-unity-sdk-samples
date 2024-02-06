@@ -34,9 +34,7 @@ public class SoraAudioManagedActivity extends UnityPlayerActivity implements Sor
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch(requestCode) {
             case REQUEST_CODE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startAudioManager(this.observer);
-                }
+                soraAudioManager.start(this);
             }
         }
     }
