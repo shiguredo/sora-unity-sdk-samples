@@ -307,9 +307,13 @@ public class SoraSample : MonoBehaviour
 
     void OnChangeRoute()
     {
+        if (audioOutputHelper == null)
+        {
+            return;
+        }
         // ボタンのラベルを変更する
         buttonSwitchHandsfree.GetComponentInChildren<Text>().text =
-            audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON";
+        audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON";
     }
 
     void InitSora()
