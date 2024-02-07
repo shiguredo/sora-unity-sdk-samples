@@ -6,13 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import com.unity3d.player.UnityPlayerActivity;
 import jp.shiguredo.sora.audiomanager.SoraAudioManager;
-import jp.shiguredo.sora.audiomanager.SoraAudioManagerBase;
 import jp.shiguredo.sora.audiomanager.SoraAudioManagerFactory;
 import jp.shiguredo.sora.audiomanager.SoraThreadUtils;
 
 public class SoraAudioManagedActivity extends UnityPlayerActivity {
 
-    SoraAudioManagerBase soraAudioManager;
+    SoraAudioManager soraAudioManager;
 
     private class OnChangeRouteObserver implements SoraAudioManager.OnChangeRouteObserver {
         SoraAudioManager.OnChangeRouteObserver observer;
