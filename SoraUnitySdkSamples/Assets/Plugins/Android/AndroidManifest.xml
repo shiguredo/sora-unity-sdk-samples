@@ -17,7 +17,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application>
-        <activity android:name="jp.shiguredo.sora.unityaudiomanager.SoraAudioManagedActivity"
+        <activity android:name="com.unity3d.player.UnityPlayerActivity"
                   android:theme="@style/UnityThemeSelector">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
