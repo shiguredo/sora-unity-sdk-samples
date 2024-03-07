@@ -15,6 +15,7 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
+    Sora.IAudioOutputHelper audioOutputHelper;
     enum State
     {
         Init,
@@ -298,9 +299,19 @@ public class SoraSample : MonoBehaviour
             }
         }
     }
+    void OnChangeRoute()
+    {
+        if (audioOutputHelper == null)
+        {
+            return;
+        }
+        Debug.LogFormat("OnChangeRoute : " + (audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON"));
+    }
     void InitSora()
     {
         DisposeSora();
+
+        audioOutputHelper = Sora.AudioOutputHelperFactory.Create(OnChangeRoute);
 
         sora = new Sora();
         if (Sendonly)
@@ -502,6 +513,11 @@ public class SoraSample : MonoBehaviour
         }
         sora.Dispose();
         sora = null;
+        if (audioOutputHelper != null)
+        {
+            audioOutputHelper.Dispose();
+            audioOutputHelper = null;
+        }        
         Debug.Log("Sora is Disposed");
         DestroyComponents();
         SetState(State.Init);
@@ -873,5 +889,20 @@ public class SoraSample : MonoBehaviour
     {
         DisposeSora();
     }
-
+    public void OnClickHandsfreeOn()
+    {
+        if (audioOutputHelper == null)
+        {
+            return;
+        }
+        audioOutputHelper.SetHandsfree(true);
+    }
+    public void OnClickHandsfreeOff()
+    {
+        if (audioOutputHelper == null)
+        {
+            return;
+        }
+        audioOutputHelper.SetHandsfree(false);
+    }
 }
