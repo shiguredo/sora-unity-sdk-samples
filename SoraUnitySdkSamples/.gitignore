@@ -80,7 +80,6 @@ crashlytics-build.properties
 /Assets/Plugins/SoraUnitySdk/android/arm64-v8a/libSoraUnitySdk.so
 /Assets/Plugins/SoraUnitySdk/android/webrtc.jar
 /Assets/Plugins/SoraUnitySdk/android/Sora.aar
-/Assets/Plugins/SoraUnitySdk/android/Sora.aar.meta
 /Assets/Plugins/SoraUnitySdk/macos.meta
 /Assets/Plugins/SoraUnitySdk/macos/arm64.meta
 /Assets/Plugins/SoraUnitySdk/macos/arm64/SoraUnitySdk.bundle/
