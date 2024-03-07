@@ -73,14 +73,6 @@ def main():
                 os.path.join(android_src_base, 'Sora', file),
                 os.path.join(dst_base, 'SoraUnitySdk', file))
 
-    # Lyra モデル
-    for platform in ('windows_x86_64', 'macos_x86_64', 'macos_arm64', 'ios', 'android', 'ubuntu-20.04_x86_64'):
-        src = src_base if platform != 'android' else android_src_base
-        copy_if_exists(
-            os.path.join(src, '_install', platform, configdir, 'lyra', 'share', 'model_coeffs'),
-            os.path.join(dst_base, 'StreamingAssets', 'SoraUnitySdk', 'model_coeffs')
-        )
-
     # Windows
     copy_if_exists(
         os.path.join(src_base, '_build', 'windows_x86_64', configdir, 'sora_unity_sdk', vsconfigdir, 'SoraUnitySdk.dll'),
@@ -101,9 +93,6 @@ def main():
     copy_if_exists(
         os.path.join(src_base, '_build', 'ios', configdir, 'sora_unity_sdk', 'libSoraUnitySdk.a'),
         os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libSoraUnitySdk.a'))
-    copy_if_exists(
-        os.path.join(src_base, '_install', 'ios', configdir, 'lyra', 'lib', 'liblyra.a'),
-        os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'liblyra.a'))
     copy_if_exists(
         os.path.join(src_base, '_install', 'ios', configdir, 'webrtc', 'lib', 'libwebrtc.a'),
         os.path.join(dst_base, 'Plugins', 'SoraUnitySdk', 'ios', 'libwebrtc.a'))

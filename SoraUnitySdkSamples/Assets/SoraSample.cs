@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -75,11 +75,6 @@ public class SoraSample : MonoBehaviour
     public bool enableVideoH264Params = false;
     public string videoH264ParamsProfileLevelId = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
-    // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
-    public int audioCodecLyraBitrate = 0;
-    public bool enableAudioCodecLyraUsedtx = false;
-    public bool audioCodecLyraUsedtx = false;
-    public bool checkLyraVersion = false;
     public string audioStreamingLanguageCode = "";
 
     public bool unityAudioInput = false;
@@ -222,9 +217,6 @@ public class SoraSample : MonoBehaviour
         SetState(State.Init);
         StartCoroutine(Render());
         StartCoroutine(GetStats());
-#if !UNITY_EDITOR && UNITY_ANDROID
-        StartCoroutine(SaveStreamingAssetsToLocal());
-#endif
     }
 
     IEnumerator Render()
@@ -588,10 +580,6 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickStart()
     {
-        if (!savedAssetsToLocal)
-        {
-            return;
-        }
 
         // 開発用の機能。
         // .env.json ファイルがあったら、それを読んでシグナリングURLとチャンネルIDを設定する。
@@ -681,18 +669,6 @@ public class SoraSample : MonoBehaviour
         int videoHeight;
         GetVideoSize(videoSize, out videoWidth, out videoHeight);
 
-        if (audioCodecType == Sora.AudioCodecType.LYRA)
-        {
-            // Lyra で使用するモデルのパスを指定する
-            // Android だけ違うパスを指定している理由は SaveStreamingAssetsToLocal() のコメントを参照
-            string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
-#if !UNITY_EDITOR && UNITY_ANDROID
-            modelPath = Application.temporaryCachePath;
-#endif
-            Debug.Log("SORA_LYRA_MODEL_COEFFS_PATH=" + modelPath);
-            Sora.Setenv("SORA_LYRA_MODEL_COEFFS_PATH", modelPath);
-        }
-
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
@@ -725,8 +701,6 @@ public class SoraSample : MonoBehaviour
                 VideoCapturerDevice = videoCapturerDevice,
             },
             AudioCodecType = audioCodecType,
-            AudioCodecLyraBitrate = audioCodecLyraBitrate,
-            CheckLyraVersion = checkLyraVersion,
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
@@ -750,10 +724,6 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
-        if (enableAudioCodecLyraUsedtx)
-        {
-            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
-        }
         if (enableSpotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRid;
@@ -904,39 +874,4 @@ public class SoraSample : MonoBehaviour
         DisposeSora();
     }
 
-    // Android の場合、StreamingAssets へのパスは apk バイナリ内への URI になるため、
-    // ネイティブ側のコードで読み込むことができない。
-    // そのため Unity 側で StreamingAssets にあるデータを読み込んでローカルに保存することで、
-    // ネイティブ側で利用可能にする。
-    bool savedAssetsToLocal = true;
-    IEnumerator SaveStreamingAssetsToLocal()
-    {
-        savedAssetsToLocal = false;
-        string[] files = { "lyra_config.binarypb", "lyragan.tflite", "quantizer.tflite", "soundstream_encoder.tflite" };
-        string baseUrl = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
-        foreach (string file in files)
-        {
-            string outPath = System.IO.Path.Combine(Application.temporaryCachePath, file);
-            if (System.IO.File.Exists(outPath))
-            {
-                continue;
-            }
-
-            byte[] data;
-            string uri = baseUrl + "/" + file;
-            using (var req = UnityEngine.Networking.UnityWebRequest.Get(uri))
-            {
-                yield return req.SendWebRequest();
-
-                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError("Failed to Get: uri=" + uri + " error=" + req.error);
-                    yield break;
-                }
-                data = req.downloadHandler.data;
-            }
-            System.IO.File.WriteAllBytes(outPath, data);
-        }
-        savedAssetsToLocal = true;
-    }
 }
