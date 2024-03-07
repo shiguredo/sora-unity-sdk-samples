@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using UnityEngine.UI;
 
 public class SoraSample : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class SoraSample : MonoBehaviour
     public UnityEngine.UI.Button buttonSend;
     public UnityEngine.UI.Button buttonVideoMute;
     public UnityEngine.UI.Button buttonAudioMute;
+    public UnityEngine.UI.Button buttonSwitchHandsfree;
 
     public SampleType sampleType;
     // 実行中に変えられたくないので実行時に固定する
@@ -306,6 +308,9 @@ public class SoraSample : MonoBehaviour
             return;
         }
         Debug.LogFormat("OnChangeRoute : " + (audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON"));
+        // ボタンのラベルを変更する
+        buttonSwitchHandsfree.GetComponentInChildren<Text>().text =
+        audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON";
     }
     void InitSora()
     {
@@ -889,20 +894,12 @@ public class SoraSample : MonoBehaviour
     {
         DisposeSora();
     }
-    public void OnClickHandsfreeOn()
+    public void OnClickHandsfree()
     {
         if (audioOutputHelper == null)
         {
             return;
         }
-        audioOutputHelper.SetHandsfree(true);
-    }
-    public void OnClickHandsfreeOff()
-    {
-        if (audioOutputHelper == null)
-        {
-            return;
-        }
-        audioOutputHelper.SetHandsfree(false);
+        audioOutputHelper.SetHandsfree(!audioOutputHelper.IsHandsfree());
     }
 }
