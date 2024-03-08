@@ -1,14 +1,13 @@
-import subprocess
+import argparse
 import logging
 import os
+import platform
+import shutil
+import subprocess
+import tarfile
 import urllib.parse
 import zipfile
-import tarfile
-import shutil
-import platform
-import argparse
-from typing import Callable, Optional, List, Union
-
+from typing import Optional
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,11 +21,11 @@ class ChangeDirectory(object):
 
     def __enter__(self):
         self._old_cwd = os.getcwd()
-        logging.debug(f'pushd {self._old_cwd} --> {self._cwd}')
+        logging.debug(f"pushd {self._old_cwd} --> {self._cwd}")
         os.chdir(self._cwd)
 
     def __exit__(self, exctype, excvalue, trace):
-        logging.debug(f'popd {self._old_cwd} <-- {self._cwd}')
+        logging.debug(f"popd {self._old_cwd} <-- {self._cwd}")
         os.chdir(self._old_cwd)
         return False
 
@@ -36,12 +35,12 @@ def cd(cwd):
 
 
 def cmd(args, **kwargs):
-    logging.debug(f'+{args} {kwargs}')
-    if 'check' not in kwargs:
-        kwargs['check'] = True
-    if 'resolve' in kwargs:
-        resolve = kwargs['resolve']
-        del kwargs['resolve']
+    logging.debug(f"+{args} {kwargs}")
+    if "check" not in kwargs:
+        kwargs["check"] = True
+    if "resolve" in kwargs:
+        resolve = kwargs["resolve"]
+        del kwargs["resolve"]
     else:
         resolve = True
     if resolve:
@@ -51,7 +50,7 @@ def cmd(args, **kwargs):
 
 def download(url: str, output_dir: Optional[str] = None, filename: Optional[str] = None) -> str:
     if filename is None:
-        output_path = urllib.parse.urlparse(url).path.split('/')[-1]
+        output_path = urllib.parse.urlparse(url).path.split("/")[-1]
     else:
         output_path = filename
 
@@ -62,7 +61,7 @@ def download(url: str, output_dir: Optional[str] = None, filename: Optional[str]
         return output_path
 
     try:
-        if shutil.which('curl') is not None:
+        if shutil.which("curl") is not None:
             cmd(["curl", "-fLo", output_path, url])
         else:
             cmd(["wget", "-cO", output_path, url])
@@ -77,43 +76,41 @@ def download(url: str, output_dir: Optional[str] = None, filename: Optional[str]
 
 def rm_rf(path: str):
     if not os.path.exists(path):
-        logging.debug(f'rm -rf {path} => path not found')
+        logging.debug(f"rm -rf {path} => path not found")
         return
     if os.path.isfile(path) or os.path.islink(path):
         os.remove(path)
-        logging.debug(f'rm -rf {path} => file removed')
+        logging.debug(f"rm -rf {path} => file removed")
     if os.path.isdir(path):
         shutil.rmtree(path)
-        logging.debug(f'rm -rf {path} => directory removed')
+        logging.debug(f"rm -rf {path} => directory removed")
 
 
 def mkdir_p(path: str):
     if os.path.exists(path):
-        logging.debug(f'mkdir -p {path} => already exists')
+        logging.debug(f"mkdir -p {path} => already exists")
         return
     os.makedirs(path, exist_ok=True)
-    logging.debug(f'mkdir -p {path} => directory created')
+    logging.debug(f"mkdir -p {path} => directory created")
 
 
 # アーカイブが単一のディレクトリに全て格納されているかどうかを調べる。
 #
 # 単一のディレクトリに格納されている場合はそのディレクトリ名を返す。
 # そうでない場合は None を返す。
-def _is_single_dir(infos: List[Union[zipfile.ZipInfo, tarfile.TarInfo]],
-                   get_name: Callable[[Union[zipfile.ZipInfo, tarfile.TarInfo]], str],
-                   is_dir: Callable[[Union[zipfile.ZipInfo, tarfile.TarInfo]], bool]) -> Optional[str]:
+def _is_single_dir(infos, get_name, is_dir) -> Optional[str]:
     # tarfile: ['path', 'path/to', 'path/to/file.txt']
     # zipfile: ['path/', 'path/to/', 'path/to/file.txt']
     # どちらも / 区切りだが、ディレクトリの場合、後ろに / が付くかどうかが違う
     dirname = None
     for info in infos:
         name = get_name(info)
-        n = name.rstrip('/').find('/')
+        n = name.rstrip("/").find("/")
         if n == -1:
             # ルートディレクトリにファイルが存在している
             if not is_dir(info):
                 return None
-            dir = name.rstrip('/')
+            dir = name.rstrip("/")
         else:
             dir = name[0:n]
         # ルートディレクトリに２個以上のディレクトリが存在している
@@ -135,7 +132,7 @@ def is_single_dir_zip(zip: zipfile.ZipFile) -> Optional[str]:
 # 解凍した上でファイル属性を付与する
 def _extractzip(z: zipfile.ZipFile, path: str):
     z.extractall(path)
-    if platform.system() == 'Windows':
+    if platform.system() == "Windows":
         return
     for info in z.infolist():
         if info.is_dir():
@@ -144,7 +141,7 @@ def _extractzip(z: zipfile.ZipFile, path: str):
         mod = info.external_attr >> 16
         if (mod & 0o120000) == 0o120000:
             # シンボリックリンク
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 src = f.read()
             os.remove(filepath)
             with cd(os.path.dirname(filepath)):
@@ -180,7 +177,7 @@ def _extractzip(z: zipfile.ZipFile, path: str):
 def extract(file: str, output_dir: str, output_dirname: str, filetype: Optional[str] = None):
     path = os.path.join(output_dir, output_dirname)
     logging.info(f"Extract {file} to {path}")
-    if filetype == 'gzip' or file.endswith('.tar.gz'):
+    if filetype == "gzip" or file.endswith(".tar.gz"):
         rm_rf(path)
         with tarfile.open(file) as t:
             dir = is_single_dir_tar(t)
@@ -195,7 +192,7 @@ def extract(file: str, output_dir: str, output_dirname: str, filetype: Optional[
                 if path != path2:
                     logging.debug(f"mv {path2} {path}")
                     os.replace(path2, path)
-    elif filetype == 'zip' or file.endswith('.zip'):
+    elif filetype == "zip" or file.endswith(".zip"):
         rm_rf(path)
         with zipfile.ZipFile(file) as z:
             dir = is_single_dir_zip(z)
@@ -213,7 +210,7 @@ def extract(file: str, output_dir: str, output_dirname: str, filetype: Optional[
                     logging.debug(f"mv {path2} {path}")
                     os.replace(path2, path)
     else:
-        raise Exception('file should end with .tar.gz or .zip')
+        raise Exception("file should end with .tar.gz or .zip")
 
 
 # dir 以下にある全てのファイルパスを、dir2 からの相対パスで返す
@@ -237,19 +234,19 @@ def main():
     args = parser.parse_args()
 
     if args.sdk_path is None:
-        rm_rf('SoraUnitySdk.zip')
-        rm_rf('SoraUnitySdk')
-        url = f'https://github.com/shiguredo/sora-unity-sdk/releases/download/{SORA_UNITY_SDK_VERSION}/SoraUnitySdk.zip'
-        path = download(url, '.')
-        extract(path, '.', 'SoraUnitySdk')
+        rm_rf("SoraUnitySdk.zip")
+        rm_rf("SoraUnitySdk")
+        url = f"https://github.com/shiguredo/sora-unity-sdk/releases/download/{SORA_UNITY_SDK_VERSION}/SoraUnitySdk.zip"
+        path = download(url, ".")
+        extract(path, ".", "SoraUnitySdk")
 
     # 既存のファイル（特にメタデータ系）が残ってる可能性があるので
     # １個１個ファイルをコピーしていく
-    sdk_path = 'SoraUnitySdk' if args.sdk_path is None else args.sdk_path
+    sdk_path = "SoraUnitySdk" if args.sdk_path is None else args.sdk_path
     for file in enum_all_files(sdk_path, sdk_path):
-        dst_base = os.path.join('SoraUnitySdkSamples', 'Assets')
+        dst_base = os.path.join("SoraUnitySdkSamples", "Assets")
         # このディレクトリだけは全部置き換える
-        if 'SoraUnitySdk.bundle' in file:
+        if "SoraUnitySdk.bundle" in file:
             continue
         srcfile = os.path.join(sdk_path, file)
         dstfile = os.path.join(dst_base, file)
@@ -258,9 +255,9 @@ def main():
         shutil.copyfile(srcfile, dstfile)
     # .bundle ディレクトリの置き換え
     for root, dirs, _ in os.walk(sdk_path):
-        dst_base = os.path.join('SoraUnitySdkSamples', 'Assets')
+        dst_base = os.path.join("SoraUnitySdkSamples", "Assets")
         for dir in dirs:
-            if dir == 'SoraUnitySdk.bundle':
+            if dir == "SoraUnitySdk.bundle":
                 bundle_dir = os.path.relpath(os.path.join(root, dir), sdk_path)
                 src_bundle_dir = os.path.join(sdk_path, bundle_dir)
                 dst_bundle_dir = os.path.join(dst_base, bundle_dir)
@@ -269,9 +266,9 @@ def main():
                 shutil.copytree(src_bundle_dir, dst_bundle_dir)
 
     if args.sdk_path is None:
-        rm_rf('SoraUnitySdk.zip')
-        rm_rf('SoraUnitySdk')
+        rm_rf("SoraUnitySdk.zip")
+        rm_rf("SoraUnitySdk")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
