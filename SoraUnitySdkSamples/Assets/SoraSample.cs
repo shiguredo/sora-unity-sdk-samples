@@ -305,7 +305,7 @@ public class SoraSample : MonoBehaviour
         {
             return;
         }
-        Debug.LogFormat("OnChangeRoute : " + (audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON"));
+        Debug.LogFormat("OnChangeRoute : " + (audioOutputHelper.IsHandsfree() ? "ハンズフリー ON" : "ハンズフリー OFF"));
     }
     void InitSora()
     {
