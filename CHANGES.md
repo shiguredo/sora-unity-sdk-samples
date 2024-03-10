@@ -11,6 +11,13 @@
 
 ## develop
 
+- [CHANGE] Lyra 関連の処理を削除するx
+  - copysdk.py から Lyra 関連ファイルのコピー処理を削除
+  - SoraSample.cs から Lyra 関連の設定およびファイル読み込み処理を削除
+  - lyra 関連の meta ファイルを削除
+  - .gitignore ファイルから Lyra ファイルの定義を削除
+  - @miosakuma
+
 ## sora-unity-sdk-2024.1.0
 
 - [ADD] forwardingfilter に version と metadata を追加
