@@ -310,7 +310,7 @@ public class SoraSample : MonoBehaviour
         Debug.LogFormat("OnChangeRoute : " + (audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON"));
         // ボタンのラベルを変更する
         buttonSwitchHandsfree.GetComponentInChildren<Text>().text =
-        audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON";
+        audioOutputHelper.IsHandsfree() ? "ハンズフリー ON" : "ハンズフリー OFF";
     }
     void InitSora()
     {
@@ -522,7 +522,7 @@ public class SoraSample : MonoBehaviour
         {
             audioOutputHelper.Dispose();
             audioOutputHelper = null;
-        }        
+        }
         Debug.Log("Sora is Disposed");
         DestroyComponents();
         SetState(State.Init);
