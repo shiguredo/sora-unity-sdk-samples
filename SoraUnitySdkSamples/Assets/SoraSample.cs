@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using UnityEngine.UI;
 
 public class SoraSample : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SoraSample : MonoBehaviour
     }
 
     Sora sora;
+    Sora.IAudioOutputHelper audioOutputHelper;
     enum State
     {
         Init,
@@ -27,6 +29,7 @@ public class SoraSample : MonoBehaviour
     public UnityEngine.UI.Button buttonSend;
     public UnityEngine.UI.Button buttonVideoMute;
     public UnityEngine.UI.Button buttonAudioMute;
+    public UnityEngine.UI.Button buttonSwitchHandsfree;
 
     public SampleType sampleType;
     // 実行中に変えられたくないので実行時に固定する
@@ -75,11 +78,6 @@ public class SoraSample : MonoBehaviour
     public bool enableVideoH264Params = false;
     public string videoH264ParamsProfileLevelId = "";
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
-    // audioCodecType == AudioCodecType.LYRA の場合のみ利用可能
-    public int audioCodecLyraBitrate = 0;
-    public bool enableAudioCodecLyraUsedtx = false;
-    public bool audioCodecLyraUsedtx = false;
-    public bool checkLyraVersion = false;
     public string audioStreamingLanguageCode = "";
 
     public bool unityAudioInput = false;
@@ -222,9 +220,6 @@ public class SoraSample : MonoBehaviour
         SetState(State.Init);
         StartCoroutine(Render());
         StartCoroutine(GetStats());
-#if !UNITY_EDITOR && UNITY_ANDROID
-        StartCoroutine(SaveStreamingAssetsToLocal());
-#endif
     }
 
     IEnumerator Render()
@@ -306,9 +301,26 @@ public class SoraSample : MonoBehaviour
             }
         }
     }
+    void OnChangeRoute()
+    {
+        if (audioOutputHelper == null)
+        {
+            return;
+        }
+        Debug.LogFormat("OnChangeRoute : " + (audioOutputHelper.IsHandsfree() ? "ハンズフリー OFF" : "ハンズフリー ON"));
+        // ボタンのラベルを変更する
+        buttonSwitchHandsfree.GetComponentInChildren<Text>().text =
+        audioOutputHelper.IsHandsfree() ? "ハンズフリー ON" : "ハンズフリー OFF";
+    }
     void InitSora()
     {
         DisposeSora();
+
+        // 送信のみの場合は音声出力を行わないので、AudioOutputHelper を作成しない
+        if (!Sendonly)
+        {
+            audioOutputHelper = Sora.AudioOutputHelperFactory.Create(OnChangeRoute);
+        }
 
         sora = new Sora();
         if (Sendonly)
@@ -510,6 +522,11 @@ public class SoraSample : MonoBehaviour
         }
         sora.Dispose();
         sora = null;
+        if (audioOutputHelper != null)
+        {
+            audioOutputHelper.Dispose();
+            audioOutputHelper = null;
+        }
         Debug.Log("Sora is Disposed");
         DestroyComponents();
         SetState(State.Init);
@@ -588,10 +605,6 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickStart()
     {
-        if (!savedAssetsToLocal)
-        {
-            return;
-        }
 
         // 開発用の機能。
         // .env.json ファイルがあったら、それを読んでシグナリングURLとチャンネルIDを設定する。
@@ -681,18 +694,6 @@ public class SoraSample : MonoBehaviour
         int videoHeight;
         GetVideoSize(videoSize, out videoWidth, out videoHeight);
 
-        if (audioCodecType == Sora.AudioCodecType.LYRA)
-        {
-            // Lyra で使用するモデルのパスを指定する
-            // Android だけ違うパスを指定している理由は SaveStreamingAssetsToLocal() のコメントを参照
-            string modelPath = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
-#if !UNITY_EDITOR && UNITY_ANDROID
-            modelPath = Application.temporaryCachePath;
-#endif
-            Debug.Log("SORA_LYRA_MODEL_COEFFS_PATH=" + modelPath);
-            Sora.Setenv("SORA_LYRA_MODEL_COEFFS_PATH", modelPath);
-        }
-
         var config = new Sora.Config()
         {
             SignalingUrl = signalingUrl,
@@ -725,8 +726,6 @@ public class SoraSample : MonoBehaviour
                 VideoCapturerDevice = videoCapturerDevice,
             },
             AudioCodecType = audioCodecType,
-            AudioCodecLyraBitrate = audioCodecLyraBitrate,
-            CheckLyraVersion = checkLyraVersion,
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
@@ -750,10 +749,6 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
-        if (enableAudioCodecLyraUsedtx)
-        {
-            config.AudioCodecLyraUsedtx = audioCodecLyraUsedtx;
-        }
         if (enableSpotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRid;
@@ -903,40 +898,12 @@ public class SoraSample : MonoBehaviour
     {
         DisposeSora();
     }
-
-    // Android の場合、StreamingAssets へのパスは apk バイナリ内への URI になるため、
-    // ネイティブ側のコードで読み込むことができない。
-    // そのため Unity 側で StreamingAssets にあるデータを読み込んでローカルに保存することで、
-    // ネイティブ側で利用可能にする。
-    bool savedAssetsToLocal = true;
-    IEnumerator SaveStreamingAssetsToLocal()
+    public void OnClickHandsfree()
     {
-        savedAssetsToLocal = false;
-        string[] files = { "lyra_config.binarypb", "lyragan.tflite", "quantizer.tflite", "soundstream_encoder.tflite" };
-        string baseUrl = Application.streamingAssetsPath + "/SoraUnitySdk/model_coeffs";
-        foreach (string file in files)
+        if (audioOutputHelper == null)
         {
-            string outPath = System.IO.Path.Combine(Application.temporaryCachePath, file);
-            if (System.IO.File.Exists(outPath))
-            {
-                continue;
-            }
-
-            byte[] data;
-            string uri = baseUrl + "/" + file;
-            using (var req = UnityEngine.Networking.UnityWebRequest.Get(uri))
-            {
-                yield return req.SendWebRequest();
-
-                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError("Failed to Get: uri=" + uri + " error=" + req.error);
-                    yield break;
-                }
-                data = req.downloadHandler.data;
-            }
-            System.IO.File.WriteAllBytes(outPath, data);
+            return;
         }
-        savedAssetsToLocal = true;
+        audioOutputHelper.SetHandsfree(!audioOutputHelper.IsHandsfree());
     }
 }
