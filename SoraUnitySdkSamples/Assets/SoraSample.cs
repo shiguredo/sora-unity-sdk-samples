@@ -316,7 +316,11 @@ public class SoraSample : MonoBehaviour
     {
         DisposeSora();
 
-        audioOutputHelper = Sora.AudioOutputHelperFactory.Create(OnChangeRoute);
+        // 送信のみの場合は音声出力を行わないので、AudioOutputHelper を作成しない
+        if (!Sendonly)
+        {
+            audioOutputHelper = Sora.AudioOutputHelperFactory.Create(OnChangeRoute);
+        }
 
         sora = new Sora();
         if (Sendonly)
