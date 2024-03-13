@@ -17,6 +17,10 @@
   - lyra 関連の meta ファイルを削除
   - .gitignore ファイルから Lyra ファイルの定義を削除
   - @miosakuma
+- [CHANGE] Sora Unity SDK に Sora.aar ファイルが追加された対応
+  - Sora.aar.meta ファイルを追加する
+  - .gitignore に Sora.aar ファイルを追加する
+  - @torikizi
 - [ADD] ハンズフリー切替ボタンを追加
   - multi_sendrecv シーンにハンズフリーを切り替えられるようにボタンを追加
   - 他のボタンと合わせて一つのボタンで切り替えられるようにしているが、テキストを変更することでボタンを押すとどちらに切り替えられるかを表示するようにしている
