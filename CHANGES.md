@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-unity-sdk-2024.2.0
+
 - [CHANGE] Lyra 関連の処理を削除する
   - copysdk.py から Lyra 関連ファイルのコピー処理を削除
   - SoraSample.cs から Lyra 関連の設定およびファイル読み込み処理を削除
