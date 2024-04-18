@@ -26,6 +26,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 - Android 7 以降
 - iOS 13 以降
 - Ubuntu 20.04 x86_64
+- Ubuntu 22.04 x86_64
 
 ## Sora Unity SDK サンプル集を使ってみる
 
