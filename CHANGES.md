@@ -11,6 +11,14 @@
 
 ## develop
 
+## sora-unity-sdk-2024.3.0
+
+- [UPDATE] Sora Unity SDK 2024.3.0 にあげる
+  - @miosakuma
+- [UPDATE] 対応プラットフォームに Ubuntu 22.04 x86_64 を追加する
+  - コード変更はなし、Ubuntu 20.04 版の Unity SDK で Ubuntu 22.04 も動作することを確認した
+  - @torikizi
+
 ## sora-unity-sdk-2024.2.0
 
 - [CHANGE] Lyra 関連の処理を削除する
