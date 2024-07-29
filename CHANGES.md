@@ -11,6 +11,11 @@
 
 ## develop
 
+## sora-unity-sdk-2024.4.0
+
+- [UPDATE] Sora Unity SDK 2024.4.0 にあげる
+  - @miosakuma
+
 ## sora-unity-sdk-2024.3.0
 
 - [UPDATE] Sora Unity SDK 2024.3.0 にあげる
