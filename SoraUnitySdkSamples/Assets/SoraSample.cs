@@ -50,6 +50,15 @@ public class SoraSample : MonoBehaviour
     public string[] signalingUrlCandidate = new string[0];
 
     public bool insecure = false;
+    // 証明書関連
+    // ここでは証明書を貼り付ける実装にする
+    // 有効にするフラグを用意してあるので、証明書を使わない場合は false にする
+    public bool useClientCert = false;
+    private string clientCert = @"";
+    public bool useClientKey = false;
+    private string clientKey = @"";
+    public bool useCACert = false;
+    private string caCert = @"";
     public string channelId = "";
     public string clientId = "";
     public string bundleId = "";
@@ -749,6 +758,18 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
+        if (useClientCert)
+        {
+            config.ClientCert = clientCert;
+        }
+        if (useClientKey)
+        {
+            config.ClientKey = clientKey;
+        }
+        if (useCACert)
+        {
+            config.CACert = caCert;
+        }
         if (enableSpotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRid;
