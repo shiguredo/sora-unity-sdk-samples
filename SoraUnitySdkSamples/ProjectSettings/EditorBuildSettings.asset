@@ -4,6 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/multi_sendrecv.unity
+    guid: a65d6f524eeafcb4790e463a7c89a63e
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

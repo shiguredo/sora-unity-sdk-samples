@@ -188,11 +188,14 @@ public class SoraSample : MonoBehaviour
 
     void DumpDeviceInfo(string name, Sora.DeviceInfo[] infos)
     {
-        Debug.LogFormat("------------ {0} --------------", name);
-        foreach (var info in infos)
-        {
-            Debug.LogFormat("DeviceName={0} UniqueName={1}", info.DeviceName, info.UniqueName);
-        }
+        return;
+        /*
+            Debug.LogFormat("------------ {0} --------------", name);
+            foreach (var info in infos)
+            {
+                Debug.LogFormat("DeviceName={0} UniqueName={1}", info.DeviceName, info.UniqueName);
+            }
+            */
     }
 
     // Start is called before the first frame update
@@ -206,9 +209,9 @@ public class SoraSample : MonoBehaviour
 #endif
         fixedSampleType = sampleType;
 
-        DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
-        DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
-        DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
+        //DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
+        //DumpDeviceInfo("audio recording devices", Sora.GetAudioRecordingDevices());
+        //DumpDeviceInfo("audio playout devices", Sora.GetAudioPlayoutDevices());
 
         // 送信のみの場合はトラック追加の度にテクスチャを追加したりする必要は無いので、ここで初期化しておく。
         // 受信がある場合は表示する数が動的に変わるのでここで初期化することはできない。
@@ -718,7 +721,8 @@ public class SoraSample : MonoBehaviour
             VideoBitRate = videoBitRate,
             CameraConfig = new Sora.CameraConfig()
             {
-                CapturerType = captureUnityCamera && capturedCamera != null ? Sora.CapturerType.UnityCamera : Sora.CapturerType.DeviceCamera,
+                //CapturerType = captureUnityCamera && capturedCamera != null ? Sora.CapturerType.UnityCamera : Sora.CapturerType.DeviceCamera,
+                CapturerType = Sora.CapturerType.UnityCamera,
                 UnityCamera = capturedCamera,
                 VideoFps = videoFps,
                 VideoWidth = videoWidth,
@@ -874,24 +878,27 @@ public class SoraSample : MonoBehaviour
 
     public void OnClickSwitchCamera()
     {
-        if (sora == null)
-        {
-            return;
-        }
-        int videoWidth;
-        int videoHeight;
-        GetVideoSize(videoSize, out videoWidth, out videoHeight);
+        return;
+        /*
+            if (sora == null)
+            {
+                return;
+            }
+            int videoWidth;
+            int videoHeight;
+            GetVideoSize(videoSize, out videoWidth, out videoHeight);
 
-        if (captureUnityCamera)
-        {
-            sora.SwitchCamera(Sora.CameraConfig.FromDeviceCamera(videoCapturerDevice, videoWidth, videoHeight, videoFps));
-            captureUnityCamera = false;
-        }
-        else
-        {
-            sora.SwitchCamera(Sora.CameraConfig.FromUnityCamera(capturedCamera, 16, videoWidth, videoHeight, videoFps));
-            captureUnityCamera = true;
-        }
+            if (captureUnityCamera)
+            {
+                sora.SwitchCamera(Sora.CameraConfig.FromDeviceCamera(videoCapturerDevice, videoWidth, videoHeight, videoFps));
+                captureUnityCamera = false;
+            }
+            else
+            {
+                sora.SwitchCamera(Sora.CameraConfig.FromUnityCamera(capturedCamera, 16, videoWidth, videoHeight, videoFps));
+                captureUnityCamera = true;
+            }
+            */
     }
 
     void OnApplicationQuit()
