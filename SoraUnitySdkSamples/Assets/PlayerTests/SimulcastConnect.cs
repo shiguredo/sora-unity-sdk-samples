@@ -5,14 +5,12 @@ using UnityEngine.TestTools;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ConnectAndDisconnect
+public class SimulcastConnect
 {
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
     [UnityTest]
-    public IEnumerator ConnectAndDisconnectWithEnumeratorPasses()
+    public IEnumerator SimulcastConnectWithEnumeratorPasses()
     {
-        // シーンを非同期にロード
+        // multi_sendrecv シーンを非同期にロード
         var loadSceneOperation = SceneManager.LoadSceneAsync("multi_sendrecv");
 
         // シーンのロードが完了するまで待機
@@ -24,6 +22,14 @@ public class ConnectAndDisconnect
         // シーンが正しくロードされたか確認
         Assert.AreEqual("multi_sendrecv", SceneManager.GetActiveScene().name, "Scene did not load correctly!");
 
+        // SoraSample スクリプトを探して simulcast を有効にする
+        SoraSample script = GameObject.Find("Script").GetComponent<SoraSample>();
+        if (script != null)
+        {
+            // simulcast を有効にする
+            script.simulcast = true;
+        }
+
         // 接続ボタンを探して押す
         Button firstButton = GameObject.Find("ButtonStart").GetComponent<Button>();
         Assert.IsNotNull(firstButton, "FirstButton was not found in the scene!");
@@ -31,7 +37,7 @@ public class ConnectAndDisconnect
         // ボタンをクリック（シミュレート）
         firstButton.onClick.Invoke();
 
-        // 20秒待機
+        // 20 秒待機
         yield return new WaitForSeconds(20);
 
         // 切断ボタンを探して押す
@@ -45,6 +51,6 @@ public class ConnectAndDisconnect
         // 必要に応じてアサーションをここに追加
         // Assert for checking after second button press logic
 
-        yield return null; // テスト終了
+        yield return null; // テストを終了
     }
 }
