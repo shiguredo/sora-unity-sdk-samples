@@ -201,12 +201,12 @@ public class SoraSample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-#if !UNITY_EDITOR && UNITY_ANDROID
+        //#if !UNITY_EDITOR && UNITY_ANDROID
         // Unity for Android は、C# コード中に WebCamTexture や Microphone にアクセスすることで
         // 自動的に必要な権限を AndroidManifest.xml に追加してくれるため、ここで適当にアクセスしておく
-        var x = WebCamTexture.devices;
-        var y = Microphone.devices;
-#endif
+        //var x = WebCamTexture.devices;
+        //var y = Microphone.devices;
+        //#endif
         fixedSampleType = sampleType;
 
         //DumpDeviceInfo("video capturer devices", Sora.GetVideoCapturerDevices());
