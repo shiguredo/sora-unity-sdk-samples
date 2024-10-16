@@ -12,7 +12,7 @@ from typing import Optional
 logging.basicConfig(level=logging.DEBUG)
 
 
-SORA_UNITY_SDK_VERSION = "2024.5.0-canary.5"
+SORA_UNITY_SDK_VERSION = "2024.5.0-canary.6"
 
 
 class ChangeDirectory(object):
