@@ -17,13 +17,19 @@ public class SoraSample : MonoBehaviour
 
     Sora sora;
     Sora.IAudioOutputHelper audioOutputHelper;
-    enum State
+    public enum State
     {
         Init,
         Started,
         Disconnecting,
     }
     State state;
+
+    // テスト用のコード
+    public Sora CurrentSora => sora;
+    public State CurrentState => state;
+    public Sora.IAudioOutputHelper CurrentAudioHelper => audioOutputHelper;
+
     public UnityEngine.UI.Button buttonStart;
     public UnityEngine.UI.Button buttonEnd;
     public UnityEngine.UI.Button buttonSend;
