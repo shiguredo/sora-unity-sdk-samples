@@ -137,6 +137,52 @@ public class SoraSample : MonoBehaviour
     public bool enableForwardingFilterMetadata = false;
     public string forwardingFilterMetadataMessage = "";
 
+    [System.Serializable]
+    public class ForwardingFiltersRule
+    {
+        public string field = "";
+        public string op = "";
+        public string[] values = new string[0];
+    }
+
+    [System.Serializable]
+    public class ForwardingFiltersRuleSet
+    {
+        public ForwardingFiltersRule[] rules = new ForwardingFiltersRule[0];
+    }
+
+    [System.Serializable]
+    public class ForwardingFiltersConfig
+    {
+        [Header("Filter Settings")]
+        public bool enableAction = false;
+        [Tooltip("Action to take (block/allow)")]
+        public string action = "";
+
+        public bool enableName = false;
+        [Tooltip("Filter name")]
+        public string name = "";
+
+        public bool enablePriority = false;
+        [Tooltip("Filter priority")]
+        public int priority = 0;
+
+        [Header("Rules")]
+        public ForwardingFiltersRuleSet[] ruleSets = new ForwardingFiltersRuleSet[0];
+
+        public bool enableVersion = false;
+        [Tooltip("Filter version")]
+        public string version = "";
+
+        public bool enableMetadata = false;
+        [Tooltip("Filter metadata")]
+        public string metadata = "";
+    }
+
+    [Header("ForwardingFilters の設定")]
+    public bool enableForwardingFilters = false;
+    public ForwardingFiltersConfig[] forwardingFiltersConfig = new ForwardingFiltersConfig[0];
+
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
     public int dataChannelSignalingTimeout = 30;
@@ -806,7 +852,17 @@ public class SoraSample : MonoBehaviour
             if (enableForwardingFilterVersion) config.ForwardingFilter.Version = forwardingFilterVersion;
             if (enableForwardingFilterMetadata) config.ForwardingFilter.Metadata = forwardingFilterMetadataJson;
         }
-
+        var forwardingFilters = CreateForwardingFilters();
+        if (enableForwardingFilters && forwardingFilters != null && forwardingFilters.Count > 0)
+        {
+            var ff = new SoraConf.Internal.ForwardingFilters();
+            if (ff.filters == null)
+            {
+                ff.filters = new List<SoraConf.Internal.ForwardingFilter>();
+            }
+            ff.filters.AddRange(forwardingFilters); // Add の代わりに AddRange を使う
+            config.ForwardingFilters = ff;
+        }
         sora.Connect(config);
         SetState(State.Started);
         Debug.LogFormat("Sora is Created: signalingUrl={0}, channelId={1}", signalingUrl, channelId);
@@ -842,6 +898,84 @@ public class SoraSample : MonoBehaviour
         }
     }
 
+    private List<SoraConf.Internal.ForwardingFilter> CreateForwardingFilters()
+    {
+        if (!enableForwardingFilters || forwardingFiltersConfig == null || forwardingFiltersConfig.Length == 0)
+        {
+            return null;
+        }
+
+        var filters = new List<SoraConf.Internal.ForwardingFilter>();
+
+        foreach (var filterConfig in forwardingFiltersConfig)
+        {
+            var filter = new SoraConf.Internal.ForwardingFilter();
+
+            // 基本プロパティの設定
+            if (filterConfig.enableAction && !string.IsNullOrEmpty(filterConfig.action))
+            {
+                filter.SetAction(filterConfig.action);
+            }
+            if (filterConfig.enableName && !string.IsNullOrEmpty(filterConfig.name))
+            {
+                filter.SetName(filterConfig.name);
+            }
+            if (filterConfig.enablePriority)
+            {
+                filter.SetPriority(filterConfig.priority);
+            }
+
+            // ルールセットの設定
+            if (filterConfig.ruleSets != null)
+            {
+                foreach (var ruleSet in filterConfig.ruleSets)
+                {
+                    if (ruleSet.rules == null || ruleSet.rules.Length == 0)
+                        continue;
+
+                    var ccrs = new SoraConf.Internal.ForwardingFilter.Rules();
+                    foreach (var rule in ruleSet.rules)
+                    {
+                        if (string.IsNullOrEmpty(rule.field) || string.IsNullOrEmpty(rule.op))
+                            continue;
+
+                        var ccr = new SoraConf.Internal.ForwardingFilter.Rule();
+                        ccr.field = rule.field;
+                        ccr.op = rule.op;
+                        if (rule.values != null)
+                        {
+                            ccr.values.AddRange(rule.values);
+                        }
+                        ccrs.rules.Add(ccr);
+                    }
+
+                    if (ccrs.rules.Count > 0)
+                    {
+                        filter.rules.Add(ccrs);
+                    }
+                }
+            }
+
+            // メタデータとバージョンの設定
+            if (filterConfig.enableVersion && !string.IsNullOrEmpty(filterConfig.version))
+            {
+                filter.SetVersion(filterConfig.version);
+            }
+            if (filterConfig.enableMetadata && !string.IsNullOrEmpty(filterConfig.metadata))
+            {
+                filter.SetMetadata(filterConfig.metadata);
+            }
+
+            // 有効なフィルタのみを追加
+            if (filter.rules.Count > 0 || !string.IsNullOrEmpty(filterConfig.action) ||
+                !string.IsNullOrEmpty(filterConfig.name) || filterConfig.priority != 0)
+            {
+                filters.Add(filter);
+            }
+        }
+
+        return filters.Count > 0 ? filters : null;
+    }
     public void OnClickEnd()
     {
         DisconnectSora();
