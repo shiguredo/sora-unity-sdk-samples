@@ -127,6 +127,10 @@ public class SoraSample : MonoBehaviour
     [Header("ForwardingFilter の設定")]
     public bool enableForwardingFilterAction = false;
     public string forwardingFilterAction;
+    public bool enableForwardingFilterName = false;
+    public string forwardingFilterName;
+    public bool enableForwardingFilterPriority = false;
+    public int forwardingFilterPriority;
     public RuleList[] forwardingFilter;
     public bool enableForwardingFilterVersion = false;
     public string forwardingFilterVersion = "";
@@ -781,6 +785,8 @@ public class SoraSample : MonoBehaviour
         {
             config.ForwardingFilter = new Sora.ForwardingFilter();
             if (enableForwardingFilterAction) config.ForwardingFilter.Action = forwardingFilterAction;
+            if (enableForwardingFilterName) config.ForwardingFilter.Name = forwardingFilterName;
+            if (enableForwardingFilterPriority) config.ForwardingFilter.Priority = forwardingFilterPriority;
             foreach (var rs in forwardingFilter)
             {
                 var ccrs = new List<Sora.ForwardingFilter.Rule>();
