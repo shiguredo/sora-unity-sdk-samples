@@ -11,10 +11,10 @@
 
 ## develop
 
-- [CHANGE] forwardingfilters を設定可能にする
+- [ADD] forwardingfilters を設定可能にする
   - マルチ転送フィルターを設定できるように項目を追加
   - @torikizi
-- [UPDATE] forwardingfilter に name と priority を追加
+- [ADD] forwardingfilter に name と priority を追加
   - 既存の forwardingfilter に name と priority を追加
   - @torikizi
 
