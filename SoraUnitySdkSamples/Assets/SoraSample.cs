@@ -169,7 +169,6 @@ public class SoraSample : MonoBehaviour
     }
 
     [Header("ForwardingFilters の設定")]
-    public bool enableForwardingFiltersPriority = false;
 
     public ForwardingFiltersList forwardingFilters;
 
@@ -860,7 +859,7 @@ public class SoraSample : MonoBehaviour
                 {
                     newFilter.Name = filter.name;
                 }
-                if (enableForwardingFiltersPriority)
+                if (filter.priority >= 0)
                 {
                     newFilter.Priority = filter.priority;
                 }
