@@ -137,40 +137,20 @@ public class SoraSample : MonoBehaviour
     public bool enableForwardingFilterMetadata = false;
     public string forwardingFilterMetadataMessage = "";
 
-
-    [System.Serializable]
-    public class ForwardingFiltersRule
-    {
-        public string field;
-        public string op;
-        public string[] values;
-    }
-    [System.Serializable]
-    public class ForwardingFiltersRuleList
-    {
-        public ForwardingFiltersRule[] data;
-    }
-
     [System.Serializable]
     public class ForwardingFiltersItem
     {
         public string action;
         public string name;
         public int priority;
-        public ForwardingFiltersRuleList[] rules;
+        public RuleList[] rules;
         public string version;
         public string metadata;
     }
 
-    [System.Serializable]
-    public class ForwardingFiltersList
-    {
-        public ForwardingFiltersItem[] filters;
-    }
-
     [Header("ForwardingFilters の設定")]
 
-    public ForwardingFiltersList forwardingFilters;
+    public ForwardingFiltersItem[] forwardingFilters;
 
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
@@ -842,13 +822,11 @@ public class SoraSample : MonoBehaviour
             if (enableForwardingFilterVersion) config.ForwardingFilter.Version = forwardingFilterVersion;
             if (enableForwardingFilterMetadata) config.ForwardingFilter.Metadata = forwardingFilterMetadataJson;
         }
-        if (forwardingFilters != null &&
-            forwardingFilters.filters != null &&
-            forwardingFilters.filters.Length > 0)
+        if (forwardingFilters != null)
         {
             config.ForwardingFilters = new List<Sora.ForwardingFilter>();
 
-            foreach (var filter in forwardingFilters.filters)
+            foreach (var filter in forwardingFilters)
             {
                 var newFilter = new Sora.ForwardingFilter();
 
@@ -895,13 +873,14 @@ public class SoraSample : MonoBehaviour
                     }
                 }
 
-                if (!string.IsNullOrEmpty(filter.version))
-                {
-                    newFilter.Version = filter.version;
-                }
+                newFilter.Version = filter.version;
                 if (!string.IsNullOrEmpty(filter.metadata))
                 {
-                    newFilter.Metadata = filter.metadata;
+                    var ffm = new ForwardingFilterMetadata()
+                    {
+                        forwarding_filter_metadata = filter.metadata
+                    };
+                    newFilter.Metadata = JsonUtility.ToJson(ffm);
                 }
 
                 if (newFilter.Action != null ||
