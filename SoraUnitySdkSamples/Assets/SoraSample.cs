@@ -816,7 +816,7 @@ public class SoraSample : MonoBehaviour
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
         }
-        if (forwardingFilter.Length != 0)
+        if (forwardingFilter != null && forwardingFilter.Length != 0)
         {
             config.ForwardingFilter = new Sora.ForwardingFilter();
             if (enableForwardingFilterAction) config.ForwardingFilter.Action = forwardingFilterAction;
@@ -830,6 +830,7 @@ public class SoraSample : MonoBehaviour
                     var ccr = new Sora.ForwardingFilter.Rule();
                     ccr.Field = r.field;
                     ccr.Operator = r.op;
+                    ccr.Values = new List<string>();
                     foreach (var v in r.values)
                     {
                         ccr.Values.Add(v);
@@ -845,7 +846,7 @@ public class SoraSample : MonoBehaviour
             forwardingFilters.filters != null &&
             forwardingFilters.filters.Length > 0)
         {
-            config.ForwardingFilters = new Sora.ForwardingFilters();
+            config.ForwardingFilters = new List<Sora.ForwardingFilter>();
 
             foreach (var filter in forwardingFilters.filters)
             {
@@ -910,7 +911,7 @@ public class SoraSample : MonoBehaviour
                     newFilter.Version != null ||
                     newFilter.Metadata != null)
                 {
-                    config.ForwardingFilters.Filters.Add(newFilter);
+                    config.ForwardingFilters.Add(newFilter);
                 }
             }
         }
