@@ -615,6 +615,18 @@ public class SoraSample : MonoBehaviour
         public string metadata;
     }
 
+    static class ForwardingFilterMetadataHelper
+    {
+        public static string ConvertMetadataToJson(string metadata)
+        {
+            var ffMetadata = new ForwardingFilterMetadata()
+            {
+                metadata = metadata
+            };
+            return JsonUtility.ToJson(ffMetadata);
+        }
+    }
+
     public void OnClickStart()
     {
 
@@ -688,16 +700,6 @@ public class SoraSample : MonoBehaviour
                 profile_level_id = videoH264ParamsProfileLevelId
             };
             videoH264ParamsJson = JsonUtility.ToJson(h264Params);
-        }
-        // enableForwardingFilterMetadata が true の場合はメタデータを設定する
-        string forwardingFilterMetadataJson = "";
-        if (forwardingFilterSettings.enableMetadata)
-        {
-            var ffMetadata = new ForwardingFilterMetadata()
-            {
-                metadata = forwardingFilterSettings.metadata
-            };
-            forwardingFilterMetadataJson = JsonUtility.ToJson(ffMetadata);
         }
 
         InitSora();
@@ -819,7 +821,10 @@ public class SoraSample : MonoBehaviour
             }
 
             if (forwardingFilterSettings.enableVersion) config.ForwardingFilter.Version = forwardingFilterSettings.version;
-            if (forwardingFilterSettings.enableMetadata) config.ForwardingFilter.Metadata = forwardingFilterMetadataJson;
+            if (forwardingFilterSettings.enableMetadata)
+            {
+                config.ForwardingFilter.Metadata = ForwardingFilterMetadataHelper.ConvertMetadataToJson(forwardingFilterSettings.metadata);
+            }
         }
 
         if (forwardingFilters != null && forwardingFilters.Length > 0)
@@ -860,13 +865,8 @@ public class SoraSample : MonoBehaviour
                 if (filter.enableVersion) newFilter.Version = filter.version;
                 if (filter.enableMetadata)
                 {
-                    var ffMetadata = new ForwardingFilterMetadata()
-                    {
-                        metadata = filter.metadata
-                    };
-                    newFilter.Metadata = JsonUtility.ToJson(ffMetadata);
+                    newFilter.Metadata = ForwardingFilterMetadataHelper.ConvertMetadataToJson(filter.metadata);
                 }
-
                 config.ForwardingFilters.Add(newFilter);
             }
         }
