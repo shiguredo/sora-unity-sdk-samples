@@ -138,6 +138,55 @@ public class SoraSample : MonoBehaviour
         public bool enableMetadata = false;
         public string metadata = "";
     }
+    public static class ForwardingFilterHelper
+    {
+        private static void ConfigureFilter(Sora.ForwardingFilter filter, ForwardingFilterSettings settings)
+        {
+            if (settings.enableAction) filter.Action = settings.action;
+            if (settings.enableName) filter.Name = settings.name;
+            if (settings.enablePriority) filter.Priority = settings.priority;
+
+            if (settings.rules != null)
+            {
+                foreach (var ruleSet in settings.rules)
+                {
+                    if (ruleSet?.data == null) continue;
+
+                    var ruleList = new List<Sora.ForwardingFilter.Rule>();
+                    foreach (var rule in ruleSet.data)
+                    {
+                        var newRule = new Sora.ForwardingFilter.Rule
+                        {
+                            Field = rule.field,
+                            Operator = rule.op
+                        };
+                        newRule.Values.AddRange(rule.values);
+                        ruleList.Add(newRule);
+                    }
+
+                    if (ruleList.Any())
+                    {
+                        filter.Rules.Add(ruleList);
+                    }
+                }
+            }
+
+            if (settings.enableVersion) filter.Version = settings.version;
+            if (settings.enableMetadata)
+            {
+                filter.Metadata = ForwardingFilterMetadataHelper.ConvertMetadataToJson(settings.metadata);
+            }
+        }
+
+        public static Sora.ForwardingFilter CreateFilter(ForwardingFilterSettings settings)
+        {
+            if (settings == null) return null;
+
+            var filter = new Sora.ForwardingFilter();
+            ConfigureFilter(filter, settings);
+            return filter;
+        }
+    }
 
     [Header("ForwardingFilter の設定")]
     public ForwardingFilterSettings forwardingFilterSettings;
@@ -793,78 +842,19 @@ public class SoraSample : MonoBehaviour
         }
         if (forwardingFilterSettings != null)
         {
-            config.ForwardingFilter = new Sora.ForwardingFilter();
-            if (forwardingFilterSettings.enableAction) config.ForwardingFilter.Action = forwardingFilterSettings.action;
-            if (forwardingFilterSettings.enableName) config.ForwardingFilter.Name = forwardingFilterSettings.name;
-            if (forwardingFilterSettings.enablePriority) config.ForwardingFilter.Priority = forwardingFilterSettings.priority;
-
-            if (forwardingFilterSettings.rules != null)
-            {
-                foreach (var ruleSet in forwardingFilterSettings.rules)
-                {
-                    if (ruleSet.data != null)
-                    {
-                        var ruleList = new List<Sora.ForwardingFilter.Rule>();
-                        foreach (var rule in ruleSet.data)
-                        {
-                            var newRule = new Sora.ForwardingFilter.Rule
-                            {
-                                Field = rule.field,
-                                Operator = rule.op
-                            };
-                            newRule.Values.AddRange(rule.values);
-                            ruleList.Add(newRule);
-                        }
-                        config.ForwardingFilter.Rules.Add(ruleList);
-                    }
-                }
-            }
-
-            if (forwardingFilterSettings.enableVersion) config.ForwardingFilter.Version = forwardingFilterSettings.version;
-            if (forwardingFilterSettings.enableMetadata)
-            {
-                config.ForwardingFilter.Metadata = ForwardingFilterMetadataHelper.ConvertMetadataToJson(forwardingFilterSettings.metadata);
-            }
+            config.ForwardingFilter = ForwardingFilterHelper.CreateFilter(forwardingFilterSettings);
         }
-
         if (forwardingFilters != null && forwardingFilters.Length > 0)
         {
             config.ForwardingFilters = new List<Sora.ForwardingFilter>();
 
             foreach (var filter in forwardingFilters)
             {
-                var newFilter = new Sora.ForwardingFilter();
-
-                if (filter.enableAction) newFilter.Action = filter.action;
-                if (filter.enableName) newFilter.Name = filter.name;
-                if (filter.enablePriority) newFilter.Priority = filter.priority;
-
-                if (filter.rules == null) return;
-
-                foreach (var rule in filter.rules)
+                var newFilter = ForwardingFilterHelper.CreateFilter(filter);
+                if (newFilter != null)
                 {
-                    if (rule.data == null) continue;
-
-                    var newRules = new List<Sora.ForwardingFilter.Rule>();
-                    foreach (var ruleData in rule.data)
-                    {
-                        var newRule = new Sora.ForwardingFilter.Rule
-                        {
-                            Field = ruleData.field,
-                            Operator = ruleData.op
-                        };
-                        newRule.Values.AddRange(ruleData.values);
-                        newRules.Add(newRule);
-                    }
-                    newFilter.Rules.Add(newRules);
+                    config.ForwardingFilters.Add(newFilter);
                 }
-
-                if (filter.enableVersion) newFilter.Version = filter.version;
-                if (filter.enableMetadata)
-                {
-                    newFilter.Metadata = ForwardingFilterMetadataHelper.ConvertMetadataToJson(filter.metadata);
-                }
-                config.ForwardingFilters.Add(newFilter);
             }
         }
         sora.Connect(config);
