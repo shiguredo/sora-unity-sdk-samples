@@ -835,12 +835,9 @@ public class SoraSample : MonoBehaviour
             {
                 var newFilter = new Sora.ForwardingFilter();
 
-                if (filter.enableAction)
-                    newFilter.Action = filter.action;
-                if (filter.enableName)
-                    newFilter.Name = filter.name;
-                if (filter.enablePriority)
-                    newFilter.Priority = filter.priority;
+                if (filter.enableAction) newFilter.Action = filter.action;
+                if (filter.enableName) newFilter.Name = filter.name;
+                if (filter.enablePriority) newFilter.Priority = filter.priority;
 
                 if (filter.rules == null) return;
 
