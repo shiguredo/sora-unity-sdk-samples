@@ -144,7 +144,7 @@ public class SoraSample : MonoBehaviour
     {
         public string metadata;
     }
-    public static Sora.ForwardingFilter ConvertForwardingFilter(ForwardingFilter forwardingFilter)
+    public static Sora.ForwardingFilter ConvertToSoraForwardingFilter(ForwardingFilter forwardingFilter)
     {
         var filter = new Sora.ForwardingFilter();
 
@@ -152,26 +152,23 @@ public class SoraSample : MonoBehaviour
         if (forwardingFilter.enableName) filter.Name = forwardingFilter.name;
         if (forwardingFilter.enablePriority) filter.Priority = forwardingFilter.priority;
 
-        if (forwardingFilter.rules != null)
+        foreach (var ruleListData in forwardingFilter.rules)
         {
-            foreach (var ruleListData in forwardingFilter.rules)
+            var ruleList = new List<Sora.ForwardingFilter.Rule>();
+            foreach (var rule in ruleListData.data)
             {
-                var ruleList = new List<Sora.ForwardingFilter.Rule>();
-                foreach (var rule in ruleListData.data)
+                var newRule = new Sora.ForwardingFilter.Rule
                 {
-                    var newRule = new Sora.ForwardingFilter.Rule
-                    {
-                        Field = rule.field,
-                        Operator = rule.op
-                    };
-                    newRule.Values.AddRange(rule.values);
-                    ruleList.Add(newRule);
-                }
+                    Field = rule.field,
+                    Operator = rule.op
+                };
+                newRule.Values.AddRange(rule.values);
+                ruleList.Add(newRule);
+            }
 
-                if (ruleList.Any())
-                {
-                    filter.Rules.Add(ruleList);
-                }
+            if (ruleList.Any())
+            {
+                filter.Rules.Add(ruleList);
             }
         }
 
@@ -187,6 +184,7 @@ public class SoraSample : MonoBehaviour
     [Header("ForwardingFilter の設定")]
     [System.Obsolete("forwardingFilter は非推奨です。代わりに forwardingFilters を使用してください。")]
     public bool enableForwardingFilter = false;
+    [System.Obsolete("forwardingFilter は非推奨です。代わりに forwardingFilters を使用してください。")]
     public ForwardingFilter forwardingFilter;
 
     [Header("ForwardingFilters の設定")]
@@ -823,7 +821,7 @@ public class SoraSample : MonoBehaviour
         }
         if (enableForwardingFilter)
         {
-            config.ForwardingFilter = ConvertForwardingFilter(forwardingFilter);
+            config.ForwardingFilter = ConvertToSoraForwardingFilter(forwardingFilter);
         }
         if (enableForwardingFilters)
         {
@@ -831,11 +829,8 @@ public class SoraSample : MonoBehaviour
 
             foreach (var filter in forwardingFilters)
             {
-                var newFilter = ConvertForwardingFilter(filter);
-                if (newFilter != null)
-                {
-                    config.ForwardingFilters.Add(newFilter);
-                }
+                var newFilter = ConvertToSoraForwardingFilter(filter);
+                config.ForwardingFilters.Add(newFilter);
             }
         }
         sora.Connect(config);
