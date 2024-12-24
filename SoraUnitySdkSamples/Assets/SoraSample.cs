@@ -132,7 +132,7 @@ public class SoraSample : MonoBehaviour
         public string name;
         public bool enablePriority = false;
         public int priority;
-        public RuleList[] rules;
+        public RuleList[] ruleLists;
         public bool enableVersion = false;
         public string version = "";
         public bool enableMetadata = false;
@@ -152,7 +152,7 @@ public class SoraSample : MonoBehaviour
         if (forwardingFilter.enableName) filter.Name = forwardingFilter.name;
         if (forwardingFilter.enablePriority) filter.Priority = forwardingFilter.priority;
 
-        foreach (var ruleListData in forwardingFilter.rules)
+        foreach (var ruleListData in forwardingFilter.ruleLists)
         {
             var ruleList = new List<Sora.ForwardingFilter.Rule>();
             foreach (var rule in ruleListData.data)
@@ -165,18 +165,11 @@ public class SoraSample : MonoBehaviour
                 newRule.Values.AddRange(rule.values);
                 ruleList.Add(newRule);
             }
-
-            if (ruleList.Any())
-            {
-                filter.Rules.Add(ruleList);
-            }
+            filter.Rules.Add(ruleList);
         }
 
         if (forwardingFilter.enableVersion) filter.Version = forwardingFilter.version;
-        if (forwardingFilter.enableMetadata)
-        {
-            filter.Metadata = JsonUtility.ToJson(forwardingFilter.metadata);
-        }
+        if (forwardingFilter.enableMetadata) filter.Metadata = JsonUtility.ToJson(forwardingFilter.metadata);
 
         return filter;
     }
