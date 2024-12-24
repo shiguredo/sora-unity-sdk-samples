@@ -204,7 +204,8 @@ public class SoraSample : MonoBehaviour
     }
 
     [Header("ForwardingFilter の設定")]
-    public ForwardingFilterSettings forwardingFilterSettings;
+    [System.Obsolete("forwardingFilter は非推奨です。代わりに forwardingFilters を使用してください。")]
+    public ForwardingFilterSettings forwardingFilter;
 
     [Header("ForwardingFilters の設定")]
     public ForwardingFilterSettings[] forwardingFilters;
@@ -837,9 +838,9 @@ public class SoraSample : MonoBehaviour
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
         }
-        if (forwardingFilterSettings != null)
+        if (forwardingFilter != null)
         {
-            config.ForwardingFilter = ForwardingFilterHelper.CreateFilter(forwardingFilterSettings);
+            config.ForwardingFilter = ForwardingFilterHelper.CreateFilter(forwardingFilter);
         }
         if (forwardingFilters != null && forwardingFilters.Length > 0)
         {
