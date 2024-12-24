@@ -140,6 +140,11 @@ public class SoraSample : MonoBehaviour
     }
     public static class ForwardingFilterHelper
     {
+        [Serializable]
+        private class ForwardingFilterMetadata
+        {
+            public string metadata;
+        }
         private static void ConfigureFilter(Sora.ForwardingFilter filter, ForwardingFilterSettings settings)
         {
             if (settings.enableAction) filter.Action = settings.action;
@@ -177,7 +182,17 @@ public class SoraSample : MonoBehaviour
                 filter.Metadata = ForwardingFilterMetadataHelper.ConvertMetadataToJson(settings.metadata);
             }
         }
-
+        private static class ForwardingFilterMetadataHelper
+        {
+            public static string ConvertMetadataToJson(string metadata)
+            {
+                var ffMetadata = new ForwardingFilterMetadata()
+                {
+                    metadata = metadata
+                };
+                return JsonUtility.ToJson(ffMetadata);
+            }
+        }
         public static Sora.ForwardingFilter CreateFilter(ForwardingFilterSettings settings)
         {
             if (settings == null) return null;
@@ -656,24 +671,6 @@ public class SoraSample : MonoBehaviour
     class VideoH264Params
     {
         public string profile_level_id;
-    }
-
-    [Serializable]
-    class ForwardingFilterMetadata
-    {
-        public string metadata;
-    }
-
-    static class ForwardingFilterMetadataHelper
-    {
-        public static string ConvertMetadataToJson(string metadata)
-        {
-            var ffMetadata = new ForwardingFilterMetadata()
-            {
-                metadata = metadata
-            };
-            return JsonUtility.ToJson(ffMetadata);
-        }
     }
 
     public void OnClickStart()
