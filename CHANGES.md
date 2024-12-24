@@ -15,7 +15,6 @@
   - マルチ転送フィルターを設定できるように項目を追加
   - @torikizi
 - [ADD] forwardingfilter に name と priority を追加
-  - 既存の forwardingfilter に name と priority を追加
   - @torikizi
 
 ## sora-unity-sdk-2024.4.0
