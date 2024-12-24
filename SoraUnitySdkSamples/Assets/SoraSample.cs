@@ -136,7 +136,7 @@ public class SoraSample : MonoBehaviour
         public bool enableVersion = false;
         public string version = "";
         public bool enableMetadata = false;
-        public ForwardingFilterMetadata metadata = new ForwardingFilterMetadata();
+        public ForwardingFilterMetadata metadata;
     }
 
     [Serializable]
