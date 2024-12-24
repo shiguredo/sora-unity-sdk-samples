@@ -136,11 +136,11 @@ public class SoraSample : MonoBehaviour
         public bool enableVersion = false;
         public string version = "";
         public bool enableMetadata = false;
-        public string metadata = "";
+        public ForwardingFilterMetadata metadata = new ForwardingFilterMetadata();
     }
 
     [Serializable]
-    private class ForwardingFilterMetadata
+    public class ForwardingFilterMetadata
     {
         public string metadata;
     }
@@ -178,10 +178,7 @@ public class SoraSample : MonoBehaviour
         if (forwardingFilter.enableVersion) filter.Version = forwardingFilter.version;
         if (forwardingFilter.enableMetadata)
         {
-            filter.Metadata = JsonUtility.ToJson(new ForwardingFilterMetadata()
-            {
-                metadata = forwardingFilter.metadata
-            });
+            filter.Metadata = JsonUtility.ToJson(forwardingFilter.metadata);
         }
 
         return filter;
