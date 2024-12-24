@@ -124,7 +124,7 @@ public class SoraSample : MonoBehaviour
         public Rule[] data;
     }
     [System.Serializable]
-    public class ForwardingFilterSettings
+    public class ForwardingFilter
     {
         public bool enableAction = false;
         public string action;
@@ -145,7 +145,7 @@ public class SoraSample : MonoBehaviour
         {
             public string metadata;
         }
-        private static void ConfigureFilter(Sora.ForwardingFilter filter, ForwardingFilterSettings settings)
+        private static void ConfigureFilter(Sora.ForwardingFilter filter, ForwardingFilter settings)
         {
             if (settings.enableAction) filter.Action = settings.action;
             if (settings.enableName) filter.Name = settings.name;
@@ -193,7 +193,7 @@ public class SoraSample : MonoBehaviour
                 return JsonUtility.ToJson(ffMetadata);
             }
         }
-        public static Sora.ForwardingFilter CreateFilter(ForwardingFilterSettings settings)
+        public static Sora.ForwardingFilter CreateFilter(ForwardingFilter settings)
         {
             if (settings == null) return null;
 
@@ -205,10 +205,10 @@ public class SoraSample : MonoBehaviour
 
     [Header("ForwardingFilter の設定")]
     [System.Obsolete("forwardingFilter は非推奨です。代わりに forwardingFilters を使用してください。")]
-    public ForwardingFilterSettings forwardingFilter;
+    public ForwardingFilter forwardingFilter;
 
     [Header("ForwardingFilters の設定")]
-    public ForwardingFilterSettings[] forwardingFilters;
+    public ForwardingFilter[] forwardingFilters;
 
     [Header("DataChannel シグナリングの設定")]
     public bool dataChannelSignaling = false;
