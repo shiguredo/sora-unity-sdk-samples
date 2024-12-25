@@ -11,6 +11,12 @@
 
 ## develop
 
+- [ADD] forwardingfilters を設定可能にする
+  - マルチ転送フィルターを設定できるように項目を追加
+  - @torikizi
+- [ADD] forwardingfilter に name と priority を追加
+  - @torikizi
+
 ## sora-unity-sdk-2024.4.0
 
 - [UPDATE] Sora Unity SDK 2024.4.0 にあげる
