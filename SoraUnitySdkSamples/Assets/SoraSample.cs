@@ -206,8 +206,7 @@ public class SoraSample : MonoBehaviour
         public bool enableCompress;
         public bool compress;
         public bool enableHeader;
-        public List<string> Header { get; set; } = new List<string> { "{\"type\": \"sender_connection_id\"}" };
-
+        public string[] header;
     }
 
     [Header("DataChannel メッセージングの設定")]
@@ -811,10 +810,7 @@ public class SoraSample : MonoBehaviour
                 if (m.enableMaxRetransmits) c.MaxRetransmits = m.maxRetransmits;
                 if (m.enableProtocol) c.Protocol = m.protocol;
                 if (m.enableCompress) c.Compress = m.compress;
-                if (m.enableHeader && m.direction != Sora.Direction.Sendonly)
-                {
-                    c.Header = m.Header;
-                }
+                if (m.enableHeader) c.Header = m.header.ToList();
                 config.DataChannels.Add(c);
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
