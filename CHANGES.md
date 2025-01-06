@@ -15,6 +15,8 @@
   - @torikizi
 - [ADD] forwardingfilter に name と priority を追加
   - @torikizi
+- [ADD] datachannel に header を追加
+  - @torikizi
 
 ## sora-unity-sdk-2024.4.0
 

@@ -205,6 +205,8 @@ public class SoraSample : MonoBehaviour
         public string protocol;
         public bool enableCompress;
         public bool compress;
+        public bool enableHeader;
+        public string[] header;
     }
 
     [Header("DataChannel メッセージングの設定")]
@@ -808,6 +810,7 @@ public class SoraSample : MonoBehaviour
                 if (m.enableMaxRetransmits) c.MaxRetransmits = m.maxRetransmits;
                 if (m.enableProtocol) c.Protocol = m.protocol;
                 if (m.enableCompress) c.Compress = m.compress;
+                if (m.enableHeader) c.Header = m.header.ToList();
                 config.DataChannels.Add(c);
             }
             fixedDataChannelLabels = config.DataChannels.Select(x => x.Label).ToArray();
