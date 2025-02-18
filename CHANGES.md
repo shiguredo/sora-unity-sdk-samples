@@ -11,6 +11,11 @@
 
 ## develop
 
+- [ADD] enableVideoCodecType チェックボックスを追加
+  - @miosakuma
+- [ADD] enableAudioCodecType チェックボックスを追加
+  - @miosakuma
+
 ## sora-unity-sdk-2025.1.0
 
 **リリース日**: 2025-01-29
