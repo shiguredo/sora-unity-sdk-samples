@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] Sora Unity SDK のバージョンを 2025.2.0-canary.1 にあげる
+  - @miosakuma
 - [ADD] enableVideoCodecType チェックボックスを追加
   - @miosakuma
 - [ADD] enableAudioCodecType チェックボックスを追加
