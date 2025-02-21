@@ -13,7 +13,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Unity バージョン
 
-- Unity 6000 (LTS)
+- Unity 6000.0 (LTS)
 
 ## 対応 Sora バージョン
 
