@@ -13,6 +13,8 @@
 
 - [CHANGE] Editor のバージョンを 6000.0.38f1 にあげる
   - @miosakuma
+- [CHANGE] useHardwareEncoder の設定を削除する
+  - @torikizi
 
 ## sora-unity-sdk-2025.1.0
 
