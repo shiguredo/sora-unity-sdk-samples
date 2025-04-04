@@ -784,6 +784,10 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
+        // ハードウェアエンコーダーが使える場合は優先して使う
+        var capability = Sora.GetVideoCodecCapability(new Sora.VideoCodecCapabilityConfig());
+        var preference = Sora.VideoCodecPreference.GetHardwareEncoderPreference(capability);
+        config.VideoCodecPreference = preference;
         if (enableSpotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRid;
