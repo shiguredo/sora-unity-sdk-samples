@@ -18,7 +18,7 @@
 
 ### misc
 
-- [CHANGE] SoraSample.cs の改行コードを LF に統一する
+- [UPDATE] SoraSample.cs の改行コードを LF に統一する
   - @torikizi
 
 ## sora-unity-sdk-2025.1.0
