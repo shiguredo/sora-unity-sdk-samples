@@ -69,7 +69,6 @@ public class SoraSample : MonoBehaviour
     public bool noVideoDevice = false;
     public new bool audio = true;
     public bool noAudioDevice = false;
-    public bool useHardwareEncoder = true;
     public bool enableVideoCodecType = false;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
     public bool enableVideoVp9Params = false;
@@ -749,7 +748,6 @@ public class SoraSample : MonoBehaviour
             NoVideoDevice = noVideoDevice,
             Audio = audio,
             NoAudioDevice = noAudioDevice,
-            UseHardwareEncoder = useHardwareEncoder,
             VideoVp9Params = videoVp9ParamsJson,
             VideoAv1Params = videoAv1ParamsJson,
             VideoH264Params = videoH264ParamsJson,
@@ -786,7 +784,7 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
-            
+
         if (enableVideoCodecType)
         {
             config.VideoCodecType = videoCodecType;
