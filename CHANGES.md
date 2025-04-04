@@ -16,6 +16,11 @@
 - [CHANGE] useHardwareEncoder の設定を削除する
   - @torikizi
 
+### misc
+
+- [CHANGE] SoraSample.cs の改行コードを LF に統一する
+  - @torikizi
+
 ## sora-unity-sdk-2025.1.0
 
 **リリース日**: 2025-01-29
