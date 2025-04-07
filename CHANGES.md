@@ -17,9 +17,14 @@
   - @miosakuma
 - [CHANGE] useHardwareEncoder の設定を削除する
   - @torikizi
-- [CHANGE] `SoraSample.cs` に `VideoCodecPreference` を追加
-  - 従来通りハードウェアエンコーダーを自動で優先的に使用する
-  - 優先順位は `Intel VPL` -> `AMD AMF` -> `Nvidia Video Codec SDK` -> `Internal` の順番で優先される
+- [CHANGE] SoraSample.cs に `VideoCodecPreference` の設定を追加
+  - 従来通り、使用可能なハードウェアエンコーダーを自動で優先的に使用する挙動を維持する
+  - `Sora.GetVideoCodecCapability()` で取得したコーデック情報をもとに、`Sora.VideoCodecPreference.GetHardwareEncoderPreference()` を使用して優先順位付きリストを生成する
+    - 次の順序で優先する(上から優先する)
+      - Intel VPL
+      - AMD AMF
+      - NVIDIA Video Codec SDK
+      - Internal
   - @torikizi
 - [ADD] enableVideoCodecType チェックボックスを追加
   - @miosakuma
