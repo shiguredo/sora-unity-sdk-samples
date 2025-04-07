@@ -786,7 +786,7 @@ public class SoraSample : MonoBehaviour
         };
         // ハードウェアエンコーダーが使える場合は優先して使う
         var capability = Sora.GetVideoCodecCapability(new Sora.VideoCodecCapabilityConfig());
-        var preference = Sora.VideoCodecPreference.GetHardwareEncoderPreference(capability);
+        var preference = Sora.VideoCodecPreference.GetHardwareAcceleratorPreference(capability);
         config.VideoCodecPreference = preference;
         if (enableVideoCodecType)
         {

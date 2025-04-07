@@ -19,7 +19,7 @@
   - @torikizi
 - [UPDATE] SoraSample.cs に `VideoCodecPreference` の設定を追加
   - 従来通り、使用可能なハードウェアエンコーダーを自動で優先的に使用する挙動を維持する
-  - `Sora.GetVideoCodecCapability()` で取得したコーデック情報をもとに、`Sora.VideoCodecPreference.GetHardwareEncoderPreference()` を使用して利用するエンコーダーとデコーダーを生成する
+  - `Sora.GetVideoCodecCapability()` で取得したコーデック情報をもとに、`Sora.VideoCodecPreference.GetHardwareAcceleratorPreference()` を使用して利用するエンコーダーとデコーダーを指定する
   - @torikizi
 - [ADD] enableVideoCodecType チェックボックスを追加
   - @miosakuma
