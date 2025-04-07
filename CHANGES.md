@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] Sora Unity SDK のバージョンを 2025.2.0-canary.1 にあげる
+  - @miosakuma
 - [CHANGE] Editor のバージョンを 6000.0.38f1 にあげる
   - @miosakuma
 - [CHANGE] useHardwareEncoder の設定を削除する
@@ -19,6 +21,10 @@
   - 従来通りハードウェアエンコーダーを自動で優先的に使用する
   - 優先順位は `Intel VPL` -> `AMD AMF` -> `Nvidia Video Codec SDK` -> `Internal` の順番で優先される
   - @torikizi
+- [ADD] enableVideoCodecType チェックボックスを追加
+  - @miosakuma
+- [ADD] enableAudioCodecType チェックボックスを追加
+  - @miosakuma
 
 ### misc
 
