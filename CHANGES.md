@@ -13,8 +13,8 @@
 
 - [CHANGE] useHardwareEncoder の設定を削除する
   - @torikizi
-- [UPDATE] Sora Unity SDK のバージョンを 2025.2.0-canary.1 にあげる
-  - @miosakuma
+- [UPDATE] Sora Unity SDK のバージョンを 2025.2.0-canary.5 にあげる
+  - @miosakuma @torikizi
 - [UPDATE] Editor のバージョンを 6000.0.38f1 にあげる
   - @miosakuma
 - [ADD] enableVideoCodecType チェックボックスを追加
