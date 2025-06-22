@@ -30,6 +30,8 @@
 
 - [UPDATE] SoraSample.cs の改行コードを LF に統一する
   - @torikizi
+- [ADD] .github ディレクトリと copilot-instructions.md を追加
+  - @torikizi
 
 ## sora-unity-sdk-2025.1.0
 
