@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: b86bffc43f1bc4e85a95745780e4af86
+guid: 95d973b6d05b2ca4dbf4a5bbd2398426
 PluginImporter:
   externalObjects: {}
-  serializedVersion: 2
+  serializedVersion: 3
   iconMap: {}
   executionOrder: {}
   defineConstraints: []
@@ -11,9 +11,14 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-  - first:
-      : Any
-    second:
+    Android:
+      enabled: 1
+      settings:
+        AndroidLibraryDependee: UnityLibrary
+        AndroidSharedLibraryType: Executable
+        CPU: ARM64
+        Is16KbAligned: true
+    Any:
       enabled: 0
       settings:
         Exclude Android: 0
