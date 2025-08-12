@@ -30,6 +30,9 @@
 
 - [UPDATE] SoraSample.cs の改行コードを LF に統一する
   - @torikizi
+- [UPDATE] Plugins/SoraUnitySDK/android/arm64-v8a/libSoraUnitySdk.so.meta を更新
+  - 16KB 対応した libSoraUnitySdk.so の設定を反映するため
+  - @torikizi
 - [ADD] .github ディレクトリと copilot-instructions.md を追加
   - @torikizi
 
