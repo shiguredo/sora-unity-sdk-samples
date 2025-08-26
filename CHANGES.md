@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2025.2
+
 - [CHANGE] useHardwareEncoder の設定を削除する
   - @torikizi
 - [UPDATE] Sora Unity SDK のバージョンを 2025.2.0-canary.12 にあげる
