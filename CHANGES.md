@@ -11,6 +11,33 @@
 
 ## develop
 
+## 2025.2
+
+- [CHANGE] useHardwareEncoder の設定を削除する
+  - @torikizi
+- [UPDATE] Sora Unity SDK のバージョンを 2025.2.0-canary.12 にあげる
+  - @miosakuma @torikizi
+- [UPDATE] Editor のバージョンを 6000.0.38f1 にあげる
+  - @miosakuma
+- [ADD] enableVideoCodecType チェックボックスを追加
+  - @miosakuma
+- [ADD] enableAudioCodecType チェックボックスを追加
+  - @miosakuma
+- [ADD] SoraSample.cs に `VideoCodecPreference` の設定を追加
+  - 従来通り、使用可能なハードウェアエンコーダーを自動で優先的に使用する挙動を維持する
+  - `Sora.GetVideoCodecCapability()` で取得したコーデック情報をもとに、`Sora.VideoCodecPreference.GetHardwareAcceleratorPreference()` を使用して利用するエンコーダーとデコーダーを指定する
+  - @torikizi
+
+### misc
+
+- [UPDATE] SoraSample.cs の改行コードを LF に統一する
+  - @torikizi
+- [UPDATE] Plugins/SoraUnitySDK/android/arm64-v8a/libSoraUnitySdk.so.meta を更新
+  - 16KB 対応した libSoraUnitySdk.so の設定を反映するため
+  - @torikizi
+- [ADD] .github ディレクトリと copilot-instructions.md を追加
+  - @torikizi
+
 ## sora-unity-sdk-2025.1.0
 
 **リリース日**: 2025-01-29

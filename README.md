@@ -13,11 +13,11 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 対応 Unity バージョン
 
-- Unity 2022.3 (LTS)
+- Unity 6000.0 (LTS)
 
 ## 対応 Sora バージョン
 
-- WebRTC SFU Sora 2024.2.0 以降
+- WebRTC SFU Sora 2025.1.0 以降
 
 ## 対応 プラットフォーム
 
@@ -25,8 +25,8 @@ In other languages, we won't be able to deal with them. Thank you for your under
 - macOS 13.4.1 M1 以降
 - Android 7 以降
 - iOS 13 以降
-- Ubuntu 20.04 x86_64
 - Ubuntu 22.04 x86_64
+- Ubuntu 24.04 x86_64
 
 ## Sora Unity SDK サンプル集を使ってみる
 

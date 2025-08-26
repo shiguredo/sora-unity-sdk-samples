@@ -69,7 +69,7 @@ public class SoraSample : MonoBehaviour
     public bool noVideoDevice = false;
     public new bool audio = true;
     public bool noAudioDevice = false;
-    public bool useHardwareEncoder = true;
+    public bool enableVideoCodecType = false;
     public Sora.VideoCodecType videoCodecType = Sora.VideoCodecType.VP9;
     public bool enableVideoVp9Params = false;
     public int videoVp9ParamsProfileId;
@@ -77,6 +77,7 @@ public class SoraSample : MonoBehaviour
     public int videoAv1ParamsProfile;
     public bool enableVideoH264Params = false;
     public string videoH264ParamsProfileLevelId = "";
+    public bool enableAudioCodecType = false;
     public Sora.AudioCodecType audioCodecType = Sora.AudioCodecType.OPUS;
     public string audioStreamingLanguageCode = "";
 
@@ -747,8 +748,6 @@ public class SoraSample : MonoBehaviour
             NoVideoDevice = noVideoDevice,
             Audio = audio,
             NoAudioDevice = noAudioDevice,
-            UseHardwareEncoder = useHardwareEncoder,
-            VideoCodecType = videoCodecType,
             VideoVp9Params = videoVp9ParamsJson,
             VideoAv1Params = videoAv1ParamsJson,
             VideoH264Params = videoH264ParamsJson,
@@ -762,7 +761,6 @@ public class SoraSample : MonoBehaviour
                 VideoHeight = videoHeight,
                 VideoCapturerDevice = videoCapturerDevice,
             },
-            AudioCodecType = audioCodecType,
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
             UnityAudioOutput = unityAudioOutput,
@@ -786,6 +784,18 @@ public class SoraSample : MonoBehaviour
             ProxyUsername = proxyUsername,
             ProxyPassword = proxyPassword,
         };
+        // ハードウェアエンコーダーが使える場合は優先して使う
+        var capability = Sora.GetVideoCodecCapability(new Sora.VideoCodecCapabilityConfig());
+        var preference = Sora.VideoCodecPreference.GetHardwareAcceleratorPreference(capability);
+        config.VideoCodecPreference = preference;
+        if (enableVideoCodecType)
+        {
+            config.VideoCodecType = videoCodecType;
+        }
+        if (enableAudioCodecType)
+        {
+            config.AudioCodecType = audioCodecType;
+        }
         if (enableSpotlightFocusRid)
         {
             config.SpotlightFocusRid = spotlightFocusRid;
