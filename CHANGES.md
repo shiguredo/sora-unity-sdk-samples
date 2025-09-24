@@ -9,7 +9,12 @@
 - FIX
   - バグ修正
 
-## develop
+## 2025.3
+
+### misc
+
+- [UPDATE] actions/checkout を v5 に上げる
+  - @miosakuma
 
 ## 2025.2
 
