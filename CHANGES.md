@@ -11,6 +11,11 @@
 
 ## 2025.3
 
+- [UPDATE] Editor のバージョンを 6000.0.58f2 にあげる
+  - Unity Editor のセキュリティ対応に伴い最新の LTS にあげる
+    - 参考 : https://unity.com/ja/security/sept-2025-01/remediation
+  - @torikizi
+
 ### misc
 
 - [UPDATE] actions/checkout を v5 に上げる
