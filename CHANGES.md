@@ -15,6 +15,8 @@
   - Unity Editor のセキュリティ対応に伴い最新の LTS にあげる
     - 参考 : https://unity.com/ja/security/sept-2025-01/remediation
   - @torikizi
+- [UPDATE] Sora Unity SDK のバージョンを 2025.3.0-canary.6 にあげる
+  - @torikizi
 
 ### misc
 
