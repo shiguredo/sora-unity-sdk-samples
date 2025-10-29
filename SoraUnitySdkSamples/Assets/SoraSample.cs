@@ -58,6 +58,8 @@ public class SoraSample : MonoBehaviour
 
     public bool captureUnityCamera;
     public Camera capturedCamera;
+    public Texture2D stagingTexture;
+    public RenderTexture captureTargetTexture;
 
     // enableVideoVp9Params や enableOrdered といった enable<FieldName> という名前のフィールドは、
     // enable<FieldName> == false の場合は Sora に <FieldName> の JSON オブジェクトを送信しないことを意味する。
@@ -352,6 +354,27 @@ public class SoraSample : MonoBehaviour
             {
                 var image = track.Value.GetComponent<UnityEngine.UI.RawImage>();
                 sora.RenderTrackToTexture(track.Key, image.texture);
+            }
+        }
+
+        if (stagingTexture != null)
+        {
+            // テクスチャの内容を更新する
+            for (int y = 0; y < stagingTexture.height; y++)
+            {
+                for (int x = 0; x < stagingTexture.width; x++)
+                {
+                    var pixel = stagingTexture.GetPixel(x, y);
+                    byte r = (byte)((pixel.r * 255) + 1);
+                    byte g = (byte)((pixel.g * 255) + 1);
+                    byte b = (byte)((pixel.b * 255) + 1);
+                    stagingTexture.SetPixel(x, y, new Color32(r, g, b, 255));
+                }
+            }
+            stagingTexture.Apply(false, false);
+            if (captureTargetTexture != null)
+            {
+                Graphics.Blit(stagingTexture, captureTargetTexture);
             }
         }
     }
@@ -754,12 +777,13 @@ public class SoraSample : MonoBehaviour
             VideoBitRate = videoBitRate,
             CameraConfig = new Sora.CameraConfig()
             {
-                CapturerType = captureUnityCamera && capturedCamera != null ? Sora.CapturerType.UnityCamera : Sora.CapturerType.DeviceCamera,
+                CapturerType = captureTargetTexture != null ? Sora.CapturerType.Texture : captureUnityCamera && capturedCamera != null ? Sora.CapturerType.UnityCamera : Sora.CapturerType.DeviceCamera,
                 UnityCamera = capturedCamera,
                 VideoFps = videoFps,
                 VideoWidth = videoWidth,
                 VideoHeight = videoHeight,
                 VideoCapturerDevice = videoCapturerDevice,
+                Texture = captureTargetTexture,
             },
             AudioStreamingLanguageCode = audioStreamingLanguageCode,
             UnityAudioInput = unityAudioInput,
@@ -927,8 +951,24 @@ public class SoraSample : MonoBehaviour
         }
         else
         {
-            sora.SwitchCamera(Sora.CameraConfig.FromUnityCamera(capturedCamera, 16, videoWidth, videoHeight, videoFps));
+            //sora.SwitchCamera(Sora.CameraConfig.FromUnityCamera(capturedCamera, 16, videoWidth, videoHeight, videoFps));
             captureUnityCamera = true;
+            captureTargetTexture = new RenderTexture(videoWidth, videoHeight, 16, RenderTextureFormat.BGRA32);
+            captureTargetTexture.Create();
+            stagingTexture = new Texture2D(videoWidth, videoHeight, TextureFormat.BGRA32, false);
+            // 適当なグラデーションのテクスチャを作る
+            for (int y = 0; y < videoHeight; y++)
+            {
+                for (int x = 0; x < videoWidth; x++)
+                {
+                    byte r = (byte)(x * 255 / videoWidth);
+                    byte g = (byte)(y * 255 / videoHeight);
+                    byte b = 0;
+                    stagingTexture.SetPixel(x, y, new Color32(r, g, b, 255));
+                }
+            }
+            stagingTexture.Apply();
+            sora.SwitchCamera(Sora.CameraConfig.FromTexture(captureTargetTexture, videoFps));
         }
     }
 
