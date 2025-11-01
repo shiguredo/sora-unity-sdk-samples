@@ -5,6 +5,8 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine.UI;
+using Unity.Collections.LowLevel.Unsafe;
+using System.IO;
 
 public class SoraSample : MonoBehaviour
 {
@@ -36,12 +38,11 @@ public class SoraSample : MonoBehaviour
     SampleType fixedSampleType;
 
     // Sendonly で利用する
-    // 受信を行わないので、自身のカメラを表示するための trackId だけ保持しておく
-    uint trackId = 0;
+    // 受信を行わないので、自身のカメラを表示するための videoSinkId だけ保持しておく
+    uint videoSinkId = 0;
     public GameObject renderTarget;
 
     // Recvonly, Sendrecv で利用する
-    Dictionary<uint, GameObject> tracks = new Dictionary<uint, GameObject>();
     public GameObject scrollViewContent;
     public GameObject baseContent;
 
@@ -219,6 +220,183 @@ public class SoraSample : MonoBehaviour
     public string proxyUsername;
     public string proxyPassword;
 
+    class AudioTrackSink : Sora.IAudioTrackSink
+    {
+        // 現在の音量
+        public volatile float level = 0.0f;
+        public void OnData(short[] data, int bitsPerSample, int sampleRate, int numberOfChannels, int numberOfFrames, long? absoluteCaptureTimestampMs)
+        {
+            //Debug.LogFormat("AudioTrackSink OnData: bitsPerSample={0} sampleRate={1} numberOfChannels={2} numberOfFrames={3} absoluteCaptureTimestampMs={4}",
+            //    bitsPerSample, sampleRate, numberOfChannels, numberOfFrames, absoluteCaptureTimestampMs.HasValue ? absoluteCaptureTimestampMs.Value.ToString() : "null");
+
+            // ピーク値を現在の音量として利用する
+            int maxAbs = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                int v = data[i];
+                if (v < 0) v = -v;
+                if (v > maxAbs) maxAbs = v;
+            }
+            float peak = Mathf.Clamp01(maxAbs / 32767.0f);
+            // 表示を滑らかにする
+            level = level * 0.8f + peak * 0.2f;
+        }
+
+        public int NumPreferredChannels()
+        {
+            return -1;
+        }
+    }
+
+    // connectionId ごとの情報を保持するためのクラス
+    class ConnectionInfo
+    {
+        public GameObject trackObject;
+
+        public bool videoEnabled;
+        public uint videoSinkId;
+        public Texture2D videoTexture;
+
+        public bool audioEnabled;
+        public AudioTrackSink audioTrackSink;
+        public Texture2D audioLevelTexture;
+        public Color32[] audioLevelPixels;
+
+        public ConnectionInfo(Transform parent, GameObject baseContent)
+        {
+            var obj = GameObject.Instantiate(baseContent, Vector3.zero, Quaternion.identity);
+            obj.name = string.Format("track {0}", videoSinkId);
+            obj.transform.SetParent(parent);
+            obj.SetActive(true);
+            trackObject = obj;
+        }
+
+        public void Dispose()
+        {
+            if (videoEnabled)
+            {
+                DestroyVideo();
+            }
+
+            if (audioEnabled)
+            {
+                DestroyAudio();
+            }
+
+            if (trackObject != null)
+            {
+                GameObject.Destroy(trackObject);
+                trackObject = null;
+            }
+        }
+
+        public void InitVideo(uint videoSinkId)
+        {
+            var texture = new Texture2D(320, 240, TextureFormat.RGBA32, false);
+            var image = trackObject.GetComponent<UnityEngine.UI.RawImage>();
+            image.texture = texture;
+
+            this.videoEnabled = true;
+            this.videoSinkId = videoSinkId;
+            this.videoTexture = texture;
+        }
+        public bool DestroyVideo()
+        {
+            GameObject.Destroy(videoTexture);
+            videoEnabled = false;
+            videoSinkId = 0;
+            videoTexture = null;
+
+            if (!audioEnabled)
+            {
+                Dispose();
+                return true;
+            }
+            return false;
+        }
+
+        public void InitAudio(AudioTrackSink audioTrackSink)
+        {
+            var texture = new Texture2D(240, 20, TextureFormat.RGBA32, false);
+            var pixels = new Color32[240 * 20];
+            Color32 bg = (Color32)Color.gray;
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = bg;
+            }
+            texture.SetPixels32(pixels);
+            texture.Apply(false);
+
+            var levelObj = trackObject.transform.Find("AudioLevel");
+            levelObj.gameObject.SetActive(true);
+            var audioImage = levelObj.GetComponent<UnityEngine.UI.RawImage>();
+            audioImage.texture = texture;
+
+            this.audioEnabled = true;
+            this.audioTrackSink = audioTrackSink;
+            this.audioLevelTexture = texture;
+            this.audioLevelPixels = pixels;
+        }
+        public bool DestroyAudio()
+        {
+            GameObject.Destroy(audioLevelTexture);
+            audioEnabled = false;
+            audioTrackSink = null;
+            audioLevelTexture = null;
+            audioLevelPixels = null;
+
+            if (!videoEnabled)
+            {
+                Dispose();
+                return true;
+            }
+            return false;
+        }
+    }
+    Dictionary<string, ConnectionInfo> connectionInfos = new Dictionary<string, ConnectionInfo>();
+
+    // 音量バーをテクスチャに描画
+    void UpdateAudioLevelTextures()
+    {
+        Color audioVizBarColor = new Color(0.25f, 0.85f, 0.35f, 1f);
+        Color audioVizBgColor = new Color(0.3f, 0.3f, 0.3f, 1f);
+
+        foreach (var kv in connectionInfos)
+        {
+            var info = kv.Value;
+            if (!info.audioEnabled)
+            {
+                continue;
+            }
+            var width = info.audioLevelTexture.width;
+            var height = info.audioLevelTexture.height;
+            var pixels = info.audioLevelPixels;
+            var texture = info.audioLevelTexture;
+            Color32 bg = (Color32)audioVizBgColor;
+            Color32 bar = (Color32)audioVizBarColor;
+            int filled = Mathf.RoundToInt(info.audioTrackSink.level * width);
+
+            // 背景塗り
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = bg;
+            }
+
+            // 左から filled 分だけ塗る
+            for (int y = 0; y < height; y++)
+            {
+                int row = y * width;
+                for (int x = 0; x < filled; x++)
+                {
+                    pixels[row + x] = bar;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false);
+        }
+    }
+
     // Recvonly → 受信のみ
     // !Recvonly → 送信のみ、あるいは送受信のどちらか
     public bool Recvonly { get { return fixedSampleType == SampleType.MultiRecvonly; } }
@@ -340,20 +518,27 @@ public class SoraSample : MonoBehaviour
         // 送信してるカメラの映像と、受信した他人の映像をテクスチャにレンダリングする
         if (Sendonly)
         {
-            if (trackId != 0)
+            if (videoSinkId != 0)
             {
                 var image = renderTarget.GetComponent<UnityEngine.UI.RawImage>();
-                sora.RenderTrackToTexture(trackId, image.texture);
+                sora.RenderTrackToTexture(videoSinkId, image.texture);
             }
         }
         else
         {
-            foreach (var track in tracks)
+            foreach (var kv in connectionInfos)
             {
-                var image = track.Value.GetComponent<UnityEngine.UI.RawImage>();
-                sora.RenderTrackToTexture(track.Key, image.texture);
+                var info = kv.Value;
+                if (!info.videoEnabled)
+                {
+                    continue;
+                }
+                var image = info.trackObject.GetComponent<UnityEngine.UI.RawImage>();
+                sora.RenderTrackToTexture(info.videoSinkId, image.texture);
             }
         }
+        // オーディオ可視化の更新
+        UpdateAudioLevelTextures();
     }
     void OnChangeRoute()
     {
@@ -380,44 +565,94 @@ public class SoraSample : MonoBehaviour
         if (Sendonly)
         {
             // 送信のみなので、表示するのは自分のカメラだけになる
-            sora.OnAddTrack = (trackId, connectionId) =>
+            sora.OnAddTrack = (videoSinkId, connectionId) =>
             {
-                Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
-                this.trackId = trackId;
+                Debug.LogFormat("OnAddTrack: videoSinkId={0}, connectionId={1}", videoSinkId, connectionId);
+                this.videoSinkId = videoSinkId;
             };
-            sora.OnRemoveTrack = (trackId, connectionId) =>
+            sora.OnRemoveTrack = (videoSinkId, connectionId) =>
             {
-                Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
-                this.trackId = 0;
+                Debug.LogFormat("OnRemoveTrack: videoSinkId={0}, connectionId={1}", videoSinkId, connectionId);
+                this.videoSinkId = 0;
             };
         }
         else
         {
             // 受信する数は動的に増減するので、トラックが追加されるたびに
             // 動的に GameObject とテクスチャを追加して設定しておく
-            sora.OnAddTrack = (trackId, connectionId) =>
+            sora.OnAddTrack = (videoSinkId, connectionId) =>
             {
-                // connectionId == "" だったら送信者のカメラ映像用のトラックになるが、このサンプルでは区別する必要が無いので
-                // どちらの場合でも気にせず GameObject を作成する
-                Debug.LogFormat("OnAddTrack: trackId={0}, connectionId={1}", trackId, connectionId);
-                var obj = GameObject.Instantiate(baseContent, Vector3.zero, Quaternion.identity);
-                obj.name = string.Format("track {0}", trackId);
-                obj.transform.SetParent(scrollViewContent.transform);
-                obj.SetActive(true);
-                var image = obj.GetComponent<UnityEngine.UI.RawImage>();
-                image.texture = new Texture2D(320, 240, TextureFormat.RGBA32, false);
-                tracks.Add(trackId, obj);
-            };
-            sora.OnRemoveTrack = (trackId, connectionId) =>
-            {
-                Debug.LogFormat("OnRemoveTrack: trackId={0}, connectionId={1}", trackId, connectionId);
-                if (tracks.ContainsKey(trackId))
+                Debug.LogFormat("OnAddTrack: videoSinkId={0}, connectionId={1}", videoSinkId, connectionId);
+
+                // connectionId == "" だったら送信者のカメラ映像用のトラックになる
+                // 送信者以外のトラックは OnMediaStreamTrack で処理可能なので、
+                // ここでは connectionId == "" の場合のみ処理する
+                if (connectionId != "")
                 {
-                    var obj = tracks[trackId];
-                    var image = obj.GetComponent<UnityEngine.UI.RawImage>();
-                    GameObject.Destroy(image.texture);
-                    GameObject.Destroy(obj);
-                    tracks.Remove(trackId);
+                    return;
+                }
+
+                var info = new ConnectionInfo(scrollViewContent.transform, baseContent);
+                info.InitVideo(videoSinkId);
+                connectionInfos.Add(connectionId, info);
+            };
+            sora.OnRemoveTrack = (videoSinkId, connectionId) =>
+            {
+                Debug.LogFormat("OnRemoveTrack: videoSinkId={0}, connectionId={1}, streamId={2}", videoSinkId, connectionId, sora.GetVideoTrackFromVideoSinkId(videoSinkId).Id);
+                if (connectionId != "")
+                {
+                    return;
+                }
+
+                if (connectionInfos[connectionId].DestroyVideo())
+                {
+                    connectionInfos.Remove(connectionId);
+                }
+            };
+            sora.OnMediaStreamTrack = (transceiver, track, connectionId) =>
+            {
+                Debug.LogFormat("OnMediaStreamTrack: kind={0}, id={1}, connectionId={2}",
+                    track.Kind, track.Id, connectionId);
+
+                if (!connectionInfos.ContainsKey(connectionId))
+                {
+                    connectionInfos.Add(connectionId, new ConnectionInfo(scrollViewContent.transform, baseContent));
+                }
+                var info = connectionInfos[connectionId];
+
+                if (track.Kind == Sora.MediaStreamTrack.AudioKind)
+                {
+                    var audioTrack = track as Sora.AudioTrack;
+                    var audioTrackSink = new AudioTrackSink();
+                    audioTrack.AddSink(sora, audioTrackSink);
+                    info.InitAudio(audioTrackSink);
+                }
+                else
+                {
+                    var videoTrack = track as Sora.VideoTrack;
+                    info.InitVideo(videoTrack.GetVideoSinkId(sora));
+                }
+            };
+            sora.OnRemoveMediaStreamTrack = (receiver, track, connectionId) =>
+            {
+                Debug.LogFormat("OnRemoveMediaStreamTrack: kind={0}, id={1}, connectionId={2}",
+                    track.Kind, track.Id, connectionId);
+                var info = connectionInfos[connectionId];
+                bool removed = false;
+                if (track.Kind == Sora.MediaStreamTrack.AudioKind)
+                {
+                    var audioTrack = track as Sora.AudioTrack;
+                    audioTrack.RemoveSink(sora, info.audioTrackSink);
+                    removed = info.DestroyAudio();
+                }
+                else
+                {
+                    removed = info.DestroyVideo();
+                }
+
+                if (removed)
+                {
+                    connectionInfos.Remove(connectionId);
                 }
             };
         }
@@ -546,17 +781,6 @@ public class SoraSample : MonoBehaviour
             return;
         }
 
-        if (!Sendonly)
-        {
-            foreach (var track in tracks)
-            {
-                var obj = track.Value;
-                var image = obj.GetComponent<UnityEngine.UI.RawImage>();
-                GameObject.Destroy(image.texture);
-                GameObject.Destroy(obj);
-            }
-            tracks.Clear();
-        }
         if (unityAudioInput && !Recvonly)
         {
             audioSourceInput.Stop();
@@ -567,6 +791,12 @@ public class SoraSample : MonoBehaviour
         {
             audioSourceOutput.Stop();
         }
+
+        foreach (var kv in connectionInfos)
+        {
+            kv.Value.Dispose();
+        }
+        connectionInfos.Clear();
     }
     void DisposeSora()
     {
