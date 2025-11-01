@@ -594,6 +594,10 @@ public class SoraSample : MonoBehaviour
 
                 var info = new ConnectionInfo(scrollViewContent.transform, baseContent);
                 info.InitVideo(videoSinkId);
+                var audioTrack = sora.GetAudioTrack();
+                var audioTrackSink = new AudioTrackSink();
+                audioTrack.AddSink(sora, audioTrackSink);
+                info.InitAudio(audioTrackSink);
                 connectionInfos.Add(connectionId, info);
             };
             sora.OnRemoveTrack = (videoSinkId, connectionId) =>
@@ -604,10 +608,11 @@ public class SoraSample : MonoBehaviour
                     return;
                 }
 
-                if (connectionInfos[connectionId].DestroyVideo())
-                {
-                    connectionInfos.Remove(connectionId);
-                }
+                var info = connectionInfos[connectionId];
+                var audioTrack = sora.GetAudioTrack();
+                audioTrack.RemoveSink(sora, info.audioTrackSink);
+                info.Dispose();
+                connectionInfos.Remove(connectionId);
             };
             sora.OnMediaStreamTrack = (transceiver, track, connectionId) =>
             {
