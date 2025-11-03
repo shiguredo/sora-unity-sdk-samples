@@ -241,11 +241,6 @@ public class SoraSample : MonoBehaviour
             // 表示を滑らかにする
             level = level * 0.8f + peak * 0.2f;
         }
-
-        public int NumPreferredChannels()
-        {
-            return -1;
-        }
     }
 
     // connectionId ごとの情報を保持するためのクラス
@@ -537,7 +532,7 @@ public class SoraSample : MonoBehaviour
                 sora.RenderTrackToTexture(info.videoSinkId, image.texture);
             }
         }
-        // オーディオ可視化の更新
+        // 音量バーのテクスチャを更新
         UpdateAudioLevelTextures();
     }
     void OnChangeRoute()
