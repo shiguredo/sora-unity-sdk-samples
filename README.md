@@ -32,7 +32,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 Sora Unity SDK サンプル集の使い方についてはドキュメントのチュートリアルを参照してください。
 
-[Sora Unity SDK ドキュメントのチュートリアル](https://sora-unity-sdk.shiguredo.jp/tutorial)
+[Sora Unity SDK ドキュメントのチュートリアル](https://sora-unity-sdk.shiguredo.jp/samples_tutorial)
 
 ## ライセンス
 
