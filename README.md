@@ -1,3 +1,7 @@
+# このリポジトリは Sora Unity SDK に統合しました
+
+今後は <https://github.com/shiguredo/sora-unity-sdk> の SoraUnitySdkExamples ディレクトリをご確認ください。
+
 # Sora Unity SDK サンプル集
 
 このリポジトリには、 [Sora Unity SDK](https://github.com/shiguredo/sora-unity-sdk) を利用したサンプルアプリを掲載しています。実際の利用シーンに即したサンプルをご用意しておりますので、目的に応じた Sora Unity SDK の使い方を簡単に学ぶことができます。
@@ -9,7 +13,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 時雨堂のオープンソースソフトウェアについて
 
-利用前に https://github.com/shiguredo/oss をお読みください。
+利用前に <https://github.com/shiguredo/oss> をお読みください。
 
 ## 対応 Unity バージョン
 
